@@ -634,7 +634,8 @@ function restoreSnap(js){S=migrate(JSON.parse(js));try{localStorage.setItem(KEY,
 function undo(){if(HIST.timer)snapshotNow();if(!HIST.past.length)return;HIST.future.push(HIST.last);HIST.last=HIST.past.pop();restoreSnap(HIST.last);toast('元に戻しました');render();}
 function redo(){if(HIST.timer)snapshotNow();if(!HIST.future.length)return;HIST.past.push(HIST.last);HIST.last=HIST.future.pop();restoreSnap(HIST.last);toast('やり直しました');render();}
 
-let S=load()||migrate(sample());
+function blankData(){return {v:6,story:{title:'',ending:'',totalPages:32,templateId:'kishou',firstSingle:true,endingSceneId:''},templates:builtinTemplates(),foreshadows:[],cards:[],scenes:[],links:[],cuts:[],gpos:{},maps:[]};}
+let S=load()||blankData();
 let UI={tab:'cards',treeDir:'back',sel:(S.scenes[S.scenes.length-1]||{}).id,tplSel:S.story.templateId,confirm:null,dataOpen:false,filter:'all',toast:'',ctype:'all',q:'',unused:false,picked:[],card:null,qtype:'person',tagQ:'',ftags:[],tagDraft:'',cgroup:'none',ghull:true,lines:{},views:{},famPerson:'',mapId:null,mtool:'select',mplace:'',msel:null,mdraw:null,mset:false,mtile:'floor',mrot:0,gmode:'select',glinkFrom:null,lastCut:null,gsel:null,gtag:'',gmin:1,gauto:true,rand:null};
 const norm=s=>String(s||'').normalize('NFKC').trim().toLowerCase();
 const tagList=s=>String(s||'').split(/[、,，:：;；\/／\s]+/).map(x=>x.trim()).filter(Boolean);
@@ -840,8 +841,7 @@ function checks(){
  const out=[];const add=(lvl,cat,msg,sid)=>out.push({lvl,cat,msg,sid});
  const L=layout(),T=tpl(),tot=S.story.totalPages;
  const end=S.story.endingSceneId&&sc(S.story.endingSceneId);
- if(!S.scenes.length){add('err','因果','シーンがありません。');return out;}
- if(!end)add('err','因果','結末シーンが決まっていません。シーンを選んで「結末に設定」を押してください。');
+ if(S.scenes.length&&!end)add('err','因果','結末シーンが決まっていません。シーンを選んで「結末に設定」を押してください。');
  S.scenes.forEach((s,i)=>{
   s.causes=s.causes.filter(c=>sc(c)&&c!==s.id);
   if(i>0&&!s.causes.length)add('warn','因果',`「${s.title}」に原因シーンがありません。唐突な展開になっていないか確認してください。`,s.id);
@@ -865,27 +865,10 @@ function checks(){
    if(fy<fp)add('err','伏線',`伏線「${f.name}」が張られる前に回収されています。`,S.scenes[fy].id);
    else if(fy===fp)add('info','伏線',`伏線「${f.name}」は同じシーンで張って回収しています。効果が弱くならないか確認してください。`,S.scenes[fy].id);}
  });
- const sum=S.scenes.reduce((a,s)=>a+s.pages,0);
- if(sum>tot)add('err','ページ',`合計${sum}ページで、予定の${tot}ページを${sum-tot}ページ超えています。`);
- else if(sum<tot)add('info','ページ',`予定の${tot}ページまで、残り${tot-sum}ページです。`);
- let lastPos=-1;
- S.scenes.forEach((s,i)=>{
-  const b=T.beats.find(b=>b.id===s.beatId);
-  if(!b){add('info','構成',`「${s.title}」にビートが割り当てられていません。`,s.id);return;}
-  const pct=(L[i].start-1)/Math.max(tot,1)*100,d=pct-b.pos;
-  if(Math.abs(d)>12)add('warn','構成',`「${s.title}」は${Math.round(pct)}%地点から始まり、「${b.name}」の目安（${b.pos}%）より${d>0?'遅れて':'早まって'}います。`,s.id);
-  if(b.pos<lastPos)add('warn','構成',`「${s.title}」のビート「${b.name}」は、前のシーンより手前の段階です。`,s.id);
-  lastPos=Math.max(lastPos,b.pos);
- });
  S.scenes.forEach(s=>{s.cards=(s.cards||[]).filter(card);});
  S.cards.filter(c=>c.type==='episode'&&!usedIn(c.id).length).forEach(c=>out.push({lvl:'info',cat:'カード',msg:`エピソード「${c.title||'無題'}」はまだ物語に使われていません。`,cid:c.id}));
  const unusedSet=S.cards.filter(c=>c.type!=='episode'&&c.type!=='memo'&&!usedIn(c.id).length);
  if(unusedSet.length)add('info','カード',`どのシーンにも付いていない設定カードが${unusedSet.length}枚あります（${unusedSet.map(c=>c.title).join('、')}）。`);
- S.scenes.forEach((s,i)=>{ensurePages(s);const pd=s.pageData.slice(0,s.pages);
-  const empty=pd.filter(p=>!p.panels.length).length;
-  if(empty)add('info','コマ',`「${s.title}」にコマ未作成のページが${empty}枚あります。`,s.id);
-  pd.forEach((p,k)=>{if(p.panels.length>8)add('warn','コマ',`${L[i].start+k}ページ目（「${s.title}」）は${p.panels.length}コマです。詰め込みすぎていないか確認してください。`,s.id);});
- });
  return out;
 }
 
@@ -894,24 +877,23 @@ function header(iss){
  const e=iss.filter(i=>i.lvl==='err').length,w=iss.filter(i=>i.lvl==='warn').length;
  const sum=S.scenes.reduce((a,s)=>a+s.pages,0),tot=S.story.totalPages;
  return `<header class="top">
-  <div class="brand">ストーリーカード<small>カードを組み合わせて作る漫画プロット</small></div>
+  <div class="brand">ストーリーカード<small>カードを組み合わせて物語を作る</small></div>
   <input class="story-title" id="story-title" type="text" aria-label="作品タイトル" data-f="story" data-k="title" data-live="1" value="${esc(S.story.title)}">
   <div class="top-stats">
    <button class="btn" id="btn-undo" data-act="undo" ${HIST.past.length?'':'disabled'} title="元に戻す（Ctrl+Z）">↶ 元に戻す</button>
    <button class="btn" id="btn-redo" data-act="redo" ${HIST.future.length?'':'disabled'} title="やり直す（Ctrl+Shift+Z）">↷ やり直す</button>
-   <span class="pill ${sum>tot?'err':''}"><span class="mono">${sum} / ${tot}</span> ページ</span>
    <button class="pill ${e?'err':w?'warn':'ok'}" data-act="tab" data-tab="check">${e||w?`破綻 ${e}・要確認 ${w}`:'破綻なし'}</button>
    <button class="btn" data-act="data">保存・読み込み</button>
+   <button class="btn danger ${UI.confirm==='wipe'?'armed':''}" data-act="wipe" title="すべてのカード・シーン・地図を消して最初の状態に戻します">${UI.confirm==='wipe'?'もう一度押すと初期化':'初期化'}</button>
   </div>
  </header>
  <div class="ending-line"><label for="story-ending">結末（一文で）</label><input id="story-ending" type="text" data-f="story" data-k="ending" data-live="1" value="${esc(S.story.ending)}" placeholder="誰が、何を得て/失って、どう変わったか"></div>`;
 }
 function tabs(iss){
  const n=iss.filter(i=>i.lvl!=='info').length;
- const T=[['cards','カード置き場'],['graph','つながり'],['family','家系図'],['orgchart','組織図'],['map','地図'],['reverse','ツリー'],['structure','構成とページ配分'],['check','破綻チェック']];
- const SUB=[['panels','コマ割り'],['templates','テンプレート']];
+ const T=[['cards','カード置き場'],['graph','つながり'],['family','家系図'],['orgchart','組織図'],['map','地図'],['reverse','ツリー'],['check','破綻チェック']];
  const b=([k,l],sub)=>`<button role="tab" class="${sub?'subtab':''}" aria-selected="${UI.tab===k}" data-act="tab" data-tab="${k}">${l}${k==='check'&&n?`<span class="cnt">${n}</span>`:''}</button>`;
- return `<nav class="tabs" role="tablist">${T.map(t=>b(t)).join('')}<span class="tabs-sep" aria-hidden="true"></span><span class="tabs-lab">サブ</span>${SUB.map(t=>b(t,true)).join('')}</nav>`;
+ return `<nav class="tabs" role="tablist">${T.map(t=>b(t)).join('')}</nav>`;
 }
 function sidebar(iss){
  const L=layout(),T=tpl();
@@ -922,7 +904,7 @@ function sidebar(iss){
    <span class="n">${String(i+1).padStart(2,'0')}</span>
    <span class="t">${l?`<span class="dot ${l}"></span>`:''}${esc(s.title)||'（無題）'}${S.story.endingSceneId===s.id?'<span class="tag-end">結末</span>':''}</span>
    <span class="mv"><button class="ibtn" aria-label="上へ" data-act="up" data-id="${s.id}">↑</button><button class="ibtn" aria-label="下へ" data-act="down" data-id="${s.id}">↓</button></span>
-   <span class="m"><span class="mono">P${L[i].start}–${L[i].end}</span> · ${b?esc(b.name):'ビート未設定'}${(s.cards||[]).length?` · カード${s.cards.length}`:''}</span></li>`;}).join('')}</ol>
+   <span class="m">${(s.cards||[]).length?`カード${s.cards.length}`:''}</span></li>`;}).join('')}</ol>
  ${UI.tab==='cards'?'<div class="dropnew" data-dropnew="1">カードをここにドロップすると<br>新しいシーンになります。シーンの上に落とすとそのシーンに付きます</div>':''}</aside>`;
 }
 function editor(){
@@ -933,12 +915,6 @@ function editor(){
  return `<aside class="editor box" data-keep="editor"><div class="box-h"><span>シーン ${String(i+1).padStart(2,'0')} を編集</span>${S.story.endingSceneId===s.id?'<span class="tag-end">結末</span>':''}</div>
  <label class="fld"><span>タイトル</span><input type="text" id="e-title" data-f="sc" data-id="${s.id}" data-k="title" data-live="1" value="${esc(s.title)}"></label>
  <label class="fld"><span>このシーンの役割（一行）</span><input type="text" id="e-role" data-f="sc" data-id="${s.id}" data-k="role" data-live="1" value="${esc(s.role)}" placeholder="例：主人公の弱さを見せる"></label>
- <div class="fld"><div class="row2">
-  <label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;color:var(--muted)">ビート（${esc(T.name)}）</span>
-   <select id="e-beat" data-f="sc" data-id="${s.id}" data-k="beatId"><option value="">未設定</option>${[...T.beats].sort((a,b)=>a.pos-b.pos).map(b=>`<option value="${b.id}" ${b.id===s.beatId?'selected':''}>${esc(b.name)}（${b.pos}%）</option>`).join('')}</select></label>
-  <label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;color:var(--muted)">ページ数</span>
-   <input type="number" id="e-pages" min="1" max="200" data-f="sc" data-id="${s.id}" data-k="pages" value="${s.pages}"></label>
- </div></div>
  <div class="fld"><span>使うカード</span>
   <div class="cchips">${(s.cards||[]).map(cid=>{const c=card(cid);return c?`<span class="cchip t-${c.type}"><button class="cchip-b" data-act="gotoCard" data-cid="${c.id}">${CT[c.type]}・${esc(c.title)||'無題'}</button><button class="ibtn" aria-label="カードを外す" data-act="detachCard" data-id="${s.id}" data-cid="${c.id}">×</button></span>`:'';}).join('')||'<span class="muted" style="font-size:12px">まだありません</span>'}</div>
   ${S.cards.some(c=>!(s.cards||[]).includes(c.id))?`<select id="e-addcard" data-act="attachSel" data-id="${s.id}" aria-label="カードを付ける"><option value="">カードを付ける…</option>${Object.entries(CT).map(([t,l])=>{const cs=S.cards.filter(c=>c.type===t&&!(s.cards||[]).includes(c.id));return cs.length?`<optgroup label="${l}">${cs.map(c=>`<option value="${c.id}">${esc(c.title)||'無題'}</option>`).join('')}</optgroup>`:'';}).join('')}</select>`:''}
@@ -959,7 +935,6 @@ function editor(){
   <button class="btn" data-act="addCause" data-id="${s.id}">＋原因シーンを前に作る</button>
   <button class="btn" data-act="addEffect" data-id="${s.id}">＋結果シーンを後に作る</button>
   ${S.story.endingSceneId===s.id?'':`<button class="btn" data-act="setEnding" data-id="${s.id}">結末に設定</button>`}
-  <button class="btn" data-act="tab" data-tab="panels">コマ割りを開く</button>
   <button class="btn danger ${UI.confirm==='del-'+s.id?'armed':''}" data-act="del" data-id="${s.id}">${UI.confirm==='del-'+s.id?'もう一度押すと削除':'削除'}</button>
  </div></aside>`;
 }
@@ -974,7 +949,7 @@ function treeNode(id,seen,depth,L){
  const isEnd=depth===0;
  return `<li><div class="node ${UI.sel===id?'sel':''} ${isEnd?'end':''}" data-act="sel" data-id="${id}">
   ${isEnd?'<div class="kicker">結末</div>':''}
-  <div class="node-top"><span class="mono muted">#${String(i+1).padStart(2,'0')}</span><b>${esc(s.title)||'（無題）'}</b><span class="mono muted" style="font-size:12px">P${L[i].start}–${L[i].end}</span></div>
+  <div class="node-top"><span class="mono muted">#${String(i+1).padStart(2,'0')}</span><b>${esc(s.title)||'（無題）'}</b></div>
   <div class="role">${s.role?esc(s.role):'役割が未記入です'}</div>
   ${(s.cards||[]).length?`<div class="node-cards">${s.cards.map(card).filter(Boolean).map(c=>`<span class="t-${c.type}">${esc(c.title)}</span>`).join('')}</div>`:''}
   <div class="node-acts"><button class="btn sm" data-act="addCause" data-id="${id}">＋このシーンの原因を作る</button>
@@ -991,7 +966,7 @@ function fwdNode(id,seen,depth,L,endId){
  const isEnd=id===endId,isRoot=depth===0;
  return `<li><div class="node ${UI.sel===id?'sel':''} ${isEnd?'end':''}" data-act="sel" data-id="${id}">
   ${isRoot?'<div class="kicker" style="color:var(--ok)">起点</div>':''}${isEnd?'<div class="kicker">結末</div>':''}
-  <div class="node-top"><span class="mono muted">#${String(i+1).padStart(2,'0')}</span><b>${esc(s.title)||'（無題）'}</b><span class="mono muted" style="font-size:12px">P${L[i].start}–${L[i].end}</span></div>
+  <div class="node-top"><span class="mono muted">#${String(i+1).padStart(2,'0')}</span><b>${esc(s.title)||'（無題）'}</b></div>
   <div class="role">${s.role?esc(s.role):'役割が未記入です'}</div>
   ${(s.cards||[]).length?`<div class="node-cards">${s.cards.map(card).filter(Boolean).map(c=>`<span class="t-${c.type}">${esc(c.title)}</span>`).join('')}</div>`:''}
   <div class="node-acts"><button class="btn sm" data-act="addEffect" data-id="${id}">＋このシーンの結果を作る</button>
@@ -1890,11 +1865,11 @@ function templatesTab(){
 /* check */
 function checkTab(iss){
  const e=iss.filter(i=>i.lvl==='err'),w=iss.filter(i=>i.lvl==='warn'),n=iss.filter(i=>i.lvl==='info');
- const cats=['all','因果','伏線','構成','ページ','コマ','カード'];
+ const cats=['all','因果','伏線','カード'];
  const list=iss.filter(i=>UI.filter==='all'||i.cat===UI.filter).sort((a,b)=>({err:0,warn:1,info:2}[a.lvl]-{err:0,warn:1,info:2}[b.lvl]));
  const LV={err:'破綻',warn:'要確認',info:'メモ'};
  return `<div class="sec"><h2>破綻チェック</h2>
- <p class="lead">因果のつながり、伏線の張りと回収、ビートの位置、ページ数、コマ数を自動で確認します。編集するたびに更新されます。</p>
+ <p class="lead">因果のつながり、伏線の張りと回収、使われていないカードを自動で確認します。編集するたびに更新されます。</p>
  <div class="sum"><div class="e"><b>${e.length}</b><span>破綻</span></div><div class="w"><b>${w.length}</b><span>要確認</span></div><div><b>${n.length}</b><span>メモ</span></div></div>
  <div class="chips">${cats.map(c=>`<button aria-pressed="${UI.filter===c}" data-act="filter" data-v="${c}">${c==='all'?'すべて':c}</button>`).join('')}</div>
  ${list.length?`<ul class="issues">${list.map(i=>`<li class="issue ${i.lvl}"><span><span class="lv">${LV[i.lvl]}</span><span class="cat">${i.cat}</span></span><span>${esc(i.msg)}</span>${i.sid?`<button class="btn sm" data-act="sel" data-id="${i.sid}">シーンを開く</button>`:i.cid?`<button class="btn sm" data-act="gotoCard" data-cid="${i.cid}">カードを開く</button>`:'<span></span>'}</li>`).join('')}</ul>`:'<div class="ok-note">この分類で見つかった問題はありません。</div>'}
@@ -1915,8 +1890,7 @@ function dataDialog(){
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
    <button class="btn pri" data-act="copyData">コピー</button>
    <button class="btn" data-act="loadData">貼り付けた内容を読み込む</button>
-   <button class="btn danger ${UI.confirm==='reset'?'armed':''}" data-act="resetSample">${UI.confirm==='reset'?'もう一度押すと初期化':'サンプルに戻す'}</button>
-   <button class="btn" data-act="newBlank" style="${UI.confirm==='blank'?'background:var(--err);color:var(--sheet)':''}">${UI.confirm==='blank'?'もう一度押すと白紙化':'白紙から始める'}</button>
+   <button class="btn ${UI.confirm==='reset'?'danger armed':''}" data-act="resetSample">${UI.confirm==='reset'?'もう一度押すと今の内容をサンプルに置き換え':'サンプルを読み込む'}</button>
    <button class="btn" data-act="closeData" style="margin-left:auto">閉じる</button>
   </div></div></div>`;
 }
@@ -1924,7 +1898,9 @@ function dataDialog(){
 /* ---------- main render ---------- */
 let pending=false;
 function schedule(){if(pending)return;pending=true;setTimeout(()=>{pending=false;render();},0);}
+const TABS_OK=['cards','graph','family','orgchart','map','reverse','check'];
 function render(){
+ if(!TABS_OK.includes(UI.tab))UI.tab='cards';
  const app=document.getElementById('app');
  const ae=document.activeElement,aid=ae&&ae.id,selS=ae&&ae.selectionStart,selE=ae&&ae.selectionEnd;
  const keep={};app.querySelectorAll('[data-keep]').forEach(el=>keep[el.dataset.keep]=el.scrollTop);
@@ -1937,6 +1913,7 @@ function render(){
  if(aid){const el=document.getElementById(aid);if(el){el.focus({preventScroll:true});try{if(selS!=null&&el.setSelectionRange)el.setSelectionRange(selS,selE);}catch(e){}}}
 }
 
+function resetUI(){Object.assign(UI,{tab:'cards',sel:(S.scenes[0]||{}).id||null,card:null,picked:[],gsel:null,rand:null,edEdge:null,glinkFrom:null,lastCut:null,dataOpen:false,ftags:[],q:'',tagQ:'',unused:false,ctype:'all',views:{},gview:null,mapId:null,msel:null,mdraw:null,mplace:'',famPerson:''});try{localStorage.setItem(KEY+'-tab2','cards');}catch(e){}}
 function moveScene(id,dir){const i=idx(id),j=i+dir;if(j<0||j>=S.scenes.length)return;const a=S.scenes;[a[i],a[j]]=[a[j],a[i]];}
 function newScene(title,causes){return {id:uid(),title,role:'',beatId:'',pages:2,causes:causes||[],plants:[],pays:[],chars:'',note:'',cards:[],pageData:[]};}
 function toast(m){UI.toast=m;setTimeout(()=>{UI.toast='';render();},1800);}
@@ -2083,8 +2060,8 @@ function act(a,d,el){
    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast('コピーしました'),()=>{ta.select();toast('テキストを選択しました。手動でコピーしてください');});}else{ta.select();toast('テキストを選択しました。手動でコピーしてください');}
    return;}
   case 'loadData':{const ta=document.getElementById('data-text');try{const d2=JSON.parse(ta.value);if(!d2||!Array.isArray(d2.scenes)||!d2.story||!Array.isArray(d2.templates))throw 0;S=migrate(d2);cleanLabels();UI.sel=(S.scenes[0]||{}).id;UI.tplSel=S.story.templateId;UI.dataOpen=false;toast('読み込みました');}catch(e){toast('読み込めませんでした。コピーしたテキスト全体を貼り付けてください');UI.dataOpen=true;}break;}
-  case 'resetSample':if(prevConfirm!=='reset'){UI.confirm='reset';break;}S=migrate(sample());UI.sel=S.scenes[S.scenes.length-1].id;UI.tplSel=S.story.templateId;UI.dataOpen=false;toast('サンプルに戻しました');break;
-  case 'newBlank':{if(prevConfirm!=='blank'){UI.confirm='blank';break;}const end=newScene('結末',[]);end.pages=4;S={v:1,story:{title:'新しい作品',ending:'',totalPages:32,templateId:'kishou',firstSingle:true,endingSceneId:end.id},templates:S.templates,foreshadows:[],cards:[],links:[],cuts:[],gpos:{},scenes:[end]};UI.lastCut=null;UI.glinkFrom=null;UI.rand=null;UI.gsel=null;UI.sel=end.id;UI.tab='reverse';UI.dataOpen=false;UI.picked=[];UI.card=null;toast('結末シーンだけの白紙から始めます');break;}
+  case 'resetSample':if(prevConfirm!=='reset'){UI.confirm='reset';break;}S=migrate(sample());resetUI();UI.sel=S.scenes[S.scenes.length-1].id;toast('サンプルを読み込みました（元に戻すで戻せます）');break;
+  case 'wipe':if(prevConfirm!=='wipe'){UI.confirm='wipe';break;}S=blankData();resetUI();toast('初期化しました（元に戻すで戻せます）');break;
  }
  save();snapshotNow();render();
 }
