@@ -1,9 +1,14 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ストーリーカード</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
+html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important}img{max-width:100%}
+
 /* 原稿用紙の作業机：ノンフォトブルーの罫線とインクの黒。左＝シーン一覧、中央＝作業面、右＝選択中のシーン */
 :root{
   --paper:#f7f9fb; --sheet:#ffffff; --ink:#15181d; --muted:#5d6874; --line:#d2e1eb; --line-soft:#e6eff5;
@@ -53,6 +58,10 @@ button.pill{cursor:pointer}
 .ending-line input{flex:1 1 300px;min-width:0;border:1px solid var(--line);background:var(--sheet);padding:6px 10px;border-radius:4px}
 
 /* tabs */
+.stickyhead{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:var(--paper);box-shadow:0 0 0 100vmax var(--paper);clip-path:inset(0 -100vmax -12px -100vmax);margin-top:-16px;padding-top:16px}
+.stickyhead.stuck{box-shadow:0 0 0 100vmax var(--paper),0 6px 10px -8px rgba(0,0,0,.35)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:16;background:var(--paper)}
+@media (max-width:760px){.stickyhead{position:static;margin-top:0;padding-top:0;clip-path:none;box-shadow:none}.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:var(--paper)}}
 .tabs{display:flex;gap:2px;margin:16px 0 0;overflow-x:auto;border-bottom:1px solid var(--line)}
 .tabs button{border:1px solid transparent;border-bottom:0;background:transparent;padding:8px 14px;border-radius:6px 6px 0 0;white-space:nowrap;color:var(--muted);font-weight:500}
 .tabs button[aria-selected="true"]{background:var(--sheet);border-color:var(--line);color:var(--ink);margin-bottom:-1px;font-weight:700}
@@ -83,7 +92,7 @@ button.pill{cursor:pointer}
 .fn text{fill:var(--ink);font-size:13px;font-family:var(--f-body)}
 .fn.virt rect{stroke:var(--muted);stroke-dasharray:4 3;fill:var(--paper)}
 .fn.virt text{fill:var(--muted)}
-.fn[data-act]{cursor:pointer}
+.fn{cursor:pointer}
 .fn[data-act]:hover rect:first-of-type{stroke-width:3}
 .fn text.fl-role{font-size:10px;fill:var(--muted)}
 .fl-pc,.fl-sib{fill:none;stroke:var(--ink);stroke-width:1.5}
@@ -160,6 +169,12 @@ button.pill{cursor:pointer}
 .m-roth{fill:var(--sheet);stroke:var(--blue);stroke-width:2;cursor:grab}
 .m-rotline{stroke:var(--blue);stroke-width:1.2;stroke-dasharray:3 3;pointer-events:none}
 .tfbar{display:flex;flex-wrap:wrap;gap:4px}
+.filebox{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.filecol{display:flex;flex-direction:column;gap:6px;align-items:flex-start;border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--paper)}
+.filebtn{position:relative;overflow:hidden;cursor:pointer}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.filebtn:focus-within{outline:2px solid var(--blue);outline-offset:2px}
+.fprev{font-size:18px;padding:6px 10px;border:1px dashed var(--line);border-radius:4px;background:var(--paper);overflow-wrap:anywhere}
 .m-road-center{fill:none;stroke:var(--m-road);stroke-width:1.2;stroke-dasharray:8 6;stroke-linecap:round}
 .ter-floor{fill:var(--m-floor)}
 .ter-building{fill:var(--m-bldg)}
@@ -203,7 +218,7 @@ button.pill{cursor:pointer}
 @media (max-width:1180px){.grid{grid-template-columns:220px minmax(0,1fr)}.editor{grid-column:1 / -1}}
 @media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
 .box{background:var(--sheet);border:1px solid var(--line);border-radius:6px}
-.side,.editor{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.side,.editor{position:sticky;top:calc(var(--headh,0px) + 12px);max-height:calc(100vh - var(--headh,0px) - 24px);overflow:auto}
 @media (max-width:1180px){.editor{position:static;max-height:none}}
 @media (max-width:760px){.side{position:static;max-height:340px}}
 .box-h{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.08em;font-weight:700;color:var(--blue-ink)}
@@ -381,7 +396,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--blue-wash)}
 .card.editing .ctitle-in{font-size:16px;font-weight:700}
 .card.editing textarea{min-height:90px;resize:vertical}
 .card-acts{display:flex;gap:8px;flex-wrap:wrap}
-.pickbar{position:sticky;top:8px;z-index:5;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;background:var(--ink);color:var(--sheet);border-radius:6px;margin-bottom:12px}
+.pickbar{position:sticky;top:calc(var(--headh,0px) + 8px);z-index:5;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;background:var(--ink);color:var(--sheet);border-radius:6px;margin-bottom:12px}
 .pickbar .btn{background:var(--sheet);color:var(--ink);border-color:var(--sheet)}
 .pickbar .btn.ghostb{background:transparent;color:var(--sheet)}
 .cchips{display:flex;flex-wrap:wrap;gap:4px}
@@ -457,6 +472,22 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--blue-wash)}
 .gl.attr{fill:var(--blue-ink)}
 .mk-man{fill:var(--ink)}.mk-attr{fill:var(--blue-ink)}.mk-hl{fill:var(--blue)}
 .pfields{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--paper)}
+.rel-head{font-size:10px;color:var(--muted);letter-spacing:.04em}
+.rel-head span{padding-left:2px}
+.pf-help{font-size:11px;color:var(--muted)}
+.pf-help summary{cursor:pointer;color:var(--blue-ink);width:max-content;display:inline-flex;align-items:center;gap:6px;list-style:none;padding:2px 10px 2px 3px;border:1px solid var(--blue);border-radius:99px;background:var(--blue-wash);font-size:12px;font-weight:700}
+.pf-help summary::-webkit-details-marker{display:none}
+.pf-help[open] summary{background:var(--blue-ink);color:var(--sheet);border-color:var(--blue-ink)}
+.help-ico{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--blue-ink);color:var(--sheet);font-size:12px;font-weight:700;align-items:center;justify-content:center;font-family:var(--f-mono);flex:none}
+.pf-help[open] .help-ico{background:var(--sheet);color:var(--blue-ink)}
+.pf-help p{border-left:3px solid var(--blue);padding:6px 10px;background:var(--blue-wash);border-radius:0 4px 4px 0;color:var(--ink)}
+.fn.fsel rect:first-of-type{stroke:var(--blue);stroke-width:3.5}
+.fampanel{border:1px solid var(--line);border-radius:6px;background:var(--sheet);padding:12px 14px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+.fampanel h3{margin:0;font-size:15px}
+.famform{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;align-items:end}
+.famform .fld2 input[type=text],.famform .fld2 select{background:var(--paper)}
+.radio-row{display:flex;gap:12px;flex-wrap:wrap;font-size:13px}
+.pf-help p{margin:4px 0 2px;line-height:1.6;max-width:60ch}
 .pf-h{font-size:11px;color:var(--blue-ink);font-weight:700;letter-spacing:.08em;margin-top:2px}
 .pf-row{display:grid;grid-template-columns:72px minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
 .rel-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) 24px;gap:6px;align-items:center}
@@ -530,6 +561,8 @@ button.tagchip{cursor:pointer}
 .rand-join{font-size:12px;margin:10px 0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+</head>
+<body>
 
 <div id="app"></div>
 
@@ -636,7 +669,7 @@ function redo(){if(HIST.timer)snapshotNow();if(!HIST.future.length)return;HIST.p
 
 function blankData(){return {v:6,story:{title:'',ending:'',totalPages:32,templateId:'kishou',firstSingle:true,endingSceneId:''},templates:builtinTemplates(),foreshadows:[],cards:[],scenes:[],links:[],cuts:[],gpos:{},maps:[]};}
 let S=load()||blankData();
-let UI={tab:'cards',treeDir:'back',sel:(S.scenes[S.scenes.length-1]||{}).id,tplSel:S.story.templateId,confirm:null,dataOpen:false,filter:'all',toast:'',ctype:'all',q:'',unused:false,picked:[],card:null,qtype:'person',tagQ:'',ftags:[],tagDraft:'',cgroup:'none',ghull:true,lines:{},views:{},famPerson:'',mapId:null,mtool:'select',mplace:'',msel:null,mdraw:null,mset:false,mtile:'floor',mrot:0,gmode:'select',glinkFrom:null,lastCut:null,gsel:null,gtag:'',gmin:1,gauto:true,rand:null};
+let UI={tab:'cards',treeDir:'back',sel:(S.scenes[S.scenes.length-1]||{}).id,tplSel:S.story.templateId,confirm:null,dataOpen:false,filter:'all',toast:'',ctype:'all',q:'',unused:false,picked:[],card:null,qtype:'person',tagQ:'',ftags:[],tagDraft:'',cgroup:'none',ghull:true,lines:{},views:{},famPerson:'',famSel:null,famMode:'new',famRel:'父',mapId:null,mtool:'select',mplace:'',msel:null,mdraw:null,mset:false,mtile:'floor',mrot:0,gmode:'select',glinkFrom:null,lastCut:null,gsel:null,gtag:'',gmin:1,gauto:true,rand:null};
 const norm=s=>String(s||'').normalize('NFKC').trim().toLowerCase();
 const tagList=s=>String(s||'').split(/[、,，:：;；\/／\s]+/).map(x=>x.trim()).filter(Boolean);
 const PF=[['addr','住所'],['work','職場・学校']],RF=[['family','家族','続柄（母、兄など）'],['friends','友人関係','関係（親友、幼なじみなど）']];
@@ -1003,21 +1036,24 @@ function personFields(c){
  const pf=PF.map(([k,l])=>{const v=c[k]||{place:'',text:''};return `<div class="pf-row"><span class="pf-l">${l}</span>
   <select id="pf-${c.id}-${k}-place" data-f="cdp" data-cid="${c.id}" data-k="${k}" data-p="place" aria-label="${l}の場所カード"><option value="">場所カードを選ぶ…</option>${places.map(p=>`<option value="${p.id}" ${v.place===p.id?'selected':''}>${esc(p.title)||'無題'}</option>`).join('')}<option value="__new">＋右の内容で場所カードを作る</option></select>
   <input type="text" id="pf-${c.id}-${k}-text" data-f="cdp" data-cid="${c.id}" data-k="${k}" data-p="text" data-live="1" value="${esc(v.text)}" placeholder="${k==='addr'?'地名・番地など':'会社名・学校名・部署など'}" aria-label="${l}の詳細"></div>`;}).join('');
- const rf=RF.map(([k,l,ph])=>{const arr=c[k]||[];return `<div class="pf-h">${l}</div>
+ const relHead=(a,b,c2)=>`<div class="rel-row rel-head"><span>${a}</span><span>${b}</span><span>${c2}</span><span></span></div>`;
+ const HELP={family:'人物カードがある人は左で選びます。カードを作らない人（登場しない家族、故人、行方不明の人など）は、中央に名前だけ書けば家系図に点線の枠で表示されます。右の続柄に「父・母・兄・姉・弟・妹・夫・妻・息子・娘・祖父・祖母・叔父・叔母・いとこ」などの言葉を入れると、家系図の世代（上下）が決まります。「父（行方不明）」「亡き母」のように言葉を足してもかまいません。',
+  friends:'人物カードがある人は左で選び、ない人は中央に名前を書きます。右には「親友」「幼なじみ」「ライバル」など関係を書きます。人物カードを選ぶと、つながり図に線が引かれます。'};
+ const rf=RF.map(([k,l,ph])=>{const arr=c[k]||[];return `<div class="pf-h">${l}</div>${arr.length?relHead('人物カード','名前（カードがない人）',k==='family'?'続柄':'関係'):''}
   ${arr.map((r,i)=>`<div class="rel-row">
    <select id="rl-${c.id}-${k}-${i}-card" data-f="cdl" data-cid="${c.id}" data-k="${k}" data-i="${i}" data-p="card" aria-label="人物カード"><option value="">人物カードを選ぶ（または右に名前）</option>${people.map(p=>`<option value="${p.id}" ${r.card===p.id?'selected':''}>${esc(p.title)||'無題'}</option>`).join('')}<option value="__new">＋右の名前で人物カードを作る</option></select>
    ${r.card&&card(r.card)?`<button class="btn sm" data-act="openCard" data-cid="${r.card}">開く</button>`:`<input type="text" id="rl-${c.id}-${k}-${i}-name" data-f="cdl" data-cid="${c.id}" data-k="${k}" data-i="${i}" data-p="name" data-live="1" value="${esc(r.name)}" placeholder="名前" aria-label="名前">`}
    <input type="text" id="rl-${c.id}-${k}-${i}-role" data-f="cdl" data-cid="${c.id}" data-k="${k}" data-i="${i}" data-p="role" data-live="1" value="${esc(r.role)}" placeholder="${ph}" aria-label="${l}の関係">
    <button class="ibtn" aria-label="削除" data-act="rmRel" data-cid="${c.id}" data-k="${k}" data-i="${i}">×</button></div>`).join('')}
-  <div><button class="btn sm" data-act="addRel" data-cid="${c.id}" data-k="${k}">＋${l}を追加</button></div>`;}).join('');
+  <div><button class="btn sm" data-act="addRel" data-cid="${c.id}" data-k="${k}">＋${l}を追加</button></div><details class="pf-help"><summary><span class="help-ico" aria-hidden="true">?</span>入力のしかた</summary><p>${HELP[k]}</p></details>`;}).join('');
  const orgs=S.cards.filter(x=>x.type==='org'),mine=c.orgs||[];
- const os=`<div class="pf-h">所属組織</div>
+ const os=`<div class="pf-h">所属組織</div>${mine.length?relHead('組織カード','組織名（カードがない組織）','役職'):''}
   ${mine.map((r,i)=>`<div class="rel-row">
    <select id="rl-${c.id}-orgs-${i}-card" data-f="cdl" data-nt="org" data-cid="${c.id}" data-k="orgs" data-i="${i}" data-p="card" aria-label="組織カード"><option value="">組織カードを選ぶ（または右に名前）</option>${orgs.map(p=>`<option value="${p.id}" ${r.card===p.id?'selected':''}>${esc(p.title)||'無題'}</option>`).join('')}<option value="__new">＋右の名前で組織カードを作る</option></select>
    ${r.card&&card(r.card)?`<button class="btn sm" data-act="openCard" data-cid="${r.card}">開く</button>`:`<input type="text" id="rl-${c.id}-orgs-${i}-name" data-f="cdl" data-cid="${c.id}" data-k="orgs" data-i="${i}" data-p="name" data-live="1" value="${esc(r.name)}" placeholder="組織名" aria-label="組織名">`}
    <input type="text" id="rl-${c.id}-orgs-${i}-role" data-f="cdl" data-cid="${c.id}" data-k="orgs" data-i="${i}" data-p="role" data-live="1" ${r.card&&card(r.card)&&(card(r.card).ranks||[]).length?`list="dl-rank-${r.card}"`:''} value="${esc(r.role)}" placeholder="役職（団長、新人など）" aria-label="役職">
    <button class="ibtn" aria-label="削除" data-act="rmRel" data-cid="${c.id}" data-k="orgs" data-i="${i}">×</button></div>`).join('')}
-  <div><button class="btn sm" data-act="addRel" data-cid="${c.id}" data-k="orgs">＋所属組織を追加</button></div>`;
+  <div><button class="btn sm" data-act="addRel" data-cid="${c.id}" data-k="orgs">＋所属組織を追加</button></div><details class="pf-help"><summary><span class="help-ico" aria-hidden="true">?</span>入力のしかた</summary><p>組織カードを左で選ぶと、つながり図の組織の枠と組織図に入ります。カードを作らない組織は中央に名前だけ書けます。役職は組織カードの「役職の順番」に登録しておくと候補に出て、組織図や並び順に使われます。</p></details>`;
  const dls=mine.filter(r=>r.card&&card(r.card)&&(card(r.card).ranks||[]).length).map(r=>`<datalist id="dl-rank-${r.card}">${card(r.card).ranks.map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist>`).join('');
  return `<div class="pfields">${pf}${rf}${os}${dls}</div>`;
 }
@@ -1475,8 +1511,35 @@ function familySvgPart(F,comp,ox,oy){
   lines+=`<path class="fl-other" d="M${x1} ${y1+16} Q ${(x1+x2)/2} ${my+30} ${x2} ${y2+16}"/>`;labels+=`<text class="fl-lab" x="${(x1+x2)/2}" y="${my+26}" text-anchor="middle">${esc(e.role||'親族')}</text>`;});
  const nodes=comp.map(id=>{const n=F.N.get(id),w=W(id),x=RX(id),y=RY(id);const c=n.card?card(id):null;
   const roles=F.edges.filter(e=>e.b===id&&!n.card).map(e=>e.role).filter(Boolean);
-  return `<g class="fn ${n.card?'t-person':'virt'}" ${n.card?`data-act="gotoCard" data-cid="${id}"`:''} transform="translate(${x},${y})"><title>${esc(n.label)}${n.card?'（押すとカードを開く）':'（カードなし）'}</title><rect x="${-w/2}" y="-16" width="${w}" height="32" rx="4"/>${n.card?`<rect class="s" x="${-w/2}" y="-16" width="5" height="32" rx="2"/>`:''}<text x="${n.card?3:0}" y="5" text-anchor="middle">${esc(n.label)}</text>${!n.card&&roles.length?`<text class="fl-role" y="30" text-anchor="middle">${esc(roles[0])}</text>`:''}</g>`;}).join('');
+  return `<g class="fn ${n.card?'t-person':'virt'} ${UI.famSel===id?'fsel':''}" data-act="famSel" data-id="${id}" transform="translate(${x},${y})"><title>${esc(n.label)}（押すと選んで家族を追加できます）</title><rect x="${-w/2}" y="-16" width="${w}" height="32" rx="4"/>${n.card?`<rect class="s" x="${-w/2}" y="-16" width="5" height="32" rx="2"/>`:''}<text x="${n.card?3:0}" y="5" text-anchor="middle">${esc(n.label)}</text>${!n.card&&roles.length?`<text class="fl-role" y="30" text-anchor="middle">${esc(roles[0])}</text>`:''}</g>`;}).join('');
  return {w:mxx-mnx,h:(Math.max(...gens)+1)*124+30,svg:lines+labels+nodes};
+}
+const FAM_REL=['父','母','兄','姉','弟','妹','夫','妻','息子','娘','祖父','祖母','孫','叔父','叔母','甥','姪','いとこ','その他'];
+function reverseRole(rel){if(/^(父|母)$/.test(rel))return '子';if(/^(息子|娘)$/.test(rel))return '親';if(/^(兄|姉|弟|妹)$/.test(rel))return 'きょうだい';if(/^(夫|妻)$/.test(rel))return '配偶者';if(/^(祖父|祖母)$/.test(rel))return '孫';if(rel==='孫')return '祖父母';if(/^(叔父|叔母)$/.test(rel))return '甥・姪';if(/^(甥|姪)$/.test(rel))return 'おじ・おば';if(rel==='いとこ')return 'いとこ';return '親族';}
+function famPanel(F){
+ const persons=S.cards.filter(c=>c.type==='person').sort((a,b)=>(a.title||'').localeCompare(b.title||'','ja'));
+ const sel=UI.famSel;
+ if(sel&&sel.startsWith('v:')){const [,pid,i]=sel.split(':');const p=card(pid);const r=p&&(p.family||[])[+i];if(!r){UI.famSel=null;return famPanel(F);}
+  return `<div class="fampanel"><h3>${esc(r.name)} <span class="muted" style="font-size:12px;font-weight:400">（カードのない人物 · ${esc(p.title)}の${esc(r.role||'家族')}）</span></h3>
+   <div class="tfbar"><button class="btn sm pri" data-act="famToCard" data-id="${sel}">この人の人物カードを作る</button><button class="btn sm" data-act="gotoCard" data-cid="${pid}">${esc(p.title)}のカードを開く</button><button class="btn sm danger ${UI.confirm==='famdel-'+sel?'armed':''}" data-act="famDel" data-id="${sel}">${UI.confirm==='famdel-'+sel?'もう一度押すと削除':'この家族を外す'}</button><button class="btn sm" data-act="famSel" data-id="">選択を解除</button></div>
+   <small class="muted">人物カードにすると、家系図では実線の枠になり、つながり図や組織図にも使えるようになります。</small></div>`;}
+ const base=sel&&card(sel);
+ if(!base)return `<div class="fampanel"><h3>家族を追加する</h3><p class="muted" style="margin:0;font-size:13px">家系図の人物を押すと、その人の家族をここから追加できます。新しく始めるときは、起点にする人物を選んでください。</p>
+  <div class="famform"><label class="fld2"><span>起点にする人物</span><select id="fam-start" data-act="famStart"><option value="">選んでください…</option>${persons.map(p=>`<option value="${p.id}">${esc(p.title)||'無題'}</option>`).join('')}</select></label>
+  <label class="fld2"><span>または新しい人物の名前</span><input type="text" id="fam-newbase" placeholder="例：仙道 千夏"></label><div><button class="btn sm" data-act="famNewBase">人物カードを作って始める</button></div></div></div>`;
+ const fam=(base.family||[]).map(r=>{const n=r.card&&card(r.card)?card(r.card).title:r.name;return n?`${esc(n)}（${esc(r.role||'家族')}）`:'';}).filter(Boolean);
+ return `<div class="fampanel"><h3>${esc(base.title)||'無題'} <span class="muted" style="font-size:12px;font-weight:400">の家族を追加</span></h3>
+  ${fam.length?`<div class="muted" style="font-size:12px">登録済み：${fam.join('、')}</div>`:''}
+  <div class="famform">
+   <label class="fld2"><span>続柄（${esc(base.title)}から見て）</span><select id="fam-rel">${FAM_REL.map(r=>`<option ${UI.famRel===r?'selected':''}>${r}</option>`).join('')}</select></label>
+   <label class="fld2"><span>補足（任意）</span><input type="text" id="fam-note" placeholder="例：行方不明、亡くなった"></label>
+   <div class="fld2"><span>追加する人</span><div class="radio-row"><label><input type="radio" name="fam-mode" id="fam-mode-new" value="new" ${UI.famMode!=='exist'?'checked':''} data-act="famMode"> 新しい人</label><label><input type="radio" name="fam-mode" id="fam-mode-exist" value="exist" ${UI.famMode==='exist'?'checked':''} data-act="famMode"> 既存の人物カード</label></div></div>
+   ${UI.famMode==='exist'?`<label class="fld2"><span>人物カード</span><select id="fam-target">${persons.filter(p=>p.id!==base.id).map(p=>`<option value="${p.id}">${esc(p.title)||'無題'}</option>`).join('')}</select></label>`
+    :`<label class="fld2"><span>名前</span><input type="text" id="fam-name" placeholder="例：仙道 灯也"></label><label class="pf-check" style="align-self:center"><input type="checkbox" id="fam-mk" checked> 人物カードも作る</label>`}
+   <label class="pf-check" style="align-self:center"><input type="checkbox" id="fam-recip" checked> 相手のカードにも続柄を書く</label>
+  </div>
+  <div class="tfbar"><button class="btn sm pri" data-act="famAdd" data-id="${base.id}">家系図に追加</button><button class="btn sm" data-act="gotoCard" data-cid="${base.id}">カードを開く</button><button class="btn sm" data-act="famSel" data-id="">選択を解除</button></div>
+  <small class="muted">「人物カードも作る」を外すと、名前だけの人物（点線の枠）として追加します。続柄の言葉で家系図の世代（上下）が決まります。</small></div>`;
 }
 function familyTab(){
  const F=buildFamily();
@@ -1486,11 +1549,12 @@ function familyTab(){
  let ox=30,parts=[],H=0;comps.forEach(c=>{const p=familySvgPart(F,c,ox,30);parts.push(p.svg);ox+=p.w+70;H=Math.max(H,p.h);});
  const bw=Math.max(640,ox-40),bh=Math.max(260,H+60);
  return `<div class="sec"><h2>家系図</h2>
- <p class="lead">人物カードの「家族」に登録した関係から自動で作ります。続柄（父・母・兄・妹・夫・妻・息子・娘・祖父・叔母など）から世代を判断して並べます。カードのない家族は点線の枠で表示されます。人物を押すとカードが開きます。</p>
+ <p class="lead">人物カードの「家族」に登録した関係から自動で作ります。続柄（父・母・兄・妹・夫・妻・息子・娘・祖父・叔母など）から世代を判断して並べます。カードのない家族は点線の枠で表示されます。人物を押すと、その人の家族をこの画面から追加できます。</p>
+ ${famPanel(F)}
  <div class="gtools"><label>表示する家族 <select id="fam-person" data-act="famPerson"><option value="">すべて</option>${people.sort((a,b)=>a.label.localeCompare(b.label,'ja')).map(n=>`<option value="${n.id}" ${UI.famPerson===n.id?'selected':''}>${esc(n.label)}の家族</option>`).join('')}</select></label></div>
  ${comps.length?`<div class="gwrap zwrap">${zBar('family',bw,bh)}${zOpen('family',bw,bh,'fsvg','家系図')}${parts.join('')}</svg></div>
  <div class="legend"><span><i class="ln" style="border-top:3px double var(--ink)"></i>夫婦</span><span><i class="ln"></i>親子</span><span><i class="ln d"></i>そのほかの親族</span><span><i style="background:transparent;border:1.5px dashed var(--muted)"></i>カードのない人物</span></div>`
- :'<div class="empty-note">まだ家族の関係がありません。人物カードを開き、「家族」に人物カードか名前と続柄を登録すると、ここに家系図が出ます。</div>'}
+ :'<div class="empty-note">まだ家族の関係がありません。上の欄で起点にする人物を選んで家族を追加するか、人物カードの「家族」欄に登録すると、ここに家系図が出ます。</div>'}
  </div>`;
 }
 
@@ -1638,22 +1702,39 @@ function tileSvg(t,r,x,y,s){
 function cellsSvg(m){const s=m.cs||32;return Object.entries(m.cells||{}).map(([k,v])=>{const [cx,cy]=k.split(',').map(Number);if(cx<0||cy<0||cx>=m.cols||cy>=m.rows)return '';return tileSvg(v.t,v.r,cx*s,cy*s,s);}).join('');}
 function wallsSvg(m){const s=m.cs||32;return (m.walls||[]).map((w,i)=>`<line class="m-wall" data-wi="${i}" x1="${w[0]*s}" y1="${w[1]*s}" x2="${w[2]*s}" y2="${w[3]*s}" stroke-width="${Math.max(4,s*0.2)}"/>`).join('');}
 function polyPts(it){if(it.shape==='poly')return it.pts||[];return null;}
+const MFONTS={
+ default:{n:'標準（ツールの文字）',css:'',g:''},
+ gothic:{n:'ゴシック',css:"'Zen Kaku Gothic New',sans-serif",g:''},
+ mincho:{n:'明朝（しっぽり明朝）',css:"'Shippori Mincho',serif",g:'Shippori+Mincho:wght@500;700'},
+ oldmincho:{n:'古風な明朝（Zen Old Mincho）',css:"'Zen Old Mincho',serif",g:'Zen+Old+Mincho:wght@500;700'},
+ maru:{n:'丸ゴシック（Zen Maru Gothic）',css:"'Zen Maru Gothic',sans-serif",g:'Zen+Maru+Gothic:wght@500;700'},
+ hand:{n:'手書き風（Klee One）',css:"'Klee One',cursive",g:'Klee+One:wght@400;600'},
+ pen:{n:'ペン書き（Yomogi）',css:"'Yomogi',cursive",g:'Yomogi'},
+ brush:{n:'筆文字（Yuji Syuku）',css:"'Yuji Syuku',serif",g:'Yuji+Syuku'},
+ heavy:{n:'極太ゴシック（Dela Gothic One）',css:"'Dela Gothic One',sans-serif",g:''},
+ pop:{n:'ポップ（RocknRoll One）',css:"'RocknRoll One',sans-serif",g:'RocknRoll+One'},
+ pixel:{n:'ドット文字（DotGothic16）',css:"'DotGothic16',sans-serif",g:'DotGothic16'},
+ antique:{n:'アンティーク（Zen Antique）',css:"'Zen Antique',serif",g:'Zen+Antique'}};
+function ensureFont(k){const f=MFONTS[k];if(!f||!f.g)return;const id='gf-'+k;if(document.getElementById(id))return;const l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family='+f.g+'&display=swap';document.head.appendChild(l);}
+function itemFontStyle(it,m){const k=(it&&it.font)||(m&&m.font)||'default';const f=MFONTS[k];return f&&f.css?`font-family:${f.css};`:'';}
+function fontSelect(id,val,dataAttrs,inherit){return `<select id="${id}" ${dataAttrs}>${inherit?`<option value="" ${!val?'selected':''}>地図の設定と同じ</option>`:''}${Object.entries(MFONTS).map(([k,f])=>`<option value="${k}" ${val===k?'selected':''}>${f.n}</option>`).join('')}</select>`;}
+function fontPreview(k,text){const f=MFONTS[k||'default'];ensureFont(k);return `<div class="fprev" style="${f&&f.css?`font-family:${f.css}`:''}">${esc(text||'灯島 港町 Abc 123')}</div>`;}
 function mapItemSvg(it){
- const sel=UI.msel===it.id,pl=it.place&&card(it.place),label=esc(it.label||(pl?pl.title:''));
+ const sel=UI.msel===it.id,pl=it.place&&card(it.place),label=esc(it.label||(pl?pl.title:''));const FS=itemFontStyle(it,curMap());
  const rotH=x=>{if(!sel)return '';const b=x.pts?bboxOf(x.pts):{x:x.x,y:x.y,w:x.w,h:x.h};const cx=b.x+b.w/2,ty=b.y-30;return `<line class="m-rotline" x1="${cx}" y1="${b.y}" x2="${cx}" y2="${ty+7}"/><circle class="m-roth" data-mrot="1" cx="${cx}" cy="${ty}" r="7"><title>ドラッグで回転（Shiftで15°ずつ）</title></circle>`;};
  const vtx=pts=>sel?pts.map((p,i)=>{const n=pts[(i+1)%pts.length];const mid=it.kind==='line'&&i===pts.length-1?'':`<circle class="m-mid" data-mm="${i}" cx="${(p[0]+n[0])/2}" cy="${(p[1]+n[1])/2}" r="5"/>`;return `<circle class="m-vh" data-mv="${i}" cx="${p[0]}" cy="${p[1]}" r="6"/>`+mid;}).join(''):'';
  if(it.kind==='area'){
   if(it.shape==='poly'){const pts=it.pts||[];const cx=pts.reduce((t,p)=>t+p[0],0)/(pts.length||1),cy=pts.reduce((t,p)=>t+p[1],0)/(pts.length||1);
-   return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}"><polygon points="${pts.map(p=>p.join(',')).join(' ')}" class="m-area ter-${it.terrain||'land'}"/>${label?`<text class="m-alabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle">${label}</text>`:''}${vtx(pts)}${rotH(it)}</g>`;}
+   return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}"><polygon points="${pts.map(p=>p.join(',')).join(' ')}" class="m-area ter-${it.terrain||'land'}"/>${label?`<text class="m-alabel" style="${FS}" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle">${label}</text>`:''}${vtx(pts)}${rotH(it)}</g>`;}
   const sh=it.shape==='rect'?`<rect x="${it.x}" y="${it.y}" width="${it.w}" height="${it.h}" rx="${it.terrain==='floor'?2:14}" class="m-area ter-${it.terrain||'land'}"/>`:`<ellipse cx="${it.x+it.w/2}" cy="${it.y+it.h/2}" rx="${it.w/2}" ry="${it.h/2}" class="m-area ter-${it.terrain||'land'}"/>`;
-  return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}">${sh}${label?`<text class="m-alabel" x="${it.x+it.w/2}" y="${it.y+18}" text-anchor="middle">${label}</text>`:''}${sel?`<rect class="m-handle" data-mh="${it.id}" x="${it.x+it.w-8}" y="${it.y+it.h-8}" width="16" height="16" rx="3"/>`:''}${rotH(it)}</g>`;}
+  return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}">${sh}${label?`<text class="m-alabel" style="${FS}" x="${it.x+it.w/2}" y="${it.y+18}" text-anchor="middle">${label}</text>`:''}${sel?`<rect class="m-handle" data-mh="${it.id}" x="${it.x+it.w-8}" y="${it.y+it.h-8}" width="16" height="16" rx="3"/>`:''}${rotH(it)}</g>`;}
  if(it.kind==='line'){const w=it.width||LW0[it.style||'road'];const vis=offsetPts(it.pts,lineOffset(it));const d=pathD(vis);const mid=vis[Math.floor(vis.length/2)]||[0,0];
-  return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}"><path d="${d}" class="m-hit" stroke-width="${Math.max(16,w+10)}"/>${(it.style||'road')==='road'?'':it.style==='bridge'?bridgeDraw(vis,w):lineDraw(d,it.style||'road',w)}${it.style==='rail'&&it.bridges!==false?(()=>{const mm=curMap();return mm?bridgeSpans(mm,vis).map(sp=>`<path class="m-bridge-shadow" d="M${sp.a[0]} ${sp.a[1]} L${sp.b[0]} ${sp.b[1]}" stroke-width="${w+8}"/>`+railSvg(sp.a,sp.b,sp.u,w)).join(''):'';})():''}${sel&&lineOffset(it)?`<path d="${pathD(it.pts)}" class="m-guide"/>`:''}${label?`<text class="m-llabel" x="${mid[0]}" y="${mid[1]-w/2-6}" text-anchor="middle">${label}</text>`:''}${vtx(it.pts)}${rotH(it)}</g>`;}
- if(it.kind==='label')return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}" transform="translate(${it.x},${it.y})${it.rot?` rotate(${it.rot})`:''}"><text class="m-tlabel" text-anchor="middle" dominant-baseline="middle" style="font-size:${it.size||16}px">${label||'（文字）'}</text>${sel?`<rect class="m-tsel" x="-40" y="-14" width="80" height="28" rx="4"/>`:''}</g>`;
+  return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}"><path d="${d}" class="m-hit" stroke-width="${Math.max(16,w+10)}"/>${(it.style||'road')==='road'?'':it.style==='bridge'?bridgeDraw(vis,w):lineDraw(d,it.style||'road',w)}${it.style==='rail'&&it.bridges!==false?(()=>{const mm=curMap();return mm?bridgeSpans(mm,vis).map(sp=>`<path class="m-bridge-shadow" d="M${sp.a[0]} ${sp.a[1]} L${sp.b[0]} ${sp.b[1]}" stroke-width="${w+8}"/>`+railSvg(sp.a,sp.b,sp.u,w)).join(''):'';})():''}${sel&&lineOffset(it)?`<path d="${pathD(it.pts)}" class="m-guide"/>`:''}${label?`<text class="m-llabel" style="${FS}" x="${mid[0]}" y="${mid[1]-w/2-6}" text-anchor="middle">${label}</text>`:''}${vtx(it.pts)}${rotH(it)}</g>`;}
+ if(it.kind==='label')return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}" transform="translate(${it.x},${it.y})${it.rot?` rotate(${it.rot})`:''}"><text class="m-tlabel" text-anchor="middle" dominant-baseline="middle" style="${FS}font-size:${it.size||16}px">${label||'（文字）'}</text>${sel?`<rect class="m-tsel" x="-40" y="-14" width="80" height="28" rx="4"/>`:''}</g>`;
  if(it.kind==='station'){const a=(it.angle||0)*Math.PI/180,L=it.size||28;let nx=-Math.sin(a),ny=Math.cos(a);if(ny>0||(Math.abs(ny)<0.2&&nx<0)){nx=-nx;ny=-ny;}const lx=nx*(L*0.35+14),ly=ny*(L*0.35+14);const anc=Math.abs(nx)<0.35?'middle':nx>0?'start':'end';
-  return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}" transform="translate(${it.x},${it.y})"><g transform="rotate(${it.angle||0})"><rect class="m-station" x="${-L/2}" y="${-L*0.22}" width="${L}" height="${L*0.44}" rx="${L*0.12}"/></g>${label?`<text class="m-slabel" x="${lx}" y="${ly+4}" text-anchor="${anc}">${label}</text>`:''}</g>`;}
+  return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}" transform="translate(${it.x},${it.y})"><g transform="rotate(${it.angle||0})"><rect class="m-station" x="${-L/2}" y="${-L*0.22}" width="${L}" height="${L*0.44}" rx="${L*0.12}"/></g>${label?`<text class="m-slabel" style="${FS}" x="${lx}" y="${ly+4}" text-anchor="${anc}">${label}</text>`:''}</g>`;}
  const fac=pl&&pl.facility;
- return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}" transform="translate(${it.x},${it.y})"><circle r="${fac?7:10}" class="m-pin ${fac?'fac':''}"/><circle r="${fac?2.5:3.5}" class="m-pin-dot"/>${label?`<text class="m-plabel" x="${fac?12:15}" y="5">${label}</text>`:''}</g>`;
+ return `<g data-mi="${it.id}" class="mi ${sel?'msel':''}" transform="translate(${it.x},${it.y})"><circle r="${fac?7:10}" class="m-pin ${fac?'fac':''}"/><circle r="${fac?2.5:3.5}" class="m-pin-dot"/>${label?`<text class="m-plabel" style="${FS}" x="${fac?12:15}" y="5">${label}</text>`:''}</g>`;
 }
 const isRoad=it=>it.kind==='line'&&(it.style||'road')==='road';
 function roadLayers(m){const rs=m.items.filter(isRoad).map(it=>{const w=it.width||LW0.road;const vis=offsetPts(it.pts,lineOffset(it,m));return {it,w,vis,d:pathD(vis)};});if(!rs.length)return '';
@@ -1675,6 +1756,7 @@ const ICO={
 function tilePreview(t,r){return `<svg viewBox="0 0 28 28" width="28" height="28" aria-hidden="true">${tileSvg(t,r,0,0,28)}</svg>`;}
 function mapTab(){
  S.maps=S.maps||[];const m=curMap();
+ if(m){ensureFont(m.font);(m.items||[]).forEach(it=>ensureFont(it.font));}
  const mapsBar=`<div class="maptabs">${S.maps.map(x=>`<button class="tagchip ${m&&x.id===m.id?'on':''}" data-act="mapSel" data-id="${x.id}">${esc(x.name)||'無題の地図'}${x.kind==='indoor'?'（建物）':''}</button>`).join('')}<button class="btn sm" data-act="mapNew" data-k="world">＋世界の地図</button><button class="btn sm" data-act="mapNew" data-k="indoor">＋建物の中の地図</button></div>`;
  if(!m)return `<div class="sec"><h2>架空の地図</h2><p class="lead">物語の世界の地図や、建物の中の間取りを作り、場所カードを置いていきます。</p>${mapsBar}<div class="empty-note">まだ地図がありません。「＋世界の地図」か「＋建物の中の地図」から作ってください。</div></div>`;
  const indoor=m.kind==='indoor',vk='map:'+m.id,tool=UI.mtool,s=m.cs||32;
@@ -1696,6 +1778,7 @@ function mapTab(){
  const kindName=it=>it.kind==='station'?'駅':it.kind==='pin'?'ピン':it.kind==='label'?'文字':it.kind==='area'?(it.shape==='poly'?'多角形の範囲':'範囲'):LSTY[it.style||'road'];
  const selPanel=sel?`<div class="mpanel"><h4>選択中：${kindName(sel)}</h4>
    ${sel.kind!=='line'&&sel.kind!=='label'?`<label class="fld2"><span>場所カード</span><select id="mi-place-${sel.id}" data-f="mi" data-k="place">${placeOpts(sel.place)}</select></label>`:''}
+   <label class="fld2"><span>フォント</span>${fontSelect('mi-font-'+sel.id,sel.font||'','data-f="mi" data-k="font"',true)}</label>${fontPreview(sel.font||m.font,sel.label||(sel.place&&card(sel.place)?card(sel.place).title:''))}
    <label class="fld2"><span>${sel.kind==='label'?'文字':'表示名'}${sel.place?'（空欄なら場所カードの名前）':''}</span><input type="text" id="mi-label-${sel.id}" data-f="mi" data-k="label" data-live="1" value="${esc(sel.label)}"></label>
    ${sel.kind==='station'?`<label class="fld2"><span>駅の大きさ：${sel.size||28}</span><input type="range" id="mi-size-${sel.id}" min="14" max="80" data-f="mi" data-k="size" data-live="1" value="${sel.size||28}"></label><button class="btn sm" data-act="miSnapRail">近くの鉄道に合わせる</button>`:''}
    ${sel.kind==='label'?`<label class="fld2"><span>文字の大きさ：${sel.size||16}</span><input type="range" id="mi-size-${sel.id}" min="10" max="48" data-f="mi" data-k="size" data-live="1" value="${sel.size||16}"></label>`:''}
@@ -1728,6 +1811,7 @@ function mapTab(){
     <button class="btn sm ${UI.confirm==='clr-'+m.id?'danger armed':''}" data-act="mapClear">${UI.confirm==='clr-'+m.id?'もう一度押すとマスと壁をすべて消す':'マスと壁をすべて消す'}</button>`
    :`<div class="row2b"><label class="fld2"><span>大きさ</span><select id="map-size-${m.id}" data-f="map" data-k="size">${Object.entries(MSIZE).map(([k,l])=>`<option value="${k}" ${k===m.w+'x'+m.h?'selected':''}>${l}</option>`).join('')}${MSIZE[m.w+'x'+m.h]?'':`<option selected>${m.w}×${m.h}</option>`}</select></label>
     <label class="fld2"><span>背景</span><select id="map-bg-${m.id}" data-f="map" data-k="bg">${Object.entries(MBG).map(([k,l])=>`<option value="${k}" ${m.bg===k?'selected':''}>${l}</option>`).join('')}</select></label></div>`}
+   <label class="fld2"><span>地図の文字のフォント（すべての文字の標準）</span>${fontSelect('map-font-'+m.id,m.font||'default','data-f="map" data-k="font"',false)}</label>${fontPreview(m.font,m.name)}
    <label class="fld2"><span>建物・部屋と敷地の隙間（新しく置くときの初期値）</span><input type="number" id="map-setback-${m.id}" min="0" max="300" data-f="map" data-k="setback" value="${m.setback||0}" style="max-width:100px"></label>
    <label class="pf-check"><input type="checkbox" id="map-grid-${m.id}" data-f="map" data-k="grid" ${m.grid!==false?'checked':''}> 方眼を表示</label>
    <label class="fld2"><span>下絵の画像（手描きの地図や間取り図をなぞるとき）</span><input type="file" id="map-img" accept="image/*"></label>
@@ -1881,24 +1965,42 @@ function checkTab(iss){
  </tbody></table></div></div>`;
 }
 
+const IN_ARTIFACT=!!(window.claude&&window.claude.use);
+let DL=null,DLready=false;
+try{const u=window.claude&&window.claude.use;if(u)window.claude.use('downloads').then(n=>{DL=n;DLready=true;if(UI.dataOpen)render();}).catch(()=>{DLready=true;});else DLready=true;}catch(e){DLready=true;}
+function saveFileName(){const t=(S.story.title||'').trim()||'ストーリーカード';const d=new Date(),z=n=>String(n).padStart(2,'0');return `${t.replace(/[\\/:*?"<>|]/g,'_')}_${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}.json`;}
 function dataDialog(){
  if(!UI.dataOpen)return '';
  return `<div class="overlay" data-act="closeData"><div class="dialog" role="dialog" aria-modal="true" aria-label="保存と読み込み">
   <h3>保存・読み込み</h3>
-  <p class="lead">作業内容はこのブラウザに自動保存されます。別の端末へ移したりバックアップしたりするときは、下のテキストをコピーして保管し、読み込むときは貼り付けて「読み込む」を押してください。</p>
-  <textarea id="data-text" spellcheck="false">${esc(JSON.stringify(S))}</textarea>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-   <button class="btn pri" data-act="copyData">コピー</button>
-   <button class="btn" data-act="loadData">貼り付けた内容を読み込む</button>
+  <p class="lead">作業内容はこのブラウザに自動で保存されています。バックアップや別の端末への移動には、ファイルに保存してください。</p>
+  <div class="filebox">
+   <div class="filecol"><b>ファイルに保存</b><small class="muted">作品全体を1つのファイル（.json、中身はテキスト）にして保存します。</small>
+    ${DL||!IN_ARTIFACT?`<button class="btn pri" data-act="saveFile">ファイルに保存</button>`:`<small class="muted" style="color:var(--warn)">${DLready?'この画面ではファイル保存が使えません。下の「テキストで保存」を使ってください。':'準備中…'}</small>`}</div>
+   <div class="filecol"><b>ファイルを開く</b><small class="muted">保存したファイルを選ぶと、その内容に切り替わります（「元に戻す」で戻せます）。</small>
+    <label class="btn filebtn">ファイルを選ぶ<input type="file" id="open-file" accept=".json,.txt,application/json,text/plain"></label></div>
+  </div>
+  <details class="pf-help" style="margin-top:12px"><summary><span class="help-ico" aria-hidden="true">?</span>テキストで保存・読み込み</summary>
+   <p>ファイルが使えないときは、下のテキストをコピーしてメモ帳などに保管し、読み込むときは貼り付けて「貼り付けた内容を読み込む」を押してください。</p>
+   <textarea id="data-text" spellcheck="false">${esc(JSON.stringify(S))}</textarea>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" data-act="copyData">コピー</button><button class="btn" data-act="loadData">貼り付けた内容を読み込む</button></div>
+  </details>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
    <button class="btn ${UI.confirm==='reset'?'danger armed':''}" data-act="resetSample">${UI.confirm==='reset'?'もう一度押すと今の内容をサンプルに置き換え':'サンプルを読み込む'}</button>
    <button class="btn" data-act="closeData" style="margin-left:auto">閉じる</button>
   </div></div></div>`;
 }
+function applyLoaded(txt){let d2;try{d2=JSON.parse(txt);}catch(e){return 'ファイルの中身を読み取れませんでした。このツールで保存したファイルを選んでください';}
+ if(!d2||!Array.isArray(d2.scenes)||!d2.story||!Array.isArray(d2.templates))return 'このツールのファイルではないようです';
+ S=migrate(d2);cleanLabels();resetUI();UI.dataOpen=false;save();snapshotNow();render();return '';}
 
 /* ---------- main render ---------- */
 let pending=false;
 function schedule(){if(pending)return;pending=true;setTimeout(()=>{pending=false;render();},0);}
 const TABS_OK=['cards','graph','family','orgchart','map','reverse','check'];
+function setHeadH(){const h=document.getElementById('stickyhead');let v=0;if(h){const st=getComputedStyle(h).position==='sticky';v=st?h.offsetHeight:((document.querySelector('.tabs')||{}).offsetHeight||0);h.classList.toggle('stuck',st&&window.scrollY>4);}document.documentElement.style.setProperty('--headh',v+'px');}
+window.addEventListener('resize',()=>setHeadH());
+window.addEventListener('scroll',()=>{const h=document.getElementById('stickyhead');if(h)h.classList.toggle('stuck',window.scrollY>4&&getComputedStyle(h).position==='sticky');},{passive:true});
 function render(){
  if(!TABS_OK.includes(UI.tab))UI.tab='cards';
  const app=document.getElementById('app');
@@ -1907,9 +2009,10 @@ function render(){
  const iss=checks();
  let main='';
  if(UI.tab==='reverse')main=reverseTab();else if(UI.tab==='cards')main=cardsTab();else if(UI.tab==='graph')main=graphTab();else if(UI.tab==='family')main=familyTab();else if(UI.tab==='orgchart')main=orgChartTab();else if(UI.tab==='map')main=mapTab();else if(UI.tab==='structure')main=structureTab();else if(UI.tab==='panels')main=panelsTab();else if(UI.tab==='templates')main=templatesTab();else main=checkTab(iss);
- app.innerHTML=header(iss)+tabs(iss)+(['graph','family','orgchart','map'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
+ app.innerHTML=`<div class="stickyhead" id="stickyhead">${header(iss)}${tabs(iss)}</div>`+(['graph','family','orgchart','map'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
  app.querySelectorAll('[data-keep]').forEach(el=>{if(keep[el.dataset.keep])el.scrollTop=keep[el.dataset.keep];});
  if(UI.tab==='graph'&&UI.edEdge)placeEdPop();
+ setHeadH();
  if(aid){const el=document.getElementById(aid);if(el){el.focus({preventScroll:true});try{if(selS!=null&&el.setSelectionRange)el.setSelectionRange(selS,selE);}catch(e){}}}
 }
 
@@ -1979,6 +2082,19 @@ function act(a,d,el){
   case 'cgroup':UI.cgroup=el.value;break;
   case 'zz':{const svg=zFind(d.vk);if(!svg)return;const bw=+svg.dataset.bw,bh=+svg.dataset.bh;if(d.v==='fit'){zSet(svg,{x:0,y:0,w:bw,h:bh});delete UI.views[d.vk];return;}const v=zView(d.vk,bw,bh);zZoom(svg,d.v==='in'?0.8:1.25,v.x+v.w/2,v.y+v.h/2);return;}
   case 'famPerson':UI.famPerson=el.value;delete UI.views.family;break;
+  case 'famSel':UI.famSel=d.id||null;break;
+  case 'famStart':if(el.value)UI.famSel=el.value;break;
+  case 'famMode':UI.famMode=el.value;UI.famRel=(document.getElementById('fam-rel')||{}).value||UI.famRel;break;
+  case 'famNewBase':{const v=(document.getElementById('fam-newbase')||{}).value||'';if(!v.trim()){toast('名前を入力してください');break;}const p={id:uid(),type:'person',title:v.trim(),body:'',tags:''};S.cards.push(p);UI.famSel=p.id;toast(`人物カード「${p.title}」を作りました。続けて家族を追加できます`);break;}
+  case 'famAdd':{const base=card(d.id);if(!base)break;const g=id=>document.getElementById(id);const rel=g('fam-rel').value,note=(g('fam-note').value||'').trim();UI.famRel=rel;
+   const role=rel==='その他'?(note||'親族'):rel+(note?`（${note}）`:'');const recip=g('fam-recip')&&g('fam-recip').checked;let target=null,entry;
+   if(UI.famMode==='exist'){const tid=g('fam-target')&&g('fam-target').value;target=card(tid);if(!target){toast('人物カードを選んでください');break;}entry={card:target.id,name:'',role};}
+   else{const name=(g('fam-name').value||'').trim();if(!name){toast('名前を入力してください');break;}if(g('fam-mk').checked){target={id:uid(),type:'person',title:name,body:'',tags:''};S.cards.push(target);entry={card:target.id,name:'',role};}else entry={card:'',name,role};}
+   base.family=base.family||[];if(entry.card&&base.family.some(r=>r.card===entry.card)){toast('その人はすでに家族に登録されています');break;}base.family.push(entry);
+   if(recip&&target){target.family=target.family||[];if(!target.family.some(r=>r.card===base.id))target.family.push({card:base.id,name:'',role:reverseRole(rel)});}
+   toast(`${base.title}の${role}として「${target?target.title:entry.name}」を追加しました`);break;}
+  case 'famToCard':{const [,pid,i]=d.id.split(':');const p=card(pid);const r=p&&(p.family||[])[+i];if(!r)break;const c={id:uid(),type:'person',title:r.name||'新しい人物',body:'',tags:''};S.cards.push(c);r.card=c.id;r.name='';UI.famSel=c.id;toast(`人物カード「${c.title}」を作りました`);break;}
+  case 'famDel':{if(prevConfirm!=='famdel-'+d.id){UI.confirm='famdel-'+d.id;break;}const [,pid,i]=d.id.split(':');const p=card(pid);if(p&&p.family)p.family.splice(+i,1);UI.famSel=null;break;}
   case 'mapSel':UI.mapId=d.id;UI.msel=null;UI.mdraw=null;break;
   case 'mapNew':newMap(d.k);UI.mset=true;break;
   case 'mtile':UI.mtile=d.v;break;
@@ -2056,10 +2172,11 @@ function act(a,d,el){
   case 'filter':UI.filter=d.v;break;
   case 'data':UI.dataOpen=true;break;
   case 'closeData':UI.dataOpen=false;break;
+  case 'saveFile':{UI.confirm=prevConfirm;const name=saveFileName();if(!DL){if(IN_ARTIFACT){toast('この画面ではファイル保存が使えません');return;}try{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);toast(`「${name}」を保存しました（ダウンロードフォルダを確認してください）`);}catch(e){toast('ファイルに保存できませんでした');}return;}DL.save({filename:name,data:JSON.stringify(S,null,1)}).then(r=>{toast(r&&r.status==='delivered'?'ファイルを渡しました':'ファイルに保存しました');}).catch(err=>{const c=err&&err.code;if(c==='declined')return;toast(c==='rate_limited'?'保存の確認がすでに開いています。少し待ってからもう一度押してください':'ファイルに保存できませんでした。テキストで保存を使ってください');});return;}
   case 'copyData':{const ta=document.getElementById('data-text');const txt=ta.value;UI.confirm=prevConfirm;
    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast('コピーしました'),()=>{ta.select();toast('テキストを選択しました。手動でコピーしてください');});}else{ta.select();toast('テキストを選択しました。手動でコピーしてください');}
    return;}
-  case 'loadData':{const ta=document.getElementById('data-text');try{const d2=JSON.parse(ta.value);if(!d2||!Array.isArray(d2.scenes)||!d2.story||!Array.isArray(d2.templates))throw 0;S=migrate(d2);cleanLabels();UI.sel=(S.scenes[0]||{}).id;UI.tplSel=S.story.templateId;UI.dataOpen=false;toast('読み込みました');}catch(e){toast('読み込めませんでした。コピーしたテキスト全体を貼り付けてください');UI.dataOpen=true;}break;}
+  case 'loadData':{const ta=document.getElementById('data-text');try{const d2=JSON.parse(ta.value);if(!d2||!Array.isArray(d2.scenes)||!d2.story||!Array.isArray(d2.templates))throw 0;S=migrate(d2);cleanLabels();resetUI();UI.sel=(S.scenes[0]||{}).id;UI.tplSel=S.story.templateId;UI.dataOpen=false;toast('読み込みました');}catch(e){toast('読み込めませんでした。コピーしたテキスト全体を貼り付けてください');UI.dataOpen=true;}break;}
   case 'resetSample':if(prevConfirm!=='reset'){UI.confirm='reset';break;}S=migrate(sample());resetUI();UI.sel=S.scenes[S.scenes.length-1].id;toast('サンプルを読み込みました（元に戻すで戻せます）');break;
   case 'wipe':if(prevConfirm!=='wipe'){UI.confirm='wipe';break;}S=blankData();resetUI();toast('初期化しました（元に戻すで戻せます）');break;
  }
@@ -2230,6 +2347,7 @@ document.addEventListener('dblclick',e=>{const svg=e.target.closest&&e.target.cl
  if(UI.mtool==='line'||UI.mtool==='poly'){e.preventDefault();finishLine();return;}
  const vh=e.target.closest('[data-mv]'),g=e.target.closest('[data-mi]');const m=curMap();const it=m&&g&&m.items.find(x=>x.id===g.dataset.mi);
  if(vh&&it&&it.pts){const min=it.kind==='line'?2:3;if(it.pts.length>min){it.pts.splice(+vh.dataset.mv,1);save();snapshotNow();render();}else toast(`これ以上は角を減らせません（${min}点以上必要です）`);}});
+document.addEventListener('change',e=>{if(e.target.id!=='open-file')return;const f=e.target.files&&e.target.files[0];if(!f)return;const fr=new FileReader();fr.onload=()=>{const err=applyLoaded(String(fr.result||''));toast(err||`「${f.name}」を開きました（元に戻すで戻せます）`);render();};fr.onerror=()=>toast('ファイルを読み込めませんでした');fr.readAsText(f);});
 document.addEventListener('change',e=>{if(e.target.id!=='map-img')return;const f=e.target.files&&e.target.files[0];const m=curMap();if(!f||!m)return;toast('画像を読み込んでいます…');
  downscaleImage(f,url=>{if(!url){toast('画像を読み込めませんでした。別の画像を試してください');return;}m.img=url;save();snapshotNow();render();toast('下絵を読み込みました');});});
 document.addEventListener('keydown',e=>{
@@ -2247,4 +2365,5 @@ render();
 })();
 </script>
 
-</body></html>
+</body>
+</html>
