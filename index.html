@@ -170,6 +170,27 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .m-roth{fill:var(--sheet);stroke:var(--blue);stroke-width:2;cursor:grab}
 .m-rotline{stroke:var(--blue);stroke-width:1.2;stroke-dasharray:3 3;pointer-events:none}
 .tfbar{display:flex;flex-wrap:wrap;gap:4px}
+.cimg{margin:2px -12px 2px;aspect-ratio:4/3;max-width:calc(100% + 24px);overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper)}
+.cimg img{width:100%;height:100%;object-fit:cover;display:block}
+.card.hasimg{padding-top:8px}
+.imgfield{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.imgfield img{width:200px;max-width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line);border-radius:4px}
+.imgph{width:200px;max-width:100%;aspect-ratio:4/3;border:1px dashed var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+.stbadge{display:inline-block;font-size:10px;font-weight:700;padding:0 6px;border-radius:99px;margin-left:6px;color:var(--sheet);vertical-align:1px}
+.stbadge.st-dead{background:var(--ink)}.stbadge.st-down{background:var(--warn)}.stbadge.st-gone{background:var(--muted)}
+.stx.st-dead{color:var(--ink)}.stx.st-down{color:var(--warn)}.stx.st-gone{color:var(--muted)}
+.card.st-dead,.card.st-gone{filter:grayscale(.85);opacity:.78}
+.card.st-dead h3{text-decoration:line-through;text-decoration-thickness:1px}
+.card.st-down{box-shadow:inset 0 0 0 2px var(--warn)}
+.gn.st-dead,.gn.st-gone{opacity:.55}.gn.st-dead rect.b{stroke-dasharray:3 2}
+.gn.st-down rect.b{stroke:var(--warn);stroke-width:2.4}
+.gst rect{fill:var(--muted)}.gst.st-dead rect{fill:var(--ink)}.gst.st-down rect{fill:var(--warn)}
+.gn .gst text{fill:var(--sheet);font-size:10px;font-weight:700}
+.ge.past{stroke-dasharray:2 4!important;opacity:.4}
+.fn.st-dead rect:first-of-type,.fn.st-gone rect:first-of-type{stroke-dasharray:3 2;fill:var(--paper)}
+.fn.st-dead text,.fn.st-gone text{fill:var(--muted)}
+.fn.st-down rect:first-of-type{stroke:var(--warn);stroke-width:2.4}
+.oc-p.st-dead,.oc-p.st-gone{opacity:.5}.oc-p.st-down rect:first-of-type{stroke:var(--warn);stroke-width:2.4}
 .mi.locked{pointer-events:none}
 .lockopt{display:inline-flex;gap:4px;align-items:center;font-size:12px;border:1px solid var(--line);border-radius:6px;padding:2px 4px 2px 8px;background:var(--sheet)}
 .lockopt.on{border-color:var(--warn);background:var(--warn-wash)}
@@ -884,7 +905,11 @@ function fitCanvas(){const b=canvasBase();let mx=0,my=0;Object.values(S.gpos||{}
 const curView=()=>UI.gview||{x:0,y:0,w:GW,h:GH};
 function setView(svg,v){UI.gview=v;if(svg)svg.setAttribute('viewBox',`${v.x} ${v.y} ${v.w} ${v.h}`);const z=document.getElementById('zoom-pct');if(z)z.textContent=Math.round(GW/v.w*100)+'%';if(UI.edEdge)placeEdPop();}
 function zoomAt(svg,f,cx,cy){const v=curView();const nw=Math.max(GW*0.15,Math.min(GW*2.5,v.w*f));const k=nw/v.w;const nh=nw*GH/GW;setView(svg,{x:cx-(cx-v.x)*k,y:cy-(cy-v.y)*(nh/v.h),w:nw,h:nh});}
-function nodeW(c){const t=(c.title||'無題');return Math.max(56,Math.min(170,[...t].slice(0,11).length*13+26));}
+const STATUS={'':'生存',down:'行動不能',dead:'死亡',gone:'退場'};
+const STSHORT={down:'行動不能',dead:'故',gone:'退場'};
+const isOut=c=>!!(c&&c.type==='person'&&(c.status==='dead'||c.status==='gone'));
+function nodeW(c){const t=(c.title||'無題');return Math.max(56,Math.min(170,[...t].slice(0,11).length*13+26))+(c.img&&UI.gimg!==false?24:0);}
+function downscaleCard(file,cb){const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const W=320,H=240,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');const r=Math.max(W/img.width,H/img.height),w=img.width*r,h=img.height*r;g.fillStyle='#fff';g.fillRect(0,0,W,H);g.drawImage(img,(W-w)/2,(H-h)/2,w,h);let u;try{u=cv.toDataURL('image/jpeg',0.8);}catch(e){u=null;}cb(u);};img.onerror=()=>cb(null);img.src=fr.result;};fr.onerror=()=>cb(null);fr.readAsDataURL(file);}
 function forceLayout(movable){
  const ids=S.cards.map(c=>c.id),TM=termMap(),P=S.gpos;if(!ids.length)return;
  const edges=[];for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){const n=sharedT(TM,ids[i],ids[j]).length;if(n)edges.push([ids[i],ids[j],Math.min(n,3)]);}
@@ -974,6 +999,8 @@ function checks(){
    else if(fy===fp)add('info','伏線',`伏線「${f.name}」は同じシーンで張って回収しています。効果が弱くならないか確認してください。`,S.scenes[fy].id);}
  });
  S.scenes.forEach(s=>{s.cards=(s.cards||[]).filter(card);});
+ S.cards.filter(c=>c.type==='person'&&(c.status==='dead'||c.status==='gone')&&c.statusScene&&sc(c.statusScene)).forEach(p=>{const i0=idx(p.statusScene);
+  S.scenes.forEach((s,i)=>{if(i<=i0)return;const inC=(s.cards||[]).includes(p.id),inN=tagList(s.chars).some(n=>norm(n)===norm(p.title));if(inC||inN)add(p.status==='dead'?'err':'warn','人物',`${p.status==='dead'?'死亡':'退場'}した「${p.title}」（#${num(p.statusScene)}）が、その後のシーン「${s.title}」に登場しています。${p.status==='dead'?'回想や幽霊でなければ見直してください。':'再登場なら問題ありません。'}`,s.id);});});
  S.cards.filter(c=>c.type==='episode'&&!usedIn(c.id).length).forEach(c=>out.push({lvl:'info',cat:'カード',msg:`エピソード「${c.title||'無題'}」はまだ物語に使われていません。`,cid:c.id}));
  const unusedSet=S.cards.filter(c=>c.type!=='episode'&&c.type!=='memo'&&!usedIn(c.id).length);
  if(unusedSet.length)add('info','カード',`どのシーンにも付いていない設定カードが${unusedSet.length}枚あります（${unusedSet.map(c=>c.title).join('、')}）。`);
@@ -1108,7 +1135,8 @@ function reverseTab(){
 let relN=null;
 function personFields(c){
  const places=S.cards.filter(x=>x.type==='place'),people=S.cards.filter(x=>x.type==='person'&&x.id!==c.id);
- const gsel=`<div class="pf-row"><span class="pf-l">性別</span><select id="pf-${c.id}-gender" data-f="cdv" data-cid="${c.id}" data-k="gender" style="grid-column:2 / -1" aria-label="性別">${Object.entries(GENDER).map(([k,l])=>`<option value="${k}" ${(c.gender||'')===k?'selected':''}>${l}</option>`).join('')}</select></div>`;
+ const ssel=`<div class="pf-row"><span class="pf-l">状態</span><select id="pf-${c.id}-status" data-f="cdv" data-cid="${c.id}" data-k="status" aria-label="状態">${Object.entries(STATUS).map(([k,l])=>`<option value="${k}" ${(c.status||'')===k?'selected':''}>${l}</option>`).join('')}</select>${c.status?`<select id="pf-${c.id}-stscene" data-f="cdv" data-cid="${c.id}" data-k="statusScene" aria-label="どのシーンから"><option value="">どのシーンから？（未設定）</option>${S.scenes.map((x,i)=>`<option value="${x.id}" ${c.statusScene===x.id?'selected':''}>${String(i+1).padStart(2,'0')} ${esc(x.title)}で${STATUS[c.status]}</option>`).join('')}</select>`:'<span></span>'}</div>${c.status?`<div class="pf-row"><span class="pf-l"></span><input type="text" id="pf-${c.id}-stnote" data-f="cdv" data-cid="${c.id}" data-k="statusNote" data-live="1" value="${esc(c.statusNote)}" placeholder="理由・メモ（例：嵐の夜に海へ落ちた）" style="grid-column:2 / -1" aria-label="状態のメモ"></div>`:''}`;
+ const gsel=ssel+`<div class="pf-row"><span class="pf-l">性別</span><select id="pf-${c.id}-gender" data-f="cdv" data-cid="${c.id}" data-k="gender" style="grid-column:2 / -1" aria-label="性別">${Object.entries(GENDER).map(([k,l])=>`<option value="${k}" ${(c.gender||'')===k?'selected':''}>${l}</option>`).join('')}</select></div>`;
  const pf=gsel+PF.map(([k,l])=>{const v=c[k]||{place:'',text:''};return `<div class="pf-row"><span class="pf-l">${l}</span>
   <select id="pf-${c.id}-${k}-place" data-f="cdp" data-cid="${c.id}" data-k="${k}" data-p="place" aria-label="${l}の場所カード"><option value="">場所カードを選ぶ…</option>${places.map(p=>`<option value="${p.id}" ${v.place===p.id?'selected':''}>${esc(p.title)||'無題'}</option>`).join('')}<option value="__new">＋右の内容で場所カードを作る</option></select>
   <input type="text" id="pf-${c.id}-${k}-text" data-f="cdp" data-cid="${c.id}" data-k="${k}" data-p="text" data-live="1" value="${esc(v.text)}" placeholder="${k==='addr'?'地名・番地など':'会社名・学校名・部署など'}" aria-label="${l}の詳細"></div>`;}).join('');
@@ -1196,7 +1224,7 @@ function placeUsers(c){
  return rows?`<div class="pfields">${rows}</div>`:'';
 }
 function personMeta(c){
- if(c.type!=='person')return '';const parts=[];if(c.gender)parts.push(`<span>性別：</span>${GENDER[c.gender]}`);
+ if(c.type!=='person')return '';const parts=[];if(c.status){const sc0=c.statusScene&&sc(c.statusScene);parts.push(`<span>状態：</span><b class="stx st-${c.status}">${STATUS[c.status]}</b>${sc0?`（#${num(sc0.id)} ${esc(sc0.title)}）`:''}`);}if(c.gender)parts.push(`<span>性別：</span>${GENDER[c.gender]}`);
  PF.forEach(([k,l])=>{const v=c[k];if(!v)return;const p=v.place&&card(v.place)?card(v.place).title:'';const s=[p,v.text].filter(Boolean).join(' ');if(s)parts.push(`<span>${l}：</span>${esc(s)}`);});
  RF.forEach(([k,l])=>{const a=(c[k]||[]).map(r=>{const n=r.card&&card(r.card)?card(r.card).title:r.name;return n?esc(n)+(r.role?`（${esc(r.role)}）`:''):'';}).filter(Boolean);if(a.length)parts.push(`<span>${l}：</span>${a.join('、')}`);});
  return parts.length?`<div class="pmeta">${parts.join('<br>')}</div>`:'';
@@ -1212,6 +1240,7 @@ function cardHTML(c,selS,dup){
   return `<article class="card editing t-${c.type}" data-card="${c.id}">
    <div class="card-top"><select id="cd-type-${c.id}" data-f="cd" data-cid="${c.id}" data-k="type" aria-label="カードの種類">${Object.entries(CT).map(([t,l])=>`<option value="${t}" ${c.type===t?'selected':''}>${l}</option>`).join('')}</select>
     <button class="btn sm" data-act="closeCard">閉じる</button></div>
+   <div class="imgfield">${c.img?`<img src="${c.img}" alt="カードの画像">`:'<div class="imgph">画像なし</div>'}<div class="tfbar"><label class="btn sm filebtn">${c.img?'画像を変える':'画像を付ける'}<input type="file" id="cimg-${c.id}" accept="image/*"></label>${c.img?`<button class="btn sm" data-act="cimgDel" data-cid="${c.id}">画像を外す</button>`:''}</div><small class="muted" style="font-size:11px">カードの上部に表示されます（自動で 4:3 に切り抜き、小さくして保存します）。</small></div>
    <input type="text" class="ctitle-in" id="cd-title-${c.id}" data-f="cd" data-cid="${c.id}" data-k="title" data-live="1" value="${esc(c.title)}" placeholder="カードの名前" aria-label="カードの名前">
    <textarea id="cd-body-${c.id}" data-f="cd" data-cid="${c.id}" data-k="body" data-live="1" placeholder="設定の中身や、起きる出来事" aria-label="カードの内容">${esc(c.body)}</textarea>
    ${(()=>{const mine=tagList(c.tags),mk=new Set(mine.map(norm)),dq=norm(UI.tagDraft);
@@ -1232,8 +1261,9 @@ function cardHTML(c,selS,dup){
     <button class="btn danger ${UI.confirm==='card-'+c.id?'armed':''}" data-act="delCard" data-cid="${c.id}">${UI.confirm==='card-'+c.id?'もう一度押すと削除':'削除'}</button>
    </div></article>`;
  }
- return `<article class="card t-${c.type} ${picked?'picked':''}" draggable="true" data-card="${c.id}" data-act="openCard" data-cid="${c.id}">
-  <div class="card-top"><span class="ctype">${CT[c.type]}${c.type==='place'&&c.facility?'<span class="badge">施設</span>':''}</span></div>
+ return `<article class="card t-${c.type} ${picked?'picked':''} ${c.status?'st-'+c.status:''} ${c.img&&UI.cimg!==false?'hasimg':''}" draggable="true" data-card="${c.id}" data-act="openCard" data-cid="${c.id}">
+  <div class="card-top"><span class="ctype">${CT[c.type]}${c.type==='place'&&c.facility?'<span class="badge">施設</span>':''}${c.status?`<span class="stbadge st-${c.status}">${STATUS[c.status]}</span>`:''}</span></div>
+  ${c.img&&UI.cimg!==false?`<div class="cimg"><img src="${c.img}" alt=""></div>`:''}
   <label class="pick"><input type="checkbox" id="pk-${c.id}${dup?'-d'+uid():''}" data-act="pickCard" data-cid="${c.id}" ${picked?'checked':''} aria-label="組み合わせに選ぶ"></label>
   <h3>${esc(c.title)||'（無題）'}</h3>
   ${c.body?`<p class="cbody">${esc(c.body)}</p>`:''}
@@ -1285,6 +1315,7 @@ function cardsTab(){
  <div class="ctrls">
   <input type="search" class="search" id="card-q" value="${esc(UI.q)}" placeholder="カードを検索" aria-label="カードを検索">
   <label><input type="checkbox" id="card-unused" data-act="toggleUnused" ${UI.unused?'checked':''}> 未使用のみ</label>
+  <label><input type="checkbox" id="card-img" data-act="cimgT" ${UI.cimg!==false?'checked':''}> 画像を表示</label>
   <label>並べ方 <select id="card-group" data-act="cgroup"><option value="none" ${UI.cgroup==='none'?'selected':''}>まとめない</option><option value="org" ${UI.cgroup==='org'?'selected':''}>組織ごと</option><option value="region" ${UI.cgroup==='region'?'selected':''}>地域ごと（国・県・市町村）</option><option value="type" ${UI.cgroup==='type'?'selected':''}>種類ごと</option></select></label>
   <button class="btn pri" data-act="addCard">＋${UI.ctype==='all'?'カード':CT[UI.ctype]+'カード'}を作る</button>
  </div>
@@ -1340,7 +1371,7 @@ function storySeeds(){
  const out=[],T=id=>esc(card(id).title||'無題');
  const orgsOf=p=>(p.orgs||[]).map(r=>r.card).filter(id=>card(id)&&card(id).type==='org');
  const relOf=(a,b)=>{const A=card(a),Bc=card(b);const r1=(A.orgRels||[]).find(r=>r.org===b),r2=(Bc.orgRels||[]).find(r=>r.org===a);return (r1&&r1.kind)||(r2&&r2.kind)||'';};
- const people=S.cards.filter(c=>c.type==='person'),orgs=S.cards.filter(c=>c.type==='org');
+ const people=S.cards.filter(c=>c.type==='person'&&!isOut(c)),orgs=S.cards.filter(c=>c.type==='org');
  people.forEach(p=>{const os=orgsOf(p);for(let i=0;i<os.length;i++)for(let j=i+1;j<os.length;j++){if(relOf(os[i],os[j])==='enemy')out.push({ids:[p.id,os[i],os[j]],t:'板挟み',msg:`${T(p.id)}は、敵対する${T(os[i])}と${T(os[j])}の両方に属しています。二重スパイ？それとも板挟み？`});}});
  people.forEach(p=>RF.forEach(([k,l])=>(p[k]||[]).forEach(r=>{const q=r.card&&card(r.card);if(!q||q.type!=='person'||p.id>q.id&&(q[k]||[]).some(x=>x.card===p.id))return;
   orgsOf(p).forEach(a=>orgsOf(q).forEach(b=>{if(a!==b&&relOf(a,b)==='enemy')out.push({ids:[p.id,q.id,a,b],t:'引き裂かれる関係',msg:`${l}の${T(p.id)}と${T(q.id)}が、敵対する${T(a)}と${T(b)}に分かれています。`});}));})));
@@ -1406,12 +1437,13 @@ function graphTab(){
  const inFrame=(pid,id)=>!!(FR&&FR['p:'+pid]&&FRB['p:'+pid]&&FR['p:'+pid]._c.size>=2&&FR['p:'+pid]._c.has(id));
  const lineKey=e=>e.src.split(':')[0];
  const allAttr=attrEdges();
- const attr=allAttr.filter(e=>{const k=lineKey(e);if(UI.lines[k]===false)return false;if((k==='work'||k==='loc')&&inFrame(e.b,e.a))return false;return true;});
+ const hideOut=UI.gout===false;const okN=id=>!(hideOut&&isOut(card(id)));
+ const attr=allAttr.filter(e=>{if(!okN(e.a)||!okN(e.b))return false;const k=lineKey(e);if(UI.lines[k]===false)return false;if((k==='work'||k==='loc')&&inFrame(e.b,e.a))return false;return true;});
  const hasAttr=(a,b)=>attr.some(e=>(e.a===a&&e.b===b)||(e.a===b&&e.b===a));
- const auto=[];if(UI.gauto)for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){const sh=sharedT(TM,ids[i],ids[j]);if(sh.length>=UI.gmin&&!linkOf(ids[i],ids[j])&&!isCut(ids[i],ids[j])&&!hasAttr(ids[i],ids[j]))auto.push({a:ids[i],b:ids[j],sh});}
+ const auto=[];if(UI.gauto)for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){const sh=sharedT(TM,ids[i],ids[j]);if(okN(ids[i])&&okN(ids[j])&&sh.length>=UI.gmin&&!linkOf(ids[i],ids[j])&&!isCut(ids[i],ids[j])&&!hasAttr(ids[i],ids[j]))auto.push({a:ids[i],b:ids[j],sh});}
  if(UI.glinkFrom&&!card(UI.glinkFrom))UI.glinkFrom=null;
  const from=UI.glinkFrom;
- const man=UI.lines.man===false?[]:S.links.filter(l=>card(l.a)&&card(l.b));
+ const man=UI.lines.man===false?[]:S.links.filter(l=>card(l.a)&&card(l.b)&&okN(l.a)&&okN(l.b));
  const sel=UI.gsel,nb=new Set();
  if(sel){auto.concat(man,attr).forEach(e=>{if(e.a===sel)nb.add(e.b);if(e.b===sel)nb.add(e.a);});}
  const selC=sel&&card(sel);const memSet=new Set(selC&&selC.type==='org'?groupIds(sel).filter(x=>x!==sel):[]);memSet.forEach(x=>nb.add(x));
@@ -1422,7 +1454,8 @@ function graphTab(){
  const randSet=new Set(UI.rand?UI.rand.ids:[]);
  const hit=id=>!UI.gtag||TM[id].has(UI.gtag);
  const dimN=id=>(sel&&id!==sel&&!nb.has(id))||!hit(id);
- const eCls=e=>{if(sel)return (e.a===sel||e.b===sel)?'hl':'dim';if(UI.gtag&&!(hit(e.a)&&hit(e.b)))return 'dim';return '';};
+ const eCls0=e=>{if(sel)return (e.a===sel||e.b===sel)?'hl':'dim';if(UI.gtag&&!(hit(e.a)&&hit(e.b)))return 'dim';return '';};
+ const eCls=e=>(eCls0(e)+((isOut(card(e.a))||isOut(card(e.b)))?' past':'')).trim();
  const counts={};ids.forEach(id=>TM[id].forEach(t=>counts[t]=(counts[t]||0)+1));
  const tags=Object.entries(counts).filter(([,n])=>n>=2).sort((a,b)=>b[1]-a[1]);
  {const grp=new Map();[...man,...attr].forEach(e=>{const k=[e.a,e.b].sort().join('|');if(!grp.has(k))grp.set(k,[]);grp.get(k).push(e);});
@@ -1449,8 +1482,9 @@ function graphTab(){
   ${man.filter(e=>e.label).map(e=>lab(e,e.label,'man','man')).join('')}
   ${abE.map(e=>{const pth=abPath(e.a,e.b);const lbl=e.all?'有利':mLabel(e.win?e.s:-e.s)[0];const m=abMid(e.a,e.b);return `<path class="ge-ab ${e.win?'win':'lose'}" data-pa="${e.a}" data-pb="${e.b}" d="${pth}" marker-end="url(#${e.win?'arr-win':'arr-lose'})" stroke-width="${Math.min(4,1.4+e.s*0.4)}"/><text class="gl-ab ${e.win?'win':'lose'}" data-qa="${e.a}" data-qb="${e.b}" x="${m[0]}" y="${m[1]}" text-anchor="middle">${lbl}</text>`;}).join('')}
   ${attr.map(e=>lab(e,e.label,'attr '+(e.cls||''),'attr')).join('')}
-  ${S.cards.map(c=>{const w=nodeW(c),p=P[c.id],t=[...(c.title||'無題')];const tt=t.length>11?t.slice(0,10).join('')+'…':t.join('');
-   return `<g class="gn t-${c.type} ${memSet.has(c.id)?'gmem':''} ${abNode[c.id]||''} ${from===c.id?'from':''} ${sel===c.id?'sel':''} ${randSet.has(c.id)?'rand':''} ${dimN(c.id)?'dim':''}" data-node="${c.id}" transform="translate(${p.x},${p.y})"><title>${esc(c.title)} ${esc(c.tags)}</title><rect class="b" x="${-w/2}" y="-15" width="${w}" height="30" rx="4"/><rect class="s" x="${-w/2}" y="-15" width="5" height="30" rx="2"/><text x="3" y="4" text-anchor="middle">${esc(tt)}</text></g>`;}).join('')}
+  <defs><clipPath id="gcirc" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>
+  ${S.cards.map(c=>{if(!okN(c.id))return '';const w=nodeW(c),p=P[c.id],t=[...(c.title||'無題')];const tt=t.length>11?t.slice(0,10).join('')+'…':t.join('');const gi=c.img&&UI.gimg!==false;
+   return `<g class="gn t-${c.type} ${memSet.has(c.id)?'gmem':''} ${abNode[c.id]||''} ${from===c.id?'from':''} ${sel===c.id?'sel':''} ${randSet.has(c.id)?'rand':''} ${dimN(c.id)?'dim':''} ${c.status?'st-'+c.status:''}" data-node="${c.id}" transform="translate(${p.x},${p.y})"><title>${esc(c.title)}${c.status?'（'+STATUS[c.status]+'）':''} ${esc(c.tags)}</title><rect class="b" x="${-w/2}" y="-15" width="${w}" height="30" rx="4"/><rect class="s" x="${-w/2}" y="-15" width="5" height="30" rx="2"/>${gi?`<image href="${c.img}" x="${-w/2+8}" y="-11" width="22" height="22" preserveAspectRatio="xMidYMid slice" clip-path="url(#gcirc)"/>`:''}<text x="${gi?15:3}" y="4" text-anchor="middle">${esc(tt)}</text>${c.status?`<g class="gst st-${c.status}" transform="translate(${w/2-4},-15)"><rect x="${-[...STSHORT[c.status]].length*11-6}" y="-9" width="${[...STSHORT[c.status]].length*11+8}" height="15" rx="7"/><text x="${-[...STSHORT[c.status]].length*5.5-2}" y="2" text-anchor="middle">${STSHORT[c.status]}</text></g>`:''}</g>`;}).join('')}
  </svg>`;
  let detail='';
  if(sel){const c=card(sel);const rel=related(sel,TM);const myL=man.filter(l=>l.a===sel||l.b===sel);
@@ -1486,6 +1520,8 @@ function graphTab(){
  <div class="gtools">
   <label>特徴で絞る <select id="g-tag" data-act="gtagSel"><option value="">すべて</option>${tags.map(([t,n])=>`<option value="${esc(t)}" ${UI.gtag===t?'selected':''}>${esc(t)}（${n}）</option>`).join('')}</select></label>
   <label><input type="checkbox" id="g-auto" data-act="gautoT" ${UI.gauto?'checked':''}> 共通点の点線を表示</label>
+  <label><input type="checkbox" id="g-out" data-act="goutT" ${UI.gout!==false?'checked':''}> 死亡・退場した人物を表示</label>
+  <label><input type="checkbox" id="g-img" data-act="gimgT" ${UI.gimg!==false?'checked':''}> 画像を表示</label>
   <label><input type="checkbox" id="g-ab" data-act="gabT" ${UI.gab?'checked':''}> 能力の有利・不利を表示</label>
   <label><input type="checkbox" id="g-hull" data-act="ghullT" ${UI.ghull?'checked':''}> 囲みを表示（場所・組織）</label>
   <label>点線を引く条件 <select id="g-min" data-act="gminSel">${[1,2,3].map(n=>`<option value="${n}" ${UI.gmin===n?'selected':''}>共通点${n}つ以上</option>`).join('')}</select></label>
@@ -1538,7 +1574,7 @@ const FREL=[
 const famType=role=>{for(const [re,t,d] of FREL)if(re.test(role||''))return {t,d};return {t:'other',d:0};};
 function buildFamily(){
  const N=new Map(),E=[];
- const addN=(id,label,isCard)=>{if(!N.has(id))N.set(id,{id,label:label||'無題',card:isCard});};
+ const addN=(id,label,isCard)=>{if(!N.has(id)){const c=isCard&&card(id);const suf=c&&(c.status==='dead'||c.status==='gone')?'（'+STSHORT[c.status]+'）':'';N.set(id,{id,label:(label||'無題')+suf,card:isCard});}};
  S.cards.filter(c=>c.type==='person').forEach(p=>(p.family||[]).forEach((r,i)=>{
   const isC=r.card&&card(r.card)&&card(r.card).type==='person';const tid=isC?r.card:(r.name?('v:'+p.id+':'+i):null);if(!tid||tid===p.id)return;
   addN(p.id,p.title,true);addN(tid,isC?card(tid).title:r.name,isC);
@@ -1604,7 +1640,7 @@ function familySvgPart(F,comp,ox,oy){
   lines+=`<path class="fl-other" d="M${x1} ${y1+16} Q ${(x1+x2)/2} ${my+30} ${x2} ${y2+16}"/>`;labels+=`<text class="fl-lab" x="${(x1+x2)/2}" y="${my+26}" text-anchor="middle">${esc(e.role||'親族')}</text>`;});
  const nodes=comp.map(id=>{const n=F.N.get(id),w=W(id),x=RX(id),y=RY(id);const c=n.card?card(id):null;
   const roles=F.edges.filter(e=>e.b===id&&!n.card).map(e=>e.role).filter(Boolean);
-  return `<g class="fn ${n.card?'t-person':'virt'} ${UI.famSel===id?'fsel':''}" data-act="famSel" data-id="${id}" transform="translate(${x},${y})"><title>${esc(n.label)}（押すと家族の一覧を表示）</title><rect x="${-w/2}" y="-16" width="${w}" height="32" rx="4"/>${n.card?`<rect class="s" x="${-w/2}" y="-16" width="5" height="32" rx="2"/>`:''}<text x="${n.card?3:0}" y="5" text-anchor="middle">${esc(n.label)}</text>${!n.card&&roles.length?`<text class="fl-role" y="30" text-anchor="middle">${esc(roles[0])}</text>`:''}</g>`;}).join('');
+  return `<g class="fn ${n.card?'t-person':'virt'} ${UI.famSel===id?'fsel':''} ${c&&c.status?'st-'+c.status:''}" data-act="famSel" data-id="${id}" transform="translate(${x},${y})"><title>${esc(n.label)}（押すと家族の一覧を表示）</title><rect x="${-w/2}" y="-16" width="${w}" height="32" rx="4"/>${n.card?`<rect class="s" x="${-w/2}" y="-16" width="5" height="32" rx="2"/>`:''}<text x="${n.card?3:0}" y="5" text-anchor="middle">${esc(n.label)}</text>${!n.card&&roles.length?`<text class="fl-role" y="30" text-anchor="middle">${esc(roles[0])}</text>`:''}</g>`;}).join('');
  return {w:mxx-mnx,h:(Math.max(...gens)+1)*124+30,svg:lines+labels+nodes};
 }
 const FAM_REL=['父','母','兄','姉','弟','妹','夫','妻','息子','娘','祖父','祖母','孫','叔父','叔母','甥','姪','いとこ','その他'];
@@ -1718,8 +1754,8 @@ function abilityTab(){
   <div class="tfbar"><button class="btn sm" data-act="affAdd">＋相性を追加</button>${S.affinity.length?'':`<button class="btn sm" data-act="affPreset">よくある相性を入れる（火・水・草など）</button>`}</div></details>`;
  if(!ppl.length)return `<div class="sec"><h2>能力・相性</h2>${abilityDatalists()}<p class="lead">人物カードに能力や弱点を入れると、ここで誰に強くて誰に弱いか、どの場所で戦うと有利かが分かります。</p>
   <div class="empty-note">能力が入った人物カードがまだありません。カード置き場で人物カードを開き、「能力」欄に能力と属性を入れてください。</div>${affBox}</div>`;
- const others=ppl.filter(p=>p.id!==base.id).map(p=>({p,m:matchup(base,p)})).sort((a,b)=>b.m.score-a.m.score);
- const counters=B=>allP.filter(c=>c.id!==base.id&&c.id!==B.id&&hasAbility(c)).map(c=>({c,s:matchup(c,B).score})).filter(x=>x.s>=0.5).sort((a,b)=>b.s-a.s).slice(0,3);
+ const others=ppl.filter(p=>p.id!==base.id&&!isOut(p)).map(p=>({p,m:matchup(base,p)})).sort((a,b)=>b.m.score-a.m.score);
+ const counters=B=>allP.filter(c=>c.id!==base.id&&c.id!==B.id&&hasAbility(c)&&!isOut(c)&&c.status!=='down').map(c=>({c,s:matchup(c,B).score})).filter(x=>x.s>=0.5).sort((a,b)=>b.s-a.s).slice(0,3);
  const bar=s=>{const v=Math.max(-4,Math.min(4,s));return `<span class="mbar"><i style="${v>=0?`left:50%;width:${v/8*100}%`:`left:${50+v/8*100}%;width:${-v/8*100}%`}" class="${v>=0?'pos':'neg'}"></i></span>`;};
  const rows=others.map(({p,m})=>{const [lab,cls]=mLabel(m.score);const ct=m.score<=-0.5?counters(p):[];
   return `<li class="mrow"><div class="mhead"><button class="cchip-b cchip t-person" data-act="abBase" data-id="${p.id}" title="この人を中心に見る">${esc(p.title)}</button><span class="mlab ${cls}">${lab}</span>${bar(m.score)}<span class="mono muted" style="font-size:11px">${m.score>0?'+':''}${m.score.toFixed(1)}</span></div>
@@ -1754,7 +1790,7 @@ function orgChartTab(){
  const pos={};
  const sub=(oid,seen)=>{seen=new Set(seen);seen.add(oid);const o=card(oid);
   const bp=basePlace(oid);const ow=Math.max(txtW(o.title,140,260,15),bp?txtW('本拠地：'+card(bp).title,140,260,12):0),oh=48;
-  const mem=memberSort(oid);const tiers=[];let last=null;mem.forEach(m=>{const k=roleKey(oid,roleIn(m,oid));if(!tiers.length||k!==last){tiers.push([]);last=k;}tiers[tiers.length-1].push(m);});
+  const memAll=memberSort(oid);const mem=memAll.filter(x=>!isOut(x)),outM=memAll.filter(isOut);const tiers=[];let last=null;mem.forEach(m=>{const k=roleKey(oid,roleIn(m,oid));if(!tiers.length||k!==last){tiers.push([]);last=k;}tiers[tiers.length-1].push(m);});if(outM.length)tiers.push(outM);
   const bw=m=>Math.max(txtW(m.title,84,170,13),txtW(roleIn(m,oid),84,170,11));
   const tierW=tiers.map(t=>t.reduce((s,m)=>s+bw(m),0)+(t.length-1)*12);
   const ch=(kids.get(oid)||[]).filter(k=>!seen.has(k)).map(k=>({k,...sub(k,seen)}));
@@ -1767,7 +1803,7 @@ function orgChartTab(){
    if(tiers.length||ch.length)s+=`<line class="oc-l" x1="${cx}" y1="${y+oh}" x2="${cx}" y2="${spineEnd}"/>`;
    tiers.forEach((t,i)=>{const ty=y+tierY(i);let tx=cx-tierW[i]/2;const centers=[];
     const boxes=t.map(m=>{const b=bw(m),bx=tx;tx+=b+12;centers.push(bx+b/2);const role=roleIn(m,oid);
-     return `<g class="oc-p t-person" data-act="gotoCard" data-cid="${m.id}"><title>${esc(m.title)}（押すとカードを開く）</title><rect x="${bx}" y="${ty}" width="${b}" height="44" rx="4"/><rect class="s" x="${bx}" y="${ty}" width="5" height="44" rx="2"/><text class="oc-name" x="${bx+b/2+2}" y="${ty+19}" text-anchor="middle">${esc(m.title)}</text><text class="oc-role" x="${bx+b/2+2}" y="${ty+35}" text-anchor="middle">${esc(role||'メンバー')}</text></g>`;}).join('');
+     return `<g class="oc-p t-person ${m.status?'st-'+m.status:''}" data-act="gotoCard" data-cid="${m.id}"><title>${esc(m.title)}（押すとカードを開く）</title><rect x="${bx}" y="${ty}" width="${b}" height="44" rx="4"/><rect class="s" x="${bx}" y="${ty}" width="5" height="44" rx="2"/><text class="oc-name" x="${bx+b/2+2}" y="${ty+19}" text-anchor="middle">${esc(m.title)}</text><text class="oc-role" x="${bx+b/2+2}" y="${ty+35}" text-anchor="middle">${esc(role||'メンバー')}${m.status?'・'+STATUS[m.status]:''}</text></g>`;}).join('');
     const by=ty-14;s+=`<path class="oc-l" d="M${Math.min(cx,...centers)} ${by} H${Math.max(cx,...centers)} ${centers.map(c=>`M${c} ${by} V${ty}`).join(' ')}"/>`+boxes;});
    if(ch.length){let tx=cx-chW/2;const by=y+chY-22;const cs=[];ch.forEach(c=>{cs.push(tx+c.w/2);s+=c.draw(tx,y+chY);tx+=c.w+30;});
     s+=`<path class="oc-l oc-sub" d="M${Math.min(cx,...cs)} ${by} H${Math.max(cx,...cs)} ${cs.map(c=>`M${c} ${by} V${y+chY}`).join(' ')}"/>`;}
@@ -2276,7 +2312,7 @@ function templatesTab(){
 /* check */
 function checkTab(iss){
  const e=iss.filter(i=>i.lvl==='err'),w=iss.filter(i=>i.lvl==='warn'),n=iss.filter(i=>i.lvl==='info');
- const cats=['all','因果','伏線','カード'];
+ const cats=['all','因果','伏線','人物','カード'];
  const list=iss.filter(i=>UI.filter==='all'||i.cat===UI.filter).sort((a,b)=>({err:0,warn:1,info:2}[a.lvl]-{err:0,warn:1,info:2}[b.lvl]));
  const LV={err:'破綻',warn:'要確認',info:'メモ'};
  return `<div class="sec"><h2>破綻チェック</h2>
@@ -2408,6 +2444,10 @@ function act(a,d,el){
   case 'lkFlip':{const l=S.links.find(x=>x.id===d.lid);if(l){[l.a,l.b]=[l.b,l.a];}break;}
   case 'addRel':{const c=card(d.cid);if(c){c[d.k]=c[d.k]||[];c[d.k].push(d.k==='orgRels'?{org:'',kind:'ally',note:''}:d.k==='abilities'?{name:'',attr:'',power:3}:{card:'',name:'',role:''});const i=c[d.k].length-1;setTimeout(()=>{const e=document.getElementById(`rl-${d.cid}-${d.k}-${i}-${d.k==='orgRels'?'org':d.k==='abilities'?'name':'card'}`);if(e)e.focus();},20);}break;}
   case 'cgroup':UI.cgroup=el.value;break;
+  case 'cimgT':UI.cimg=el.checked;break;
+  case 'goutT':UI.gout=el.checked;break;
+  case 'gimgT':UI.gimg=el.checked;break;
+  case 'cimgDel':{const c=card(d.cid);if(c)delete c.img;break;}
   case 'zz':{const svg=zFind(d.vk);if(!svg)return;const bw=+svg.dataset.bw,bh=+svg.dataset.bh;if(d.v==='fit'){zSet(svg,{x:0,y:0,w:bw,h:bh});delete UI.views[d.vk];return;}const v=zView(d.vk,bw,bh);zZoom(svg,d.v==='in'?0.8:1.25,v.x+v.w/2,v.y+v.h/2);return;}
   case 'famPerson':UI.famPerson=el.value;delete UI.views.family;break;
   case 'famSel':UI.famSel=d.id||null;break;
@@ -2727,6 +2767,7 @@ document.addEventListener('dblclick',e=>{const svg=e.target.closest&&e.target.cl
  if(UI.mtool==='line'||UI.mtool==='poly'){e.preventDefault();finishLine();return;}
  const vh=e.target.closest('[data-mv]'),g=e.target.closest('[data-mi]');const m=curMap();const it=m&&g&&m.items.find(x=>x.id===g.dataset.mi);
  if(vh&&it&&it.pts){const min=it.kind==='line'?2:3;if(it.pts.length>min){it.pts.splice(+vh.dataset.mv,1);save();snapshotNow();render();}else toast(`これ以上は角を減らせません（${min}点以上必要です）`);}});
+document.addEventListener('change',e=>{if(!e.target.id||!e.target.id.startsWith('cimg-'))return;const cid=e.target.id.slice(5),c=card(cid),f=e.target.files&&e.target.files[0];if(!c||!f)return;downscaleCard(f,u=>{if(!u){toast('画像を読み込めませんでした');return;}c.img=u;save();snapshotNow();render();toast('画像を付けました');});});
 document.addEventListener('change',e=>{if(e.target.id!=='open-file')return;const f=e.target.files&&e.target.files[0];if(!f)return;const fr=new FileReader();fr.onload=()=>{const err=applyLoaded(String(fr.result||''));toast(err||`「${f.name}」を開きました（元に戻すで戻せます）`);render();};fr.onerror=()=>toast('ファイルを読み込めませんでした');fr.readAsText(f);});
 document.addEventListener('change',e=>{if(e.target.id!=='map-img')return;const f=e.target.files&&e.target.files[0];const m=curMap();if(!f||!m)return;toast('画像を読み込んでいます…');
  downscaleImage(f,url=>{if(!url){toast('画像を読み込めませんでした。別の画像を試してください');return;}m.img=url;save();snapshotNow();render();toast('下絵を読み込みました');});});
