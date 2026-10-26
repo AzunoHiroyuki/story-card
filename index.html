@@ -183,7 +183,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .b3-lab{font-size:13px}.b3-tlab{font-size:15px}.b3-plab{font-size:12px}
 .b3-mini{font-size:9px;fill:var(--muted);font-family:var(--f-body)}
 .b3-stem{stroke:var(--ink);stroke-width:1.5}
-.m3d{background:var(--paper)}
+.m3d-bg{fill:var(--paper)}
+.fsbar{position:absolute;left:8px;top:8px;z-index:4;display:flex;gap:4px}
+.mapwrap.fs{position:fixed;inset:0;z-index:60;border-radius:0;border:0;background:var(--paper);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.mapwrap.fs .zsvg{width:100%;height:100%;max-height:100vh}
+.mapwrap.fs .fsbar{left:12px;top:12px}.mapwrap.fs .zoombar{right:12px;top:12px}
+.m3d{background:var(--paper);cursor:grab;touch-action:none}
+.m3d.rotating{cursor:grabbing}
 .floorbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--sheet)}
 .floorchip{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:4px 14px;font-family:var(--f-mono);font-weight:500;font-size:13px;color:var(--ink)}
 .floorchip.on{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
@@ -1924,12 +1930,17 @@ function render3D(m){
  const WALLH=m.wallH||3;
  let maxZ=Math.max(0,...areas.map(a=>a.top));if(indoor)maxZ=Math.max(maxZ,WALLH);
  const OY=maxZ*HU+24;
- const PJ=(x,y,z)=>[x,y*K-z*HU+OY];
+ const ROT=((UI.m3dRot||0)%360+360)%360,RC=Math.cos(ROT*Math.PI/180),RS=Math.sin(ROT*Math.PI/180),CX=m.w/2,CY=m.h/2;
+ const R=(x,y)=>[CX+(x-CX)*RC-(y-CY)*RS,CY+(x-CX)*RS+(y-CY)*RC];
+ const corners=[[0,0],[m.w,0],[m.w,m.h],[0,m.h]].map(p=>R(p[0],p[1]));
+ const MINX=Math.min(...corners.map(p=>p[0])),MAXX=Math.max(...corners.map(p=>p[0])),MINY=Math.min(...corners.map(p=>p[1])),MAXY=Math.max(...corners.map(p=>p[1]));
+ const PAD=20;const ry=(x,y)=>R(x,y)[1];
+ const PJ=(x,y,z)=>{const r=R(x,y);return [r[0]-MINX+PAD,(r[1]-MINY)*K-z*HU+OY];};
  const P2=(x,y,z)=>{const q=PJ(x,y,z);return q[0].toFixed(1)+','+q[1].toFixed(1);};
- const W=m.w,Hh=Math.ceil(m.h*K+OY+30);
+ const W=Math.ceil(MAXX-MINX+PAD*2),Hh=Math.ceil((MAXY-MINY)*K+OY+30);
  const orient=pts=>{let A=0;for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];A+=p[0]*q[1]-q[0]*p[1];}return A;};
  const prism=(pts,base,top,topCls,extra)=>{let out='';const A=orient(pts);
-  if(top>base){const sides=[];for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];const dx=q[0]-p[0],dy=q[1]-p[1],l=Math.hypot(dx,dy)||1;const nx=(A>0?dy:-dy)/l,ny=(A>0?-dx:dx)/l;if(ny<=0.02)continue;sides.push({p,q,nx,my:(p[1]+q[1])/2});}
+  if(top>base){const sides=[];for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];const rp=R(p[0],p[1]),rq=R(q[0],q[1]);const dx=rq[0]-rp[0],dy=rq[1]-rp[1],l=Math.hypot(dx,dy)||1;const nx=(A>0?dy:-dy)/l,ny=(A>0?-dx:dx)/l;if(ny<=0.02)continue;sides.push({p,q,nx,my:(rp[1]+rq[1])/2});}
    sides.sort((a,b)=>a.my-b.my).forEach(e=>{const pp=`${P2(e.p[0],e.p[1],base)} ${P2(e.q[0],e.q[1],base)} ${P2(e.q[0],e.q[1],top)} ${P2(e.p[0],e.p[1],top)}`;out+=`<polygon class="b3-side ${topCls}" points="${pp}"/><polygon class="b3-shade" points="${pp}" style="fill-opacity:${(0.16+0.16*Math.max(0,e.nx)+0.06*(1-Math.abs(e.nx))).toFixed(2)}"/>`;});}
   out+=`<polygon class="b3-top ${topCls}" points="${pts.map(p=>P2(p[0],p[1],top)).join(' ')}"/>`+(extra||'');return out;};
  const FS=itemFontStyle(null,m);
@@ -1943,7 +1954,7 @@ function render3D(m){
    const x=cx*s,y=cy*s;ground+=`<polygon class="${cls}" points="${P2(x,y,0)} ${P2(x+s,y,0)} ${P2(x+s,y+s,0)} ${P2(x,y+s,0)}"/>`;
    if(v.t==='stairs')ground+=lab(x+s/2,y+s/2,0,'階段','b3-mini');if(v.t==='door')ground+=lab(x+s/2,y+s/2,0,'扉','b3-mini');});
  }
- const order=[...areas].sort((a,b)=>(a.bld-b.bld)||(a.depth-b.depth)||(a.base-b.base)||(Math.max(...a.pts.map(p=>p[1]))-Math.max(...b.pts.map(p=>p[1]))));
+ const order=[...areas].sort((a,b)=>(a.bld-b.bld)||(a.depth-b.depth)||(a.base-b.base)||(Math.max(...a.pts.map(p=>ry(p[0],p[1])))-Math.max(...b.pts.map(p=>ry(p[0],p[1])))));
  const nb=order.filter(a=>!a.bld),bl=order.filter(a=>a.bld);
  const drawArea=a=>{const c=a.pts.reduce((t,p)=>[t[0]+p[0]/a.pts.length,t[1]+p[1]/a.pts.length],[0,0]);const nm=nameOf(a.it);return prism(a.pts,a.base,a.top,'ter-'+(a.it.terrain||'land'),nm?lab(c[0],c[1],a.top,nm+(a.top>a.base?` ▲${a.top-a.base}`:'')):'');};
  const lineOn=new Map();let groundLines='';
@@ -1953,9 +1964,10 @@ function render3D(m){
   let host='',hc=-1;cnt.forEach((c,k)=>{if(c>hc){hc=c;host=k;}});
   const hz=host?(nb.find(a=>a.it.id===host)||{}).top||0:0;
   const d=vis.map((p,i)=>(i?'L':'M')+PJ(p[0],p[1],hz)).join(' ');const svgL=lineDraw(d,it.style||'road',w*Math.max(0.6,K));
-  if(host)lineOn.set(host,(lineOn.get(host)||'')+svgL);else groundLines+=svgL;});
+  let at=-1;nb.forEach((a,i)=>{if(a.top<=hz+1e-6)at=i;});
+  if(at<0)groundLines+=svgL;else lineOn.set(at,(lineOn.get(at)||'')+svgL);});
  blocks+=groundLines;
- nb.forEach(a=>{blocks+=drawArea(a);if(lineOn.has(a.it.id))blocks+=lineOn.get(a.it.id);});
+ nb.forEach((a,i)=>{blocks+=drawArea(a);if(lineOn.has(i))blocks+=lineOn.get(i);});
  // indoor wall blocks (cells + wall lines) mixed with buildings by depth
  const solids=[];
  if(indoor){Object.entries(m.cells||{}).forEach(([k,v])=>{const [cx,cy]=k.split(',').map(Number);if(cx>=m.cols||cy>=m.rows)return;const x=cx*s,y=cy*s;
@@ -1963,14 +1975,23 @@ function render3D(m){
    else if(v.t==='pillar')solids.push({pts:[[x+s*.25,y+s*.25],[x+s*.75,y+s*.25],[x+s*.75,y+s*.75],[x+s*.25,y+s*.75]],h:WALLH,cls:'b3-wall'});
    else if(v.t==='diag'){let tri=[[x,y],[x+s,y],[x,y+s]];const r=((v.r||0)%360+360)%360;const c=[x+s/2,y+s/2];tri=tri.map(p=>{const a=r*Math.PI/180,dx=p[0]-c[0],dy=p[1]-c[1];return [c[0]+dx*Math.cos(a)-dy*Math.sin(a),c[1]+dx*Math.sin(a)+dy*Math.cos(a)];});solids.push({pts:tri,h:WALLH,cls:'b3-wall'});}});
   (m.walls||[]).forEach(wl=>{const a=[wl[0]*s,wl[1]*s],b=[wl[2]*s,wl[3]*s];const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1,t=Math.max(4,s*0.2)/2,nx=-dy/l*t,ny=dx/l*t;solids.push({pts:[[a[0]+nx,a[1]+ny],[b[0]+nx,b[1]+ny],[b[0]-nx,b[1]-ny],[a[0]-nx,a[1]-ny]],h:WALLH,cls:'b3-wall'});});}
- bl.forEach(a=>solids.push({area:a,my:Math.max(...a.pts.map(p=>p[1]))}));
- solids.forEach(o=>{if(o.my==null)o.my=Math.max(...o.pts.map(p=>p[1]));});
+ bl.forEach(a=>solids.push({area:a,my:Math.max(...a.pts.map(p=>ry(p[0],p[1])))}));
+ solids.forEach(o=>{if(o.my==null)o.my=Math.max(...o.pts.map(p=>ry(p[0],p[1])));});
  solids.sort((a,b)=>a.my-b.my);
  let solidSvg='';solids.forEach(o=>{solidSvg+=o.area?drawArea(o.area):prism(o.pts,0,o.h,o.cls);});
  m.items.filter(it=>it.kind==='pin'||it.kind==='station'||it.kind==='label').forEach(it=>{const z=groundZ(it.x,it.y,true);const q=PJ(it.x,it.y,z);const t=nameOf(it)||(it.kind==='label'?'（文字）':'');
   if(it.kind==='label')tops+=lab(it.x,it.y,z,t,'b3-tlab');
   else tops+=`<g transform="translate(${q[0]},${q[1]})"><line class="b3-stem" x1="0" y1="0" x2="0" y2="-16"/><circle r="6" cy="-18" class="m-pin ${it.kind==='station'?'fac':''}"/>${t?`<text class="b3-plab" style="${FS}" x="9" y="-14">${esc(t)}</text>`:''}</g>`;});
- return {w:W,h:Hh,svg:ground+blocks+lines+solidSvg+tops};
+ const na=(ROT-90)*Math.PI/180;const comp=`<g class="m-compass"><circle r="20"/><path d="M${(Math.cos(na)*16).toFixed(1)} ${(Math.sin(na)*16*K).toFixed(1)} L${(Math.cos(na+2.6)*7).toFixed(1)} ${(Math.sin(na+2.6)*7*K).toFixed(1)} L${(Math.cos(na-2.6)*7).toFixed(1)} ${(Math.sin(na-2.6)*7*K).toFixed(1)}Z" class="n"/><text x="${(Math.cos(na)*26).toFixed(1)}" y="${(Math.sin(na)*26*K+4).toFixed(1)}" text-anchor="middle">N</text></g>`;
+ const D=Math.hypot(m.w,m.h);
+ return {w:W,h:Hh,svg:ground+blocks+lines+solidSvg+tops,comp:indoor?'':comp,c:PJ(CX,CY,0),ext:{w:D+PAD*2,h:D*0.95+maxZ*HU+60,zh:maxZ*HU}};
+}
+const M3SIZE={'900x560':'横長（900×560）','760x760':'正方形（760×760）','600x800':'縦長（600×800）','1200x680':'ワイド（1200×680）','custom':'自分で決める'};
+function m3dFrameSize(){if(UI.mapFS)return [Math.max(320,window.innerWidth),Math.max(240,window.innerHeight)];const k=UI.m3dSize||'900x560';if(k==='custom')return [UI.m3dCW||1000,UI.m3dCH||600];return k.split('x').map(Number);}
+const m3dKey=vk=>vk+':3d:'+m3dFrameSize().join('x');
+function frame3D(m){const r=render3D(m);const [FW,FH]=m3dFrameSize();
+ const k=Math.min(FW/r.ext.w,FH/r.ext.h)*(UI.m3dFit||1.3);const tx=FW/2-r.c[0]*k,ty=FH/2+r.ext.zh*k/2-r.c[1]*k;
+ return {w:FW,h:FH,svg:`<rect class="m3d-bg" x="0" y="0" width="${FW}" height="${FH}"/><g transform="translate(${tx.toFixed(1)},${ty.toFixed(1)}) scale(${k.toFixed(4)})">${r.svg}</g>${r.comp?`<g transform="translate(36,${FH-34})">${r.comp}</g>`:''}`};
 }
 
 function mapItemSvg(it){
@@ -2045,6 +2066,7 @@ function mapTab(){
    ${sel.kind==='line'?`<label class="fld2"><span>種類</span><select id="mi-style-${sel.id}" data-f="mi" data-k="style">${Object.entries(LSTY).map(([k,l])=>`<option value="${k}" ${sel.style===k?'selected':''}>${l}</option>`).join('')}</select></label>
     <label class="fld2"><span>幅の広がる向き</span><select id="mi-align-${sel.id}" data-f="mi" data-k="align">${Object.entries(LALIGN).map(([k,l])=>`<option value="${k}" ${(sel.align||'auto')===k?'selected':''}>${l}</option>`).join('')}</select></label>
     <label class="fld2"><span>幅：${sel.width||LW0[sel.style||'road']}</span><input type="range" id="mi-width-${sel.id}" min="1" max="60" data-f="mi" data-k="width" data-live="1" value="${sel.width||LW0[sel.style||'road']}"></label>`:''}
+   ${sel.kind==='line'&&(sel.style||'road')==='road'?`<div class="fld2"><span>重なった道路を1本にまとめる</span><select id="merge-mode"><option value="keep" ${UI.mergeMode!=='wide'?'selected':''}>重なった所はこの道路の幅にする</option><option value="wide" ${UI.mergeMode==='wide'?'selected':''}>広い方の幅に合わせる（この道路全体が太くなります）</option></select><div class="tfbar"><button class="btn sm" data-act="roadMerge">この道路に重なる道路をまとめる</button><button class="btn sm" data-act="roadMergeAll">地図の道路をすべてまとめる</button></div><small class="muted" style="font-size:11px">ほかの道路の重なっている部分だけを消して、この道路1本にします。重なっていない部分は元の幅のまま残ります。</small></div>`:''}
    ${sel.kind==='line'&&['road','rail'].includes(sel.style||'road')?`<label class="pf-check"><input type="checkbox" id="mi-br-${sel.id}" data-f="mi" data-k="bridges" ${sel.bridges!==false?'checked':''}> 川や水の上に自動で橋を架ける</label>`:''}
    ${sel.kind!=='pin'?`<div class="fld2"><span>変形</span><div class="tfbar">
     <button class="btn sm" data-act="miTf" data-s="0.9" title="縮小">縮小</button><button class="btn sm" data-act="miTf" data-s="1.1" title="拡大">拡大</button>
@@ -2099,10 +2121,10 @@ function mapTab(){
  ${mapsBar}
  ${indoor?floorBar(m):''}
  <div class="viewbar"><div class="gmode" role="group" aria-label="表示"><button aria-pressed="${!UI.m3d}" data-act="m3d" data-v="0">平面</button><button aria-pressed="${!!UI.m3d}" data-act="m3d" data-v="1">立体（積み木）</button></div>
-  ${UI.m3d?`<label>傾き <input type="range" id="m3d-tilt" min="35" max="95" value="${Math.round((UI.m3dTilt||0.6)*100)}" data-act="m3dTilt"></label><label>高さの倍率 <input type="range" id="m3d-scale" min="4" max="30" value="${UI.m3dScale||10}" data-act="m3dScale"></label>${indoor?`<label>壁の高さ <input type="number" id="m3d-wallh" min="1" max="10" value="${m.wallH||3}" data-f="map" data-k="wallH" style="width:56px"></label>`:''}<span class="muted" style="font-size:12px">立体表示は見るための画面です。編集は「平面」に戻して行います。</span>`:''}</div>
+  ${UI.m3d?`<label>表示サイズ <select id="m3d-size" data-act="m3dSize">${Object.entries(M3SIZE).map(([k,l])=>`<option value="${k}" ${(UI.m3dSize||'900x560')===k?'selected':''}>${l}</option>`).join('')}</select></label>${(UI.m3dSize||'')==='custom'?`<label>幅 <input type="number" id="m3d-cw" min="300" max="4000" step="10" value="${UI.m3dCW||1000}" style="width:76px"></label><label>高さ <input type="number" id="m3d-ch" min="200" max="4000" step="10" value="${UI.m3dCH||600}" style="width:76px"></label>`:''}<label>大きさ <input type="range" id="m3d-fit" min="50" max="200" value="${Math.round((UI.m3dFit||1.3)*100)}" data-act="m3dFit"></label><label>傾き <input type="range" id="m3d-tilt" min="35" max="95" value="${Math.round((UI.m3dTilt||0.6)*100)}" data-act="m3dTilt"></label><label>高さの倍率 <input type="range" id="m3d-scale" min="4" max="30" value="${UI.m3dScale||10}" data-act="m3dScale"></label>${indoor?`<label>壁の高さ <input type="number" id="m3d-wallh" min="1" max="10" value="${m.wallH||3}" data-f="map" data-k="wallH" style="width:56px"></label>`:''}<label>向き <button class="btn sm" data-act="m3dRotBtn" data-v="-45" aria-label="左に回す">⟲</button><span class="mono" id="m3d-rot" style="min-width:34px;text-align:center">${Math.round(((UI.m3dRot||0)%360+360)%360)}°</span><button class="btn sm" data-act="m3dRotBtn" data-v="45" aria-label="右に回す">⟳</button><button class="btn sm" data-act="m3dRotBtn" data-v="reset">北を上に</button></label><span class="muted" style="font-size:12px">ドラッグで回転（上下に動かすと傾き）、Shiftを押しながらドラッグで移動。立体表示は見るための画面で、編集は「平面」に戻して行います。</span>`:''}</div>
  <div class="gmodebar" ${UI.m3d?'hidden':''}><div class="gmode mtools" role="toolbar" aria-label="地図の道具">${TB.map(([k,l,ic])=>`<button aria-pressed="${UI.mtool===k}" data-act="mtool" data-v="${k}" title="${l}">${ic}<span>${l}</span></button>`).join('')}</div>
   <span class="ghint">${HINT[UI.mtool]||''}</span>${drawing?`<button class="btn sm pri" data-act="mLineDone">完了</button><button class="btn sm" data-act="mLineCancel">取り消し</button>`:''}</div>
- <div class="mapgrid"><div class="gwrap zwrap mapwrap">${UI.m3d?(()=>{const r=render3D(m);const k3=vk+':3d';return zBar(k3,r.w,r.h)+zOpen(k3,r.w,r.h,'m3d',esc(m.name)+'（立体）')+r.svg+'</svg>';})():zBar(vk,m.w,m.h)+svg}</div><div class="mside">${indoor?floorPanel(m):''}${palette}${selPanel}${plist}${settings}</div></div>
+ <div class="mapgrid"><div class="gwrap zwrap mapwrap ${UI.mapFS?'fs':''}"><div class="fsbar"><button class="btn sm" data-act="mapFS" title="${UI.mapFS?'全画面を終わる（Esc）':'地図を画面いっぱいに表示'}">${UI.mapFS?'✕ 全画面を終わる':'⛶ 全画面'}</button><button class="btn sm" data-act="viewReset" title="拡大・移動を元に戻す">表示位置をリセット</button>${UI.mapFS?`<button class="btn sm" data-act="m3d" data-v="${UI.m3d?'0':'1'}">${UI.m3d?'平面にする':'立体にする'}</button>${UI.m3d?`<button class="btn sm" data-act="m3dRotBtn" data-v="-45" aria-label="左に回す">⟲</button><button class="btn sm" data-act="m3dRotBtn" data-v="45" aria-label="右に回す">⟳</button><button class="btn sm" data-act="m3dRotBtn" data-v="reset">北を上に</button>`:''}`:''}</div>${UI.m3d?(()=>{const r=frame3D(m);const k3=m3dKey(vk);return zBar(k3,r.w,r.h)+zOpen(k3,r.w,r.h,'m3d',esc(m.name)+'（立体）')+r.svg+'</svg>';})():zBar(vk,m.w,m.h)+svg}</div><div class="mside">${indoor?floorPanel(m):''}${palette}${selPanel}${plist}${settings}</div></div>
  <div class="legend">${legend}</div>
  </div>`;
 }
@@ -2123,6 +2145,23 @@ function floorGhost(m){const s=m.cs||32;let out='';const below=m.floors[m.fcur-1
  return out;}
 function newMap(kind){const indoor=kind==='indoor';const m=indoor?{id:uid(),kind:'indoor',name:'新しい建物',cols:30,rows:20,cs:32,unit:'1m',w:960,h:640,bg:'plain',grid:true,img:'',imgOp:0.5,items:[],cells:{},walls:[]}
  :{id:uid(),kind:'world',name:'新しい地図',w:1000,h:700,bg:'sea',grid:true,img:'',imgOp:0.6,items:[]};S.maps=S.maps||[];S.maps.push(m);UI.mapId=m.id;UI.msel=null;UI.mdraw=null;UI.mtool=indoor?'paint':'select';return m;}
+function resample(pts,step){const out=[];for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],l=Math.hypot(b[0]-a[0],b[1]-a[1]),n=Math.max(1,Math.ceil(l/step));for(let k=0;k<n;k++)out.push([a[0]+(b[0]-a[0])*k/n,a[1]+(b[1]-a[1])*k/n,i]);}out.push([...pts[pts.length-1],pts.length-1]);return out;}
+function distPL(x,y,pl){let best=Infinity;for(let i=0;i<pl.length-1;i++)best=Math.min(best,segDist(x,y,pl[i][0],pl[i][1],pl[i+1][0],pl[i+1][1]));return best;}
+function simplifyPts(pts,eps){if(pts.length<3)return pts;const keep=[pts[0]];for(let i=1;i<pts.length-1;i++){const a=keep[keep.length-1],b=pts[i],c=pts[i+1];if(segDist(b[0],b[1],a[0],a[1],c[0],c[1])>eps)keep.push(b);}keep.push(pts[pts.length-1]);return keep;}
+function trimAgainst(m,K,B){const wK=K.width||LW0.road,wB=B.width||LW0.road;const vK=offsetPts(K.pts,lineOffset(K,m)),vB=offsetPts(B.pts,lineOffset(B,m));
+ const tol=(wK+wB)/2+2,minRun=Math.max(wK,wB)*3;const sp=resample(vB,3);const ov=sp.map(p=>distPL(p[0],p[1],vK)<=tol);
+ let i=0;const runs=[];while(i<sp.length){if(ov[i]){let j=i;while(j<sp.length&&ov[j])j++;let len=0;for(let k=i+1;k<j;k++)len+=Math.hypot(sp[k][0]-sp[k-1][0],sp[k][1]-sp[k-1][1]);if(len>=minRun)runs.push([i,j-1]);i=j;}else i++;}
+ if(!runs.length)return null;const cut=new Array(sp.length).fill(false);runs.forEach(([a,b])=>{for(let k=a+1;k<b;k++)cut[k]=true;});
+ const pieces=[];let cur=[];sp.forEach((p,k)=>{if(cut[k]){if(cur.length>1)pieces.push(cur);cur=[];}else cur.push([p[0],p[1]]);});if(cur.length>1)pieces.push(cur);
+ return pieces.map(pc=>simplifyPts(pc,0.8).map(p=>[Math.round(p[0]),Math.round(p[1])])).filter(pc=>{let L=0;for(let k=1;k<pc.length;k++)L+=Math.hypot(pc[k][0]-pc[k-1][0],pc[k][1]-pc[k-1][1]);return L>wB*1.5;});}
+function mergeRoads(m,keepId,mode){const roads=m.items.filter(isRoad);let changed=0;const done=new Set();
+ const pairs=[];if(keepId){const K=roads.find(r=>r.id===keepId);if(!K)return 0;roads.forEach(B=>{if(B!==K)pairs.push([K,B]);});}
+ else for(let i=0;i<roads.length;i++)for(let j=i+1;j<roads.length;j++){const a=roads[i],b=roads[j];const wa=a.width||LW0.road,wb=b.width||LW0.road;pairs.push(wa>=wb?[a,b]:[b,a]);}
+ pairs.forEach(([K,B])=>{if(done.has(B.id)||done.has(K.id))return;const pcs=trimAgainst(m,K,B);if(!pcs)return;
+  if(mode==='wide'&&(B.width||LW0.road)>(K.width||LW0.road))K.width=B.width;
+  const idx=m.items.indexOf(B);m.items.splice(idx,1);done.add(B.id);
+  pcs.forEach((pc,n)=>{m.items.splice(idx+n,0,{id:uid(),kind:'line',style:'road',pts:pc,width:B.width||LW0.road,align:'center',label:n===0?B.label||'':'',bridges:B.bridges,font:B.font});});changed++;});
+ return changed;}
 function finishLine(){const m=curMap();if(!m||!UI.mdraw)return;const pts=UI.mdraw.map(p=>[Math.round(p[0]),Math.round(p[1])]);
  if(UI.mtool==='poly'){if(pts.length>=3){const it={id:uid(),kind:'area',shape:'poly',pts,terrain:m.kind==='indoor'?'floor':'land',place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:''};m.items.push(it);enforceGap(m,it);UI.msel=it.id;UI.mplace='';UI.mtool='select';toast('多角形の範囲を描きました。角の丸をドラッグして形を整えられます');}else toast('多角形には3点以上が必要です');}
  else if(pts.length>=2){const it={id:uid(),kind:'line',pts,style:'road',label:''};m.items.push(it);UI.msel=it.id;UI.mtool='select';toast('線を描きました。右の欄で種類や幅を変えられます');}
@@ -2279,7 +2318,8 @@ let pending=false;
 function schedule(){if(pending)return;pending=true;setTimeout(()=>{pending=false;render();},0);}
 const TABS_OK=['cards','graph','family','orgchart','ability','map','reverse','check'];
 function setHeadH(){const h=document.getElementById('stickyhead');let v=0;if(h){const st=getComputedStyle(h).position==='sticky';v=st?h.offsetHeight:((document.querySelector('.tabs')||{}).offsetHeight||0);h.classList.toggle('stuck',st&&window.scrollY>4);}document.documentElement.style.setProperty('--headh',v+'px');}
-window.addEventListener('resize',()=>setHeadH());
+window.addEventListener('resize',()=>{setHeadH();if(UI.mapFS&&UI.tab==='map'){clearTimeout(window.__fsT);window.__fsT=setTimeout(render,120);}});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&UI.mapFS){UI.mapFS=false;render();}});
 window.addEventListener('scroll',()=>{const h=document.getElementById('stickyhead');if(h)h.classList.toggle('stuck',window.scrollY>4&&getComputedStyle(h).position==='sticky');},{passive:true});
 function render(){
  if(!TABS_OK.includes(UI.tab))UI.tab='cards';
@@ -2394,6 +2434,13 @@ function act(a,d,el){
   case 'mapNew':newMap(d.k);UI.mset=true;break;
   case 'mtile':UI.mtile=d.v;break;
   case 'm3d':UI.m3d=d.v==='1';UI.mdraw=null;break;
+  case 'm3dRotBtn':UI.m3dRot=d.v==='reset'?0:((UI.m3dRot||0)+(+d.v)+360)%360;redraw3D();return;
+  case 'm3dSize':UI.m3dSize=el.value;break;
+  case 'mapFS':{if(UI.mapFS){UI.mapFS=false;if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});}
+    else{UI.mapFS=true;const el2=document.documentElement;if(el2.requestFullscreen)el2.requestFullscreen().catch(()=>{});}
+    const m=curMap();if(m){delete UI.views['map:'+m.id];}break;}
+  case 'viewReset':{const m=curMap();if(!m)break;const vk='map:'+m.id;Object.keys(UI.views).forEach(k=>{if(k===vk||k.startsWith(vk+':3d'))delete UI.views[k];});if(UI.m3d)UI.m3dFit=1.3;toast('表示位置を元に戻しました');break;}
+  case 'm3dFit':UI.m3dFit=(+el.value)/100;break;
   case 'm3dTilt':UI.m3dTilt=(+el.value)/100;break;
   case 'm3dScale':UI.m3dScale=+el.value;break;
   case 'floorSel':{const m=curMap();if(m)switchFloor(m,+d.i);break;}
@@ -2409,6 +2456,7 @@ function act(a,d,el){
   case 'miFitLot':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);const lot=it&&parentArea(m,it);if(!lot)break;const g=Math.max(0,itemGap(m,it));fitToLot(m,it,lot,g);if(it.shape==='poly'&&(!it.pts||it.pts.length<3)){toast('敷地が小さすぎて、この隙間では収まりません');}break;}
   case 'miBuildIn':{const m=curMap();const lot=m&&m.items.find(x=>x.id===UI.msel);if(!lot||lot.kind!=='area')break;const g=Number(m.setback)>0?Number(m.setback):12;const it={id:uid(),kind:'area',terrain:(m.kind==='indoor'||isBuilding(lot))?'floor':'building',place:'',label:'',gap:g};fitToLot(m,it,lot,g);
    if(it.shape==='poly'&&(!it.pts||it.pts.length<3)){toast('敷地が小さすぎて作れません');break;}m.items.push(it);UI.msel=it.id;toast(`敷地から${g}空けて作りました。「敷地との隙間」で間隔を変えられます`);break;}
+  case 'roadMerge':case 'roadMergeAll':{const m=curMap();if(!m)break;const mode=(document.getElementById('merge-mode')||{}).value||'keep';UI.mergeMode=mode;const n=mergeRoads(m,a==='roadMerge'?UI.msel:null,mode);toast(n?`${n}本の道路の重なりをまとめました（元に戻すで戻せます）`:'重なっている道路はありませんでした');break;}
   case 'miRing':{const m=curMap();const a=m&&m.items.find(x=>x.id===UI.msel);if(!a||a.kind!=='area')break;const pts=areaPolyPts(a,36).map(p=>[Math.round(p[0]),Math.round(p[1])]);
    let A=0;for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];A+=p[0]*q[1]-q[0]*p[1];}pts.push([pts[0][0],pts[0][1]]);
    const road={id:uid(),kind:'line',style:'road',pts,width:6,align:A>0?'left':'right',label:''};m.items.push(road);UI.msel=road.id;toast('外周に道路を作りました。幅や種類は右の欄で変えられます');break;}
@@ -2537,7 +2585,7 @@ document.addEventListener('click',e=>{
  act(el.dataset.act,el.dataset,el);
 });
 document.addEventListener('change',e=>{const el=e.target;if(el.dataset.f)setField(el,false);else if(el.dataset.act)act(el.dataset.act,el.dataset,el);});
-document.addEventListener('input',e=>{const el=e.target;if(el.id==='m3d-tilt'){UI.m3dTilt=(+el.value)/100;schedule();return;}if(el.id==='m3d-scale'){UI.m3dScale=+el.value;schedule();return;}if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
+document.addEventListener('input',e=>{const el=e.target;if(el.id==='m3d-tilt'){UI.m3dTilt=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-fit'){UI.m3dFit=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-cw'||el.id==='m3d-ch'){const v=Math.max(el.id==='m3d-cw'?300:200,Math.min(4000,parseInt(el.value)||0));if(!v)return;if(el.id==='m3d-cw')UI.m3dCW=v;else UI.m3dCH=v;clearTimeout(window.__cwT);window.__cwT=setTimeout(render,400);return;}if(el.id==='m3d-scale'){UI.m3dScale=+el.value;redraw3D();return;}if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
 const dropT=e=>e.target.closest&&e.target.closest('[data-drop],[data-dropnew]');
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-card][draggable="true"]');if(!c)return;const id=c.dataset.card;const ids=UI.picked.includes(id)?UI.picked.slice():[id];try{e.dataTransfer.setData('text/plain',JSON.stringify(ids));e.dataTransfer.effectAllowed='copy';}catch(_){}});
 document.addEventListener('dragover',e=>{const t=dropT(e);if(!t)return;e.preventDefault();t.classList.add('drop-on');});
@@ -2548,6 +2596,7 @@ document.addEventListener('drop',e=>{const t=dropT(e);if(!t)return;e.preventDefa
  else{ids.forEach(id=>attach(t.dataset.drop,id));UI.sel=t.dataset.drop;toast(`${ids.length}枚を「${sc(t.dataset.drop).title}」に付けました`);}
  UI.picked=[];save();render();});
 document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&UI.mapFS){UI.mapFS=false;if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});render();return;}
  const tg=e.target,typing=tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'||tg.tagName==='SELECT');
  if((e.ctrlKey||e.metaKey)&&!typing&&(e.key==='z'||e.key==='Z'||e.key==='y')){e.preventDefault();if(e.key==='y'||e.shiftKey)redo();else undo();return;}
  if(e.target.id==='ed-text'&&!e.isComposing&&(e.key==='Enter'||e.key==='Escape')){e.preventDefault();UI.edEdge=null;save();render();return;}
@@ -2603,6 +2652,15 @@ document.addEventListener('wheel',e=>{const svg=e.target.closest&&e.target.close
 let zdrag=null;
 function snapV(m,pt){const s=m.cs||32;return [Math.max(0,Math.min(m.cols,Math.round(pt.x/s))),Math.max(0,Math.min(m.rows,Math.round(pt.y/s)))];}
 function redrawCells(svg,m){const c=svg.querySelector('#m-cells');if(c)c.innerHTML=cellsSvg(m);const w=svg.querySelector('#m-walls');if(w)w.innerHTML=wallsSvg(m);}
+let r3d=null;
+function redraw3D(){const m=curMap();const svg=document.querySelector('.zsvg.m3d');if(!m||!svg)return;const r=frame3D(m);svg.innerHTML=r.svg;svg.dataset.bw=r.w;svg.dataset.bh=r.h;const vk=svg.dataset.vk;if(!UI.views[vk])svg.setAttribute('viewBox',`0 0 ${r.w} ${r.h}`);else{const v=zView(vk,r.w,r.h);svg.setAttribute('viewBox',`${v.x} ${v.y} ${v.w} ${v.h}`);}
+ const t=document.getElementById('m3d-rot');if(t)t.textContent=Math.round(((UI.m3dRot||0)%360+360)%360)+'°';const tl=document.getElementById('m3d-tilt');if(tl)tl.value=Math.round((UI.m3dTilt||0.6)*100);}
+document.addEventListener('pointerdown',e=>{const svg=e.target.closest&&e.target.closest('.zsvg.m3d');if(!svg||e.shiftKey||e.button!==0)return;e.preventDefault();e.stopImmediatePropagation();
+ r3d={svg,sx:e.clientX,sy:e.clientY,r0:UI.m3dRot||0,t0:UI.m3dTilt||0.6,raf:0};try{svg.setPointerCapture(e.pointerId);}catch(_){}svg.classList.add('rotating');},true);
+document.addEventListener('pointermove',e=>{if(!r3d)return;const dx=e.clientX-r3d.sx,dy=e.clientY-r3d.sy;UI.m3dRot=((r3d.r0+dx*0.5)%360+360)%360;UI.m3dTilt=Math.max(0.35,Math.min(0.95,r3d.t0-dy*0.004));
+ if(!r3d.raf)r3d.raf=requestAnimationFrame(()=>{if(r3d)r3d.raf=0;redraw3D();});},true);
+document.addEventListener('contextmenu',e=>{if(r3d||(e.target.closest&&e.target.closest('.zsvg.m3d,.msvg')))e.preventDefault();},true);
+document.addEventListener('pointerup',e=>{if(!r3d)return;const s=r3d.svg;r3d=null;s.classList.remove('rotating');try{s.releasePointerCapture(e.pointerId);}catch(_){}render();},true);
 document.addEventListener('pointerdown',e=>{
  const svg=e.target.closest&&e.target.closest('.zsvg');if(!svg)return;
  const pt=svgPt(svg,e);
