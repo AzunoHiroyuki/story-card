@@ -2436,6 +2436,8 @@ function pdfDialog(){if(!UI.pdfOpen)return '';const o=UI.pdfOpt||{};const on=k=>
    <label class="pf-check"><input type="checkbox" id="pdf-img" data-act="pdfOpt" data-k="img" ${on('img')?'checked':''}> カードの画像を入れる</label>
    <label class="pf-check"><input type="checkbox" id="pdf-floors" data-act="pdfOpt" data-k="floors" ${on('floors')?'checked':''}> 建物の地図は全部の階を入れる</label>
    <label class="pf-check"><input type="checkbox" id="pdf-3d" data-act="pdfOpt" data-k="m3d" ${o.m3d?'checked':''}> 地図の立体表示も入れる</label>
+   <label class="pf-check" style="grid-column:1 / -1"><input type="checkbox" id="pdf-embed" data-act="pdfOpt" data-k="embed" ${on('embed')?'checked':''}> <b>作品データをPDFに埋め込む</b>（最後のページに読み込み用の模様を入れます。このPDFを「ファイルを開く」で選ぶと作品を開き直せます）</label>
+   <label class="pf-check" style="grid-column:1 / -1"><input type="checkbox" id="pdf-json" data-act="pdfOpt" data-k="json" ${on('json')?'checked':''}> 読み込み用の作品ファイル（.json）も一緒に保存する（念のための控え）</label>
    <label class="pf-check"><input type="checkbox" id="pdf-notes" data-act="pdfOpt" data-k="notes" ${on('notes')?'checked':''}> 地図の記入（書き込み）を入れる</label>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn pri" data-act="pdfMake">PDFを作る（印刷画面を開く）</button><button class="btn" data-act="pdfClose" style="margin-left:auto">閉じる</button></div>
@@ -2444,13 +2446,53 @@ function pickEl(html,sel){const t=document.createElement('template');t.innerHTML
 function withUI(patch,fn){const keep={};Object.keys(patch).forEach(k=>{keep[k]=UI[k];UI[k]=patch[k];});try{return fn();}finally{Object.assign(UI,keep);}}
 function pdfCard(c,img){return `<div class="pc t-${c.type} ${c.status?'st-'+c.status:''}"><div class="pc-h"><span class="ctype">${CT[c.type]}</span>${c.type==='place'&&c.facility?'<span class="badge">施設</span>':''}${c.status?`<span class="stbadge st-${c.status}">${STATUS[c.status]}</span>`:''}</div>
  ${img&&c.img?`<img class="pc-img" src="${c.img}" alt="">`:''}<h4>${esc(c.title)||'（無題）'}</h4>${c.body?`<p>${esc(c.body).replace(/\n/g,'<br>')}</p>`:''}${cardMeta(c)}${c.tags?`<div class="ctags">${tagList(c.tags).map(t=>'#'+esc(t)).join(' ')}</div>`:''}${(()=>{const u=usedIn(c.id);return u.length?`<div class="pc-use">使用：${u.map(s=>'#'+num(s.id)+' '+esc(s.title)).join('、')}</div>`:'';})()}</div>`;}
-function buildPdfHtml(){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;const parts=[];const sec=(k,title,body)=>{if(on(k)&&body)parts.push(`<section class="ps ps-${k}"><h2>${title}</h2>${body}</section>`);};
+/* ===== embed project data as pixels (PDF/PNG) and read it back ===== */
+const PD_MAGIC=[0x53,0x43,0x52,0x44];/* "SCRD" */
+function crc32(u8){let c,t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);for(let n=0;n<256;n++){c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}}c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=t[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+async function zipBytes(u8,mode){const cs=mode==='c'?new CompressionStream('deflate'):new DecompressionStream('deflate');return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(cs)).arrayBuffer());}
+async function dataImageURL(){const json=new TextEncoder().encode(JSON.stringify(S));let body,flag=0;
+ try{if(typeof CompressionStream!=='undefined'){body=await zipBytes(json,'c');flag=1;}else body=json;}catch(e){body=json;flag=0;}
+ const head=new Uint8Array(16);head.set(PD_MAGIC,0);head[4]=1;head[5]=flag;const L=body.length,C=crc32(body);
+ head[6]=(L>>>24)&255;head[7]=(L>>>16)&255;head[8]=(L>>>8)&255;head[9]=L&255;head[10]=(C>>>24)&255;head[11]=(C>>>16)&255;head[12]=(C>>>8)&255;head[13]=C&255;
+ const all=new Uint8Array(16+L);all.set(head,0);all.set(body,16);const px=Math.ceil(all.length/3);const W=Math.max(8,Math.ceil(Math.sqrt(px))),H=Math.max(8,Math.ceil(px/W));
+ const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{colorSpace:'srgb'});const im=g.createImageData(W,H);
+ for(let i=0,j=0;i<W*H;i++){im.data[i*4]=all[j++]||0;im.data[i*4+1]=all[j++]||0;im.data[i*4+2]=all[j++]||0;im.data[i*4+3]=255;}
+ g.putImageData(im,0,0);return {url:cv.toDataURL('image/png'),w:W,h:H,bytes:all.length};}
+async function parsePayload(rgb){if(rgb.length<16)return null;for(let i=0;i<4;i++)if(rgb[i]!==PD_MAGIC[i])return null;
+ const flag=rgb[5],L=((rgb[6]<<24)>>>0)+(rgb[7]<<16)+(rgb[8]<<8)+rgb[9],C=(((rgb[10]<<24)>>>0)+(rgb[11]<<16)+(rgb[12]<<8)+rgb[13])>>>0;
+ if(16+L>rgb.length)throw new Error('short');const body=rgb.slice(16,16+L);if(crc32(body)!==C)throw new Error('crc');
+ const raw=flag===1?await zipBytes(body,'d'):body;return JSON.parse(new TextDecoder().decode(raw));}
+function bin2str(u8){let s='';const CH=0x8000;for(let i=0;i<u8.length;i+=CH)s+=String.fromCharCode.apply(null,u8.subarray(i,i+CH));return s;}
+function unpredict(d,cols,colors,bpc){const bpp=Math.max(1,colors*bpc/8),rowLen=Math.ceil(cols*colors*bpc/8);const out=new Uint8Array(Math.floor(d.length/(rowLen+1))*rowLen);let prev=new Uint8Array(rowLen);
+ for(let r=0,o=0,p=0;p+rowLen<d.length+1&&o<out.length;r++){const ft=d[p++];const row=d.subarray(p,p+rowLen);p+=rowLen;const cur=new Uint8Array(rowLen);
+  for(let i=0;i<rowLen;i++){const a=i>=bpp?cur[i-bpp]:0,b=prev[i],c=i>=bpp?prev[i-bpp]:0;let v=row[i];
+   if(ft===1)v+=a;else if(ft===2)v+=b;else if(ft===3)v+=(a+b)>>1;else if(ft===4){const pa=Math.abs(b-c),pb=Math.abs(a-c),pc=Math.abs(a+b-2*c);v+=pa<=pb&&pa<=pc?a:pb<=pc?b:c;}cur[i]=v&255;}
+  out.set(cur,o);o+=rowLen;prev=cur;}return out;}
+async function readPdfData(buf){const u8=new Uint8Array(buf);const s=bin2str(u8);const re=/\/Subtype\s*\/Image/g;let m;const tried=new Set();
+ while((m=re.exec(s))){const objAt=s.lastIndexOf(' obj',m.index);const dictStart=s.lastIndexOf('<<',m.index);if(dictStart<0)continue;
+  const stAt=s.indexOf('stream',m.index);if(stAt<0||tried.has(stAt))continue;tried.add(stAt);const dict=s.slice(Math.max(objAt,dictStart-2),stAt);
+  if(!/FlateDecode/.test(dict)||/DCTDecode|JPXDecode/.test(dict))continue;const num=k=>{const r=new RegExp('/'+k+'\\s+(\\d+)(\\s+\\d+\\s+R)?').exec(dict);if(!r)return null;if(r[2]){const ref=new RegExp('(^|[^\\d])'+r[1]+'\\s+0\\s+obj\\s*(\\d+)').exec(s);return ref?+ref[2]:null;}return +r[1];};
+  const W=num('Width'),H=num('Height'),bpc=num('BitsPerComponent')||8;if(!W||!H||bpc!==8)continue;
+  let p=stAt+6;if(s[p]==='\r')p++;if(s[p]==='\n')p++;let len=num('Length');if(!len||p+len>u8.length){const e=s.indexOf('endstream',p);len=e-p;}
+  let d;try{d=await zipBytes(u8.slice(p,p+len),'d');}catch(e){try{const e2=s.indexOf('endstream',p);d=await zipBytes(u8.slice(p,e2).subarray(0,Math.max(0,e2-p-1)),'d');}catch(_){continue;}}
+  const pred=num('Predictor');if(pred&&pred>=10)d=unpredict(d,num('Columns')||W,num('Colors')||3,8);
+  const comps=Math.round(d.length/(W*H));if(comps<3)continue;let rgb=d;if(comps!==3){rgb=new Uint8Array(W*H*3);for(let i=0;i<W*H;i++){rgb[i*3]=d[i*comps];rgb[i*3+1]=d[i*comps+1];rgb[i*3+2]=d[i*comps+2];}}
+  try{const r=await parsePayload(rgb);if(r)return r;}catch(e){if(e.message==='crc')throw new Error('crc');}}
+ return null;}
+function readPngData(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file);const img=new Image();img.onload=async()=>{try{const cv=document.createElement('canvas');cv.width=img.naturalWidth;cv.height=img.naturalHeight;const g=cv.getContext('2d',{colorSpace:'srgb',willReadFrequently:true});g.drawImage(img,0,0);const d=g.getImageData(0,0,cv.width,cv.height).data;const rgb=new Uint8Array(cv.width*cv.height*3);for(let i=0;i<cv.width*cv.height;i++){rgb[i*3]=d[i*4];rgb[i*3+1]=d[i*4+1];rgb[i*3+2]=d[i*4+2];}res(await parsePayload(rgb));}catch(e){rej(e);}finally{URL.revokeObjectURL(url);}};img.onerror=()=>{URL.revokeObjectURL(url);res(null);};img.src=url;});}
+async function openAnyFile(f){const head=new Uint8Array(await f.slice(0,8).arrayBuffer());const isPdf=head[0]===0x25&&head[1]===0x50&&head[2]===0x44&&head[3]===0x46,isPng=head[0]===0x89&&head[1]===0x50;
+ if(isPdf||isPng){let d=null;try{d=isPdf?await readPdfData(await f.arrayBuffer()):await readPngData(f);}catch(e){return e.message==='crc'?'PDFの中の作品データが壊れているようです。別の保存のしかたで作ったPDFかもしれません':'作品データを読み取れませんでした';}
+  if(!d)return isPdf?'このPDFには作品データが入っていません。「PDFに出力」で「作品データをPDFに埋め込む」をオンにして作ったPDFを選んでください':'この画像には作品データが入っていません';
+  return applyLoaded(JSON.stringify(d));}
+ return applyLoaded(await f.text());}
+
+function buildPdfHtml(fname,di){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;const parts=[];const sec=(k,title,body)=>{if(on(k)&&body)parts.push(`<section class="ps ps-${k}"><h2>${title}</h2>${body}</section>`);};
  const clean={gsel:null,rand:null,edEdge:null,glinkFrom:null,gtag:'',views:{},gview:null,card:null,picked:[],famSel:null,famPerson:'',msel:null,nsel:null,mdraw:null,mapFS:false,confirm:null};
  // cover
  if(on('cover')){const n=t=>S.cards.filter(c=>c.type===t).length;
   parts.push(`<section class="ps cover"><div class="kick">ストーリーカード</div><h1>${esc(S.story.title)||'無題の作品'}</h1>${S.story.ending?`<div class="ending"><span>結末</span>${esc(S.story.ending)}</div>`:''}
    <table class="ptab"><tr><th>シーン</th><td>${S.scenes.length}</td><th>カード</th><td>${S.cards.length}</td></tr><tr><th>人物</th><td>${n('person')}</td><th>場所</th><td>${n('place')}</td></tr><tr><th>組織</th><td>${n('org')}</td><th>地図</th><td>${(S.maps||[]).length}</td></tr></table>
-   <div class="date">${new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'})} 出力</div></section>`);}
+   <div class="date">${new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'})} 出力</div>${fname&&on('json')?`<div class="date">読み込み用ファイル：${esc(fname)}<br>（ストーリーカードの「保存・読み込み」→「ファイルを開く」で、この作品を開き直せます）</div>`:''}</section>`);}
  // story
  if(on('story')&&S.scenes.length){const endId=S.story.endingSceneId;
   const rows=S.scenes.map((s,i)=>{const cs=(s.cards||[]).map(card).filter(Boolean);const cz=s.causes.map(sc).filter(Boolean);const pl=S.foreshadows.filter(f=>s.plants.includes(f.id)),py=S.foreshadows.filter(f=>s.pays.includes(f.id));
@@ -2478,11 +2520,13 @@ function buildPdfHtml(){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;const par
     if(o.m3d){const r=withUI({...clean,mapFS:false,m3dSize:'900x560'},()=>frame3D(m));b+=`<div class="pmap"><h3 class="sub">${esc(m.name)||'地図'}${m.floors?` ${esc(m.floors[m.fcur].name)}`:''}（立体）</h3><div class="pfig"><svg class="zsvg m3d" viewBox="0 0 ${r.w} ${r.h}">${r.svg}</svg></div></div>`;}});
    if(m.floors&&m.fcur!==cur)switchFloor(m,cur);});UI.mapId=keepMap;parts.push(`<section class="ps ps-maps"><h2>地図</h2>${b}</section>`);}
  // check
+ const dataSec=di?`<section class="ps ps-data"><h2>読み込み用データ</h2><p>このページの模様には、この作品のデータ（カード・シーン・地図など）がすべて入っています。ストーリーカードの「保存・読み込み」→「ファイルを開く」でこのPDFを選ぶと、作品を開き直せます。</p><p class="muted">模様を切り取ったり、PDFを画像として保存し直したりすると読み込めなくなります。</p><div class="pdata"><img src="${di.url}" alt="作品データ" width="${di.w}" height="${di.h}"></div><p class="muted" style="font-size:9pt">データの大きさ：${Math.ceil(di.bytes/1024)} KB（${di.w}×${di.h} 画素）</p></section>`:'';
  if(on('check')){const iss=checks();const LV={err:'破綻',warn:'要確認',info:'メモ'};sec('check','破綻チェック',iss.length?`<ul class="pchk">${iss.sort((a,b)=>({err:0,warn:1,info:2}[a.lvl]-{err:0,warn:1,info:2}[b.lvl])).map(i=>`<li class="${i.lvl}"><b>${LV[i.lvl]}</b><span class="muted">［${i.cat}］</span>${esc(i.msg)}</li>`).join('')}</ul>`:'<p>見つかった問題はありません。</p>');}
  const css=[...document.querySelectorAll('style')].map(s2=>s2.textContent).join('\n');
  const links=[...document.querySelectorAll('link[rel="stylesheet"]')].map(l=>l.outerHTML).join('');
  const orient=o.orient==='landscape'?'landscape':'portrait';
- return `<!doctype html><html lang="ja" data-theme="light"><head><meta charset="utf-8"><title>${esc(S.story.title||'ストーリーカード')}</title>${links}<style>${css}
+ if(dataSec)parts.push(dataSec);
+ return `<!doctype html><html lang="ja" data-theme="light"><head><meta charset="utf-8"><title>${esc(fname?fname.replace(/\.json$/,''):(S.story.title||'ストーリーカード'))}</title>${links}<style>${css}
  @page{size:A4 ${orient};margin:12mm}
  html,body{background:#fff!important;color:#15181d}body{padding:0!important;margin:0;font-size:11pt;line-height:1.6;background-image:none!important}
  .ps{break-before:page;page-break-before:always}.ps:first-child{break-before:auto;page-break-before:auto}
@@ -2502,14 +2546,18 @@ function buildPdfHtml(){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;const par
  .pmap{break-inside:avoid;margin-bottom:6mm}
  .pchk{list-style:none;padding:0;margin:0;font-size:10pt}.pchk li{padding:1.5mm 2mm;border-left:3px solid #d2e1eb;margin-bottom:1.5mm}.pchk li.err{border-color:#bf3a27}.pchk li.warn{border-color:#a96600}.pchk b{margin-right:2mm}
  .gn.dim,.ge.dim{opacity:1!important}.mtx{font-size:9pt}
+ .pdata img{width:70mm;max-width:120mm;height:auto;image-rendering:pixelated;border:1px solid #d2e1eb;display:block}
  </style></head><body>${parts.join('')||'<p>出力する内容がありません。</p>'}</body></html>`;}
-function makePdf(){syncAllFloors();let html;try{html=buildPdfHtml();}catch(e){console.error(e);toast('PDFの準備中に問題が起きました');return;}
+async function makePdf(){syncAllFloors();const o=UI.pdfOpt||{};UI.pdfOpt=o;UI.pdfOpen=false;render();const fname=saveFileName();let di=null;if(o.embed!==false){try{di=await dataImageURL();}catch(e){console.error(e);}}let html;try{html=buildPdfHtml(fname,di);}catch(e){console.error(e);toast('PDFの準備中に問題が起きました');return;}
  const old=document.getElementById('pdf-frame');if(old)old.remove();
  const f=document.createElement('iframe');f.id='pdf-frame';f.setAttribute('aria-hidden','true');f.style.cssText='position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;pointer-events:none';document.body.appendChild(f);
  const d=f.contentDocument;d.open();d.write(html);d.close();
  const go=()=>{try{f.contentWindow.focus();f.contentWindow.print();}catch(e){toast('印刷画面を開けませんでした。ブラウザで直接開いたファイルで試してください');}};
  const imgs=[...d.images];Promise.all(imgs.map(im=>im.complete?1:new Promise(r=>{im.onload=im.onerror=r;}))).then(()=>{const fr=d.fonts&&d.fonts.ready?d.fonts.ready:Promise.resolve();Promise.race([fr,new Promise(r=>setTimeout(r,1500))]).then(()=>setTimeout(go,150));});
- toast('印刷画面を開いています。送信先を「PDFに保存」にしてください');}
+ if(o.json!==false){const data=JSON.stringify(S,null,1);const done=()=>{};
+  if(DL)DL.save({filename:fname,data}).catch(()=>{});
+  else{try{const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}catch(e){}}}
+ toast(o.json!==false?`作品ファイル「${fname}」を保存し、印刷画面を開いています。送信先を「PDFに保存」にしてください`:'印刷画面を開いています。送信先を「PDFに保存」にしてください');}
 
 function dataDialog(){
  if(!UI.dataOpen)return '';
@@ -2519,8 +2567,8 @@ function dataDialog(){
   <div class="filebox">
    <div class="filecol"><b>ファイルに保存</b><small class="muted">作品全体を1つのファイル（.json、中身はテキスト）にして保存します。</small>
     ${DL||!IN_ARTIFACT?`<button class="btn pri" data-act="saveFile">ファイルに保存</button>`:`<small class="muted" style="color:var(--warn)">${DLready?'この画面ではファイル保存が使えません。下の「テキストで保存」を使ってください。':'準備中…'}</small>`}</div>
-   <div class="filecol"><b>ファイルを開く</b><small class="muted">保存したファイルを選ぶと、その内容に切り替わります（「元に戻す」で戻せます）。</small>
-    <label class="btn filebtn">ファイルを選ぶ<input type="file" id="open-file" accept=".json,.txt,application/json,text/plain"></label></div>
+   <div class="filecol"><b>ファイルを開く</b><small class="muted">保存した作品ファイル（.json）か、作品データを埋め込んだPDFを選ぶと、その内容に切り替わります（「元に戻す」で戻せます）。</small>
+    <label class="btn filebtn">ファイルを選ぶ<input type="file" id="open-file" accept=".json,.txt,.pdf,.png,application/json,text/plain,application/pdf,image/png"></label></div>
   </div>
   <details class="pf-help" style="margin-top:12px"><summary><span class="help-ico" aria-hidden="true">?</span>テキストで保存・読み込み</summary>
    <p>ファイルが使えないときは、下のテキストをコピーしてメモ帳などに保管し、読み込むときは貼り付けて「貼り付けた内容を読み込む」を押してください。</p>
@@ -2773,7 +2821,7 @@ function act(a,d,el){
    S.cards.forEach(c=>{[...PF.map(x=>x[0]),'loc','base'].forEach(k=>{if(c[k]&&c[k].place===d.cid)c[k].place='';});[...RF.map(x=>x[0]),'orgs'].forEach(k=>{(c[k]||[]).forEach(r=>{if(r.card===d.cid){r.name=r.name||'';r.card='';}});});if(c.orgRels)c.orgRels=c.orgRels.filter(r=>r.org!==d.cid);});(S.maps||[]).forEach(m=>m.items.forEach(it=>{if(it.place===d.cid)it.place='';}));UI.card=null;break;
   case 'filter':UI.filter=d.v;break;
   case 'data':UI.dataOpen=true;break;
-  case 'pdfOpen':UI.pdfOpen=true;break;
+  case 'pdfOpen':UI.pdfOpen=true;UI.pdfOpt=UI.pdfOpt||{json:false};break;
   case 'pdfClose':UI.pdfOpen=false;break;
   case 'pdfOpt':UI.pdfOpt=UI.pdfOpt||{};UI.pdfOpt[d.k]=el.checked;return;
   case 'pdfOptSel':UI.pdfOpt=UI.pdfOpt||{};UI.pdfOpt[d.k]=el.value;return;
@@ -2972,7 +3020,7 @@ document.addEventListener('dblclick',e=>{const svg=e.target.closest&&e.target.cl
  const vh=e.target.closest('[data-mv]'),g=e.target.closest('[data-mi]');const m=curMap();const it=m&&g&&m.items.find(x=>x.id===g.dataset.mi);
  if(vh&&it&&it.pts){const min=it.kind==='line'?2:3;if(it.pts.length>min){it.pts.splice(+vh.dataset.mv,1);save();snapshotNow();render();}else toast(`これ以上は角を減らせません（${min}点以上必要です）`);}});
 document.addEventListener('change',e=>{if(!e.target.id||!e.target.id.startsWith('cimg-'))return;const cid=e.target.id.slice(5),c=card(cid),f=e.target.files&&e.target.files[0];if(!c||!f)return;downscaleCard(f,u=>{if(!u){toast('画像を読み込めませんでした');return;}c.img=u;save();snapshotNow();render();toast('画像を付けました');});});
-document.addEventListener('change',e=>{if(e.target.id!=='open-file')return;const f=e.target.files&&e.target.files[0];if(!f)return;const fr=new FileReader();fr.onload=()=>{const err=applyLoaded(String(fr.result||''));toast(err||`「${f.name}」を開きました（元に戻すで戻せます）`);render();};fr.onerror=()=>toast('ファイルを読み込めませんでした');fr.readAsText(f);});
+document.addEventListener('change',e=>{if(e.target.id!=='open-file')return;const f=e.target.files&&e.target.files[0];if(!f)return;toast('読み込んでいます…');openAnyFile(f).then(err=>{toast(err||`「${f.name}」を開きました（元に戻すで戻せます）`);render();}).catch(()=>{toast('ファイルを読み込めませんでした');});});
 document.addEventListener('change',e=>{if(e.target.id!=='map-img')return;const f=e.target.files&&e.target.files[0];const m=curMap();if(!f||!m)return;toast('画像を読み込んでいます…');
  downscaleImage(f,url=>{if(!url){toast('画像を読み込めませんでした。別の画像を試してください');return;}m.img=url;save();snapshotNow();render();toast('下絵を読み込みました');});});
 document.addEventListener('keydown',e=>{
