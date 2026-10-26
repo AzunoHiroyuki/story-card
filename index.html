@@ -833,7 +833,9 @@ function hullBox(oid){const ids=groupIds(oid).filter(id=>S.gpos[id]);if(ids.leng
 function clipP(c,o,hw,hh){const dx=o.x-c.x,dy=o.y-c.y;if(!dx&&!dy)return {x:c.x,y:c.y};const t=Math.min(dx?hw/Math.abs(dx):Infinity,dy?hh/Math.abs(dy):Infinity,1);return {x:c.x+dx*t,y:c.y+dy*t};}
 function abPath(a,b){const s=segXY(a,b);const mx=(s.x1+s.x2)/2,my=(s.y1+s.y2)/2,dx=s.x2-s.x1,dy=s.y2-s.y1,l=Math.hypot(dx,dy)||1,k=Math.min(60,l*0.18);return `M${s.x1} ${s.y1} Q ${mx-dy/l*k} ${my+dx/l*k} ${s.x2} ${s.y2}`;}
 function abMid(a,b){const s=segXY(a,b);const mx=(s.x1+s.x2)/2,my=(s.y1+s.y2)/2,dx=s.x2-s.x1,dy=s.y2-s.y1,l=Math.hypot(dx,dy)||1,k=Math.min(60,l*0.18)/2;return [mx-dy/l*k,my+dx/l*k-3];}
-function segXY(a,b){const A=S.gpos[a],B=S.gpos[b];const s=clipP(A,B,nodeW(card(a))/2+3,18),t=clipP(B,A,nodeW(card(b))/2+3,18);return {x1:s.x,y1:s.y,x2:t.x,y2:t.y};}
+function pairN(a,b){const [p,q]=a<b?[S.gpos[a],S.gpos[b]]:[S.gpos[b],S.gpos[a]];const dx=q.x-p.x,dy=q.y-p.y,l=Math.hypot(dx,dy)||1;return [-dy/l,dx/l];}
+function segXY(a,b,off){let A=S.gpos[a],B=S.gpos[b];if(off){const n=pairN(a,b);A={x:A.x+n[0]*off,y:A.y+n[1]*off};B={x:B.x+n[0]*off,y:B.y+n[1]*off};}const s=clipP(A,B,nodeW(card(a))/2+3,18),t=clipP(B,A,nodeW(card(b))/2+3,18);return {x1:s.x,y1:s.y,x2:t.x,y2:t.y};}
+function labXY(a,b,off){const s=segXY(a,b,off);let x=(s.x1+s.x2)/2,y=(s.y1+s.y2)/2-4;if(off){const n=pairN(a,b),k=off>0?9:-9;x+=n[0]*k;y+=n[1]*k+(n[1]*k>0?6:0);}return {x,y};}
 function fieldsText(c){const p=[...regionPath(c)];
  if(c.type==='place'){if(c.facility)p.push('施設');if(c.loc&&c.loc.place&&card(c.loc.place))p.push(card(c.loc.place).title);return p.join(' ');}
  if(c.type==='org'){if(c.base){if(c.base.place&&card(c.base.place))p.push(card(c.base.place).title);if(c.base.text)p.push(c.base.text);}(c.orgRels||[]).forEach(r=>{if(r.org&&card(r.org))p.push(card(r.org).title,(OREL[r.kind]||OREL.other)[0],r.note);});return p.filter(Boolean).join(' ');}
@@ -1399,12 +1401,14 @@ function graphTab(){
  const eCls=e=>{if(sel)return (e.a===sel||e.b===sel)?'hl':'dim';if(UI.gtag&&!(hit(e.a)&&hit(e.b)))return 'dim';return '';};
  const counts={};ids.forEach(id=>TM[id].forEach(t=>counts[t]=(counts[t]||0)+1));
  const tags=Object.entries(counts).filter(([,n])=>n>=2).sort((a,b)=>b[1]-a[1]);
- const xy=e=>{const s=segXY(e.a,e.b);return `x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}"`;};
+ {const grp=new Map();[...man,...attr].forEach(e=>{const k=[e.a,e.b].sort().join('|');if(!grp.has(k))grp.set(k,[]);grp.get(k).push(e);});
+  grp.forEach(arr=>{if(arr.length<2){arr[0].off=0;return;}const sp=arr.length>2?8:7;arr.sort((x,y)=>(x.a+'|'+(x.src||'')+'|'+(x.id||'')).localeCompare(y.a+'|'+(y.src||'')+'|'+(y.id||'')));arr.forEach((e,i)=>{e.off=(i-(arr.length-1)/2)*sp*2;});});}
+ const xy=e=>{const s=segXY(e.a,e.b,e.off||0);return `x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" ${e.off?`data-off="${e.off}"`:''}`;};
  const mk=(kind,cls,dir)=>{if(kind==='auto'||dir==='none')return '';const id=cls.includes('hl')?'arr-hl':kind==='attr'?'arr-attr':'arr-man';return `marker-end="url(#${id})"${dir==='both'?` marker-start="url(#${id})"`:''}`;};
  const line=(e,kind,cls)=>`<line class="ge ${kind} ${e.cls||''} ${cls} ${kind!=='auto'&&isEd(e,kind)?'editing':''}" data-a="${e.a}" data-b="${e.b}" ${xy(e)} ${kind==='auto'?`stroke-width="${Math.min(3,e.sh.length)}"`:''} ${mk(kind,cls,e.dir||'one')}/>`;
  const edA=(e,kind)=>`data-act="edgeClick" data-kind="${kind}" ${e.src?`data-src="${e.src}"`:''} data-a="${e.a}" data-b="${e.b}"`;
  const isEd=(e,kind)=>UI.edEdge&&UI.edEdge.kind===kind&&UI.edEdge.a===e.a&&UI.edEdge.b===e.b&&(UI.edEdge.src||'')===(e.src||'');
- const lab=(e,txt,cls,kind)=>`<text class="gl ${cls} ${kind?'ed':''} ${kind&&isEd(e,kind)?'editing':''}" ${kind?edA(e,kind).replace(/data-a=/,'data-ea=').replace(/data-b=/,'data-eb='):''} data-la="${e.a}" data-lb="${e.b}" x="${(P[e.a].x+P[e.b].x)/2}" y="${(P[e.a].y+P[e.b].y)/2-4}" text-anchor="middle">${esc(txt)}</text>`;
+ const lab=(e,txt,cls,kind)=>`<text class="gl ${cls} ${kind?'ed':''} ${kind&&isEd(e,kind)?'editing':''}" ${kind?edA(e,kind).replace(/data-a=/,'data-ea=').replace(/data-b=/,'data-eb='):''} data-la="${e.a}" data-lb="${e.b}" ${e.off?`data-off="${e.off}"`:''} x="${labXY(e.a,e.b,e.off||0).x}" y="${labXY(e.a,e.b,e.off||0).y}" text-anchor="middle">${esc(txt)}</text>`;
  const TIP={man:'この線を切る',auto:'この点線を非表示にする',attr:'人物カードの項目からこの関係を外す'};
  const hitL=(e,kind)=>{const sh=kind==='auto'?e.sh:sharedT(TM,e.a,e.b);return `<line class="hit ${kind!=='auto'?'ed':''}" ${edA(e,kind)} ${xy(e)}><title>${UI.gmode==='cut'?TIP[kind]:kind==='auto'?'共通点':'押すと線の文字を編集'}${sh.length?'\n共通点：'+esc(sh.join('・')):''}</title></line>`;};
  const fp=from?P[from]:null;
@@ -2474,10 +2478,10 @@ function svgPt(svg,e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;c
 function moveNode(svg,id,x,y){
  const g=svg.querySelector(`[data-node="${id}"]`);if(g)g.setAttribute('transform',`translate(${x},${y})`);
  svg.querySelectorAll(`path[data-pa="${id}"],path[data-pb="${id}"]`).forEach(p=>p.setAttribute('d',abPath(p.dataset.pa,p.dataset.pb)));svg.querySelectorAll(`text[data-qa="${id}"],text[data-qb="${id}"]`).forEach(t=>{const m=abMid(t.dataset.qa,t.dataset.qb);t.setAttribute('x',m[0]);t.setAttribute('y',m[1]);});
- svg.querySelectorAll(`line[data-a="${id}"],line[data-b="${id}"]`).forEach(l=>{if(!S.gpos[l.dataset.a]||!S.gpos[l.dataset.b])return;const s=segXY(l.dataset.a,l.dataset.b);l.setAttribute('x1',s.x1);l.setAttribute('y1',s.y1);l.setAttribute('x2',s.x2);l.setAttribute('y2',s.y2);});
+ svg.querySelectorAll(`line[data-a="${id}"],line[data-b="${id}"]`).forEach(l=>{if(!S.gpos[l.dataset.a]||!S.gpos[l.dataset.b])return;const s=segXY(l.dataset.a,l.dataset.b,+(l.dataset.off||0));l.setAttribute('x1',s.x1);l.setAttribute('y1',s.y1);l.setAttribute('x2',s.x2);l.setAttribute('y2',s.y2);});
  const FRm=svg.querySelector('[data-frame]')?buildFrames():null,FBm=FRm?frameBoxes(FRm):null;
  svg.querySelectorAll('[data-frame]').forEach(h=>{const b=FBm&&FBm[h.dataset.frame];if(!b)return;const r=h.querySelector('rect'),t=h.querySelector('text');r.setAttribute('x',b.x);r.setAttribute('y',b.y);r.setAttribute('width',b.w);r.setAttribute('height',b.h);t.setAttribute('x',b.x+10);t.setAttribute('y',b.y+16);});
- svg.querySelectorAll(`text[data-la="${id}"],text[data-lb="${id}"]`).forEach(t=>{const a=S.gpos[t.dataset.la],b=S.gpos[t.dataset.lb];if(a&&b){t.setAttribute('x',(a.x+b.x)/2);t.setAttribute('y',(a.y+b.y)/2-4);}});
+ svg.querySelectorAll(`text[data-la="${id}"],text[data-lb="${id}"]`).forEach(t=>{const a=S.gpos[t.dataset.la],b=S.gpos[t.dataset.lb];if(a&&b){const q=labXY(t.dataset.la,t.dataset.lb,+(t.dataset.off||0));t.setAttribute('x',q.x);t.setAttribute('y',q.y);}});
 }
 document.addEventListener('pointerdown',e=>{
  const svgEl=e.target.closest&&e.target.closest('.gsvg');if(!svgEl)return;
