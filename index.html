@@ -170,6 +170,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .m-roth{fill:var(--sheet);stroke:var(--blue);stroke-width:2;cursor:grab}
 .m-rotline{stroke:var(--blue);stroke-width:1.2;stroke-dasharray:3 3;pointer-events:none}
 .tfbar{display:flex;flex-wrap:wrap;gap:4px}
+.msvg.notemode .mi,.msvg.notemode .m-roads{pointer-events:none}
+.notes:not(.live){pointer-events:none}
+.n-hit{fill:transparent;stroke:transparent;fill-opacity:0}
+.note.nsel{filter:drop-shadow(0 0 2px var(--blue)) drop-shadow(0 0 4px var(--blue))}
+.msvg.ntool-select .note{cursor:move}.msvg.ntool-erase .note{cursor:not-allowed}
+.msvg.ntool-pen,.msvg.ntool-arrow,.msvg.ntool-text,.msvg.ntool-icon{cursor:crosshair}
+.n-temp{fill:none;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#n-tline{stroke-linecap:round;pointer-events:none;stroke-dasharray:6 4}
+.notebar{background:var(--warn-wash);border:1px solid var(--warn);border-radius:6px;padding:6px 8px}
+.ncolors{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.nc{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);padding:0}
+.nc.on{box-shadow:0 0 0 2px var(--sheet),0 0 0 4px var(--ink)}
+.nicons{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:4px}
+.modesw button[aria-pressed="true"]{background:var(--blue-ink)!important;color:var(--sheet)!important}
 .cimg{margin:2px -12px 2px;aspect-ratio:4/3;max-width:calc(100% + 24px);overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper)}
 .cimg img{width:100%;height:100%;object-fit:cover;display:block}
 .card.hasimg{padding-top:8px}
@@ -1900,15 +1914,15 @@ const TILES={floor:'床',wall:'壁',diag:'斜め壁',door:'扉',window:'窓',sta
 const TILE_ROT=new Set(['diag','door','window','stairs','tatami']);
 function curMap(){const ms=S.maps||[];let m=ms.find(x=>x.id===UI.mapId);if(!m&&ms.length){m=ms[0];UI.mapId=m.id;}if(m)ensureFloors(m);return m||null;}
 /* floors: top-level cells/walls/items always hold the active floor; m.floors[i] (bottom→top) keeps the others */
-function ensureFloors(m){if(m.kind!=='indoor'||m.floors)return;m.floors=[{id:uid(),name:'1F',cells:m.cells||{},walls:m.walls||[],items:m.items||[]}];m.fcur=0;}
-function syncFloor(m){if(!m.floors)return;const f=m.floors[m.fcur||0];if(f){f.cells=m.cells||{};f.walls=m.walls||[];f.items=m.items||[];}}
-function switchFloor(m,i){if(!m.floors||!m.floors[i])return;syncFloor(m);m.fcur=i;const f=m.floors[i];m.cells=f.cells||{};m.walls=f.walls||[];m.items=f.items||[];UI.msel=null;UI.mdraw=null;}
+function ensureFloors(m){if(m.kind!=='indoor'||m.floors)return;m.floors=[{id:uid(),name:'1F',cells:m.cells||{},walls:m.walls||[],items:m.items||[],notes:m.notes||[]}];m.fcur=0;}
+function syncFloor(m){if(!m.floors)return;const f=m.floors[m.fcur||0];if(f){f.cells=m.cells||{};f.walls=m.walls||[];f.items=m.items||[];f.notes=m.notes||[];}}
+function switchFloor(m,i){if(!m.floors||!m.floors[i])return;syncFloor(m);m.fcur=i;const f=m.floors[i];m.cells=f.cells||{};m.walls=f.walls||[];m.items=f.items||[];m.notes=f.notes||[];UI.nsel=null;UI.msel=null;UI.mdraw=null;}
 function floorNameNext(name,dir){let mm=/^(\d+)\s*[FＦ階]$/.exec(name||''),b=/^[BＢ](\d+)$/.exec(name||'');
  if(dir>0){if(mm)return (+mm[1]+1)+'F';if(b)return +b[1]===1?'1F':'B'+(+b[1]-1);return '上の階';}
  if(mm)return +mm[1]>1?(+mm[1]-1)+'F':'B1';if(b)return 'B'+(+b[1]+1);return '下の階';}
 const LAYOUT_TILES=new Set(['wall','diag','pillar','window','door','stairs']);
 function addFloor(m,dir,mode){syncFloor(m);const cur=m.floors[m.fcur];const edge=dir>0?m.floors[m.floors.length-1]:m.floors[0];
- const nf={id:uid(),name:floorNameNext(edge.name,dir),cells:{},walls:[],items:[]};
+ const nf={id:uid(),name:floorNameNext(edge.name,dir),cells:{},walls:[],items:[],notes:[]};
  if(mode==='layout'||mode==='all'){Object.entries(cur.cells||{}).forEach(([k,v])=>{if(mode==='all'||LAYOUT_TILES.has(v.t))nf.cells[k]={...v};});nf.walls=(cur.walls||[]).map(w=>[...w]);}
  if(mode==='all')nf.items=(cur.items||[]).map(it=>{const c=JSON.parse(JSON.stringify(it));c.id=uid();if(c.place){const pl=card(c.place);if(!c.label&&pl)c.label=pl.title;c.place='';}return c;});
  if(dir>0){m.floors.push(nf);switchFloor(m,m.floors.length-1);}else{m.floors.unshift(nf);m.fcur++;switchFloor(m,0);}return nf;}
@@ -2149,26 +2163,28 @@ function mapTab(){
  const draw=drawing?`${tool==='poly'?`<polygon class="m-drawpoly" points="${UI.mdraw.map(p=>p.join(',')).join(' ')}"/>`:`<polyline class="m-line ls-road m-drawing" points="${UI.mdraw.map(p=>p.join(',')).join(' ')}"/>`}<line id="m-rubber" class="m-rubber" x1="${last[0]}" y1="${last[1]}" x2="${last[0]}" y2="${last[1]}"/>${UI.mdraw.map(p=>`<circle class="m-vtx" cx="${p[0]}" cy="${p[1]}" r="4"/>`).join('')}`:'';
  const gs=indoor?s:50;
  const compass=indoor?'':`<g class="m-compass" transform="translate(${m.w-46},50)"><circle r="24"/><path d="M0 -20 L6 0 L0 -4 L-6 0Z" class="n"/><path d="M0 20 L6 0 L0 4 L-6 0Z"/><text y="-28" text-anchor="middle">N</text></g>`;
- const svg=`${zOpen(vk,m.w,m.h,'msvg mtool-'+UI.mtool+(indoor?' indoor':''),esc(m.name))}<defs><pattern id="mgrid-${m.id}" width="${gs}" height="${gs}" patternUnits="userSpaceOnUse"><path d="M${gs} 0H0V${gs}" class="m-gridline ${indoor?'strong':''}"/></pattern></defs>
+ const NM=UI.mmode==='note';
+ const svg=`${zOpen(vk,m.w,m.h,'msvg mtool-'+(NM?'note ntool-'+(UI.ntool||'pen'):UI.mtool)+(indoor?' indoor':'')+(NM?' notemode':''),esc(m.name))}<defs><pattern id="mgrid-${m.id}" width="${gs}" height="${gs}" patternUnits="userSpaceOnUse"><path d="M${gs} 0H0V${gs}" class="m-gridline ${indoor?'strong':''}"/></pattern></defs>
   <rect class="m-bg bg-${indoor?'plain':(m.bg||'sea')}" x="0" y="0" width="${m.w}" height="${m.h}"/>
   ${m.img?`<image href="${m.img}" x="0" y="0" width="${m.w}" height="${m.h}" preserveAspectRatio="xMidYMid meet" opacity="${m.imgOp??0.6}" style="pointer-events:none"/>`:''}
   ${indoor?`<g id="m-cells" style="pointer-events:none">${cellsSvg(m)}</g>`:''}
   ${m.grid!==false?`<rect x="0" y="0" width="${m.w}" height="${m.h}" fill="url(#mgrid-${m.id})" style="pointer-events:none"/>`:''}
   ${indoor?floorGhost(m):''}
   ${indoor?`<g id="m-walls" style="pointer-events:none">${wallsSvg(m)}</g><line id="m-wallprev" class="m-wall prev" x1="0" y1="0" x2="0" y2="0" stroke-width="${Math.max(4,s*0.2)}" style="display:none"/><circle id="m-snap" class="m-snap" r="5" cx="0" cy="0" style="display:none"/>`:''}
-  ${items}${draw}${compass}<circle id="m-snapw" class="m-snapw" r="6" cx="0" cy="0" style="display:none"/><rect id="m-temp" class="m-temp" x="0" y="0" width="0" height="0" style="display:none"/></svg>`;
+  ${items}${draw}${notesLayer(m,NM)}${compass}<circle id="m-snapw" class="m-snapw" r="6" cx="0" cy="0" style="display:none"/><rect id="m-temp" class="m-temp" x="0" y="0" width="0" height="0" style="display:none"/></svg>`;
  const legend=indoor?Object.entries(TILES).map(([k,l])=>`<span>${tilePreview(k,0).replace('width="28" height="28"','width="14" height="14"')}${l}</span>`).join('')+`<span><svg width="24" height="8" aria-hidden="true"><path d="M1 4H23" class="m-wall" stroke-width="4"/></svg>壁線</span>`
   :Object.entries(TERR).filter(([k])=>k!=='floor').map(([k,l])=>`<span><i class="ter-sw" style="background:var(--m-${k==='mountain'?'mount':k})"></i>${l}</span>`).join('')+`<span><svg width="26" height="14" aria-hidden="true">${lineDraw('M1 7H25','rail',4)}<rect class="m-station" x="7" y="3" width="12" height="8" rx="2"/></svg>駅</span>`+Object.entries(LSTY).map(([k,l])=>`<span><svg width="26" height="14" aria-hidden="true">${k==='bridge'?bridgeDraw([[3,7],[23,7]],4):lineDraw('M2 7H24',k,k==='road'?5:3)}</svg>${l}</span>`).join('');
  return `<div class="sec"><h2>${indoor?'建物の中の地図':'架空の地図'}</h2>
  <p class="lead">${indoor?'マスを塗って床・壁・扉などを置き、マスの角から角へ壁線を引いて間取りを作ります。部屋の名前は「文字」、施設の場所カードは「ピン」で置けます。':'物語の世界の地図を描き、場所カードを置きます。国や島は「多角形」か「範囲」、施設は「ピン」がおすすめです。置いた場所は、場所カードからも「地図で見る」で開けます。'}</p>
  ${mapsBar}
  ${indoor?floorBar(m):''}
- <div class="viewbar"><div class="gmode" role="group" aria-label="表示"><button aria-pressed="${!UI.m3d}" data-act="m3d" data-v="0">平面</button><button aria-pressed="${!!UI.m3d}" data-act="m3d" data-v="1">立体（積み木）</button></div>
+ <div class="viewbar"><div class="gmode modesw" role="group" aria-label="モード"><button aria-pressed="${UI.mmode!=='note'}" data-act="mmode" data-v="make">作成モード</button><button aria-pressed="${UI.mmode==='note'}" data-act="mmode" data-v="note">記入モード</button></div>${UI.mmode!=='note'&&(m.notes||[]).length?`<label><input type="checkbox" id="n-show" data-act="nShowT" ${UI.nShow!==false?'checked':''}> 記入を表示</label>`:''}<div class="gmode" role="group" aria-label="表示"><button aria-pressed="${!UI.m3d}" data-act="m3d" data-v="0">平面</button><button aria-pressed="${!!UI.m3d}" data-act="m3d" data-v="1">立体（積み木）</button></div>
   ${UI.m3d?`<label>表示サイズ <select id="m3d-size" data-act="m3dSize">${Object.entries(M3SIZE).map(([k,l])=>`<option value="${k}" ${(UI.m3dSize||'900x560')===k?'selected':''}>${l}</option>`).join('')}</select></label>${(UI.m3dSize||'')==='custom'?`<label>幅 <input type="number" id="m3d-cw" min="300" max="4000" step="10" value="${UI.m3dCW||1000}" style="width:76px"></label><label>高さ <input type="number" id="m3d-ch" min="200" max="4000" step="10" value="${UI.m3dCH||600}" style="width:76px"></label>`:''}<label>大きさ <input type="range" id="m3d-fit" min="50" max="200" value="${Math.round((UI.m3dFit||1.3)*100)}" data-act="m3dFit"></label><label>傾き <input type="range" id="m3d-tilt" min="35" max="95" value="${Math.round((UI.m3dTilt||0.6)*100)}" data-act="m3dTilt"></label><label>高さの倍率 <input type="range" id="m3d-scale" min="4" max="30" value="${UI.m3dScale||10}" data-act="m3dScale"></label>${indoor?`<label>壁の高さ <input type="number" id="m3d-wallh" min="1" max="10" value="${m.wallH||3}" data-f="map" data-k="wallH" style="width:56px"></label>`:''}<label>向き <button class="btn sm" data-act="m3dRotBtn" data-v="-45" aria-label="左に回す">⟲</button><span class="mono" id="m3d-rot" style="min-width:34px;text-align:center">${Math.round(((UI.m3dRot||0)%360+360)%360)}°</span><button class="btn sm" data-act="m3dRotBtn" data-v="45" aria-label="右に回す">⟳</button><button class="btn sm" data-act="m3dRotBtn" data-v="reset">北を上に</button></label><span class="muted" style="font-size:12px">ドラッグで回転（上下に動かすと傾き）、Shiftを押しながらドラッグで移動。立体表示は見るための画面で、編集は「平面」に戻して行います。</span>`:''}</div>
- <div class="gmodebar" ${UI.m3d?'hidden':''}><div class="gmode mtools" role="toolbar" aria-label="地図の道具">${TB.map(([k,l,ic])=>`<button aria-pressed="${UI.mtool===k}" data-act="mtool" data-v="${k}" title="${l}">${ic}<span>${l}</span></button>`).join('')}</div>
+ ${NM&&!UI.m3d?noteBar():''}
+ <div class="gmodebar" ${UI.m3d||NM?'hidden':''}><div class="gmode mtools" role="toolbar" aria-label="地図の道具">${TB.map(([k,l,ic])=>`<button aria-pressed="${UI.mtool===k}" data-act="mtool" data-v="${k}" title="${l}">${ic}<span>${l}</span></button>`).join('')}</div>
   <label class="lockopt ${m.lock?'on':''}" title="固定した図形は、押しても選ばれず、動きません">🔒 <select id="map-lock-${m.id}" data-f="map" data-k="lock" aria-label="固定">${Object.entries(LOCKS).map(([k,l])=>`<option value="${k}" ${(m.lock||'')===k?'selected':''}>${l}</option>`).join('')}</select></label>
   <span class="ghint">${HINT[UI.mtool]||''}${m.lock?`<b style="color:var(--warn)">（${LOCKS[m.lock]}中：${m.lock==='nonbld'?'建物だけ動かせます':'建物は動きません'}）</b>`:''}</span>${drawing?`<button class="btn sm pri" data-act="mLineDone">完了</button><button class="btn sm" data-act="mLineCancel">取り消し</button>`:''}</div>
- <div class="mapgrid"><div class="gwrap zwrap mapwrap ${UI.mapFS?'fs':''}"><div class="fsbar"><button class="btn sm" data-act="mapFS" title="${UI.mapFS?'全画面を終わる（Esc）':'地図を画面いっぱいに表示'}">${UI.mapFS?'✕ 全画面を終わる':'⛶ 全画面'}</button><button class="btn sm" data-act="viewReset" title="拡大・移動を元に戻す">表示位置をリセット</button>${UI.mapFS?`<button class="btn sm" data-act="m3d" data-v="${UI.m3d?'0':'1'}">${UI.m3d?'平面にする':'立体にする'}</button>${UI.m3d?`<button class="btn sm" data-act="m3dRotBtn" data-v="-45" aria-label="左に回す">⟲</button><button class="btn sm" data-act="m3dRotBtn" data-v="45" aria-label="右に回す">⟳</button><button class="btn sm" data-act="m3dRotBtn" data-v="reset">北を上に</button>`:''}`:''}</div>${UI.m3d?(()=>{const r=frame3D(m);const k3=m3dKey(vk);return zBar(k3,r.w,r.h)+zOpen(k3,r.w,r.h,'m3d',esc(m.name)+'（立体）')+r.svg+'</svg>';})():zBar(vk,m.w,m.h)+svg}</div><div class="mside">${indoor?floorPanel(m):''}${palette}${selPanel}${plist}${settings}</div></div>
+ <div class="mapgrid"><div class="gwrap zwrap mapwrap ${UI.mapFS?'fs':''}"><div class="fsbar"><button class="btn sm" data-act="mapFS" title="${UI.mapFS?'全画面を終わる（Esc）':'地図を画面いっぱいに表示'}">${UI.mapFS?'✕ 全画面を終わる':'⛶ 全画面'}</button><button class="btn sm" data-act="viewReset" title="拡大・移動を元に戻す">表示位置をリセット</button>${UI.mapFS?`<button class="btn sm" data-act="m3d" data-v="${UI.m3d?'0':'1'}">${UI.m3d?'平面にする':'立体にする'}</button>${UI.m3d?`<button class="btn sm" data-act="m3dRotBtn" data-v="-45" aria-label="左に回す">⟲</button><button class="btn sm" data-act="m3dRotBtn" data-v="45" aria-label="右に回す">⟳</button><button class="btn sm" data-act="m3dRotBtn" data-v="reset">北を上に</button>`:''}`:''}</div>${UI.m3d?(()=>{const r=frame3D(m);const k3=m3dKey(vk);return zBar(k3,r.w,r.h)+zOpen(k3,r.w,r.h,'m3d',esc(m.name)+'（立体）')+r.svg+'</svg>';})():zBar(vk,m.w,m.h)+svg}</div><div class="mside">${indoor?floorPanel(m):''}${NM?notePanel(m):palette+selPanel+plist}${settings}</div></div>
  <div class="legend">${legend}</div>
  </div>`;
 }
@@ -2187,6 +2203,80 @@ function floorGhost(m){const s=m.cs||32;let out='';const below=m.floors[m.fcur-1
  if(below&&UI.floorGhost!==false){out+=`<g class="fghost" style="pointer-events:none">${Object.entries(below.cells||{}).filter(([,v])=>LAYOUT_TILES.has(v.t)&&v.t!=='stairs').map(([k,v])=>{const [cx,cy]=k.split(',').map(Number);return cx<m.cols&&cy<m.rows?`<rect class="fg-cell" x="${cx*s}" y="${cy*s}" width="${s}" height="${s}"/>`:'';}).join('')}${(below.walls||[]).map(w=>`<line class="fg-wall" x1="${w[0]*s}" y1="${w[1]*s}" x2="${w[2]*s}" y2="${w[3]*s}"/>`).join('')}${stairs(below,'down','↓'+esc(below.name)+'の階段')}</g>`;}
  if(above&&UI.floorUp!==false)out+=`<g style="pointer-events:none">${stairs(above,'up','↑'+esc(above.name)+'の階段')}</g>`;
  return out;}
+/* ===== annotation (記入) layer ===== */
+const NCOLORS=[['#d8402e','赤'],['#1f6fd1','青'],['#2b8a4e','緑'],['#e08a00','橙'],['#7b4bc4','紫'],['#1b1d21','黒'],['#ffffff','白']];
+const NICONS={star:'星',flag:'旗',cross:'バツ',warn:'注意',exclam:'！',question:'？',target:'目標',dot:'点',heart:'ハート',skull:'危険',house:'家',tent:'野営'};
+function nIcon(k,c){const st=`fill:${c};stroke:#fff;stroke-width:1.6;stroke-linejoin:round`;const ln=`stroke:${c};stroke-width:3.4;stroke-linecap:round;fill:none`;
+ switch(k){
+  case 'star':return `<polygon points="0,-12 3.5,-4 12,-3.7 5.5,2 7.4,10.5 0,6 -7.4,10.5 -5.5,2 -12,-3.7 -3.5,-4" style="${st}"/>`;
+  case 'flag':return `<line x1="-6" y1="12" x2="-6" y2="-12" style="stroke:#1b1d21;stroke-width:2.2;stroke-linecap:round"/><path d="M-6 -12 L10 -7 L-6 -1 Z" style="${st}"/>`;
+  case 'cross':return `<path d="M-9 -9 L9 9 M9 -9 L-9 9" style="stroke:#fff;stroke-width:7;stroke-linecap:round"/><path d="M-9 -9 L9 9 M9 -9 L-9 9" style="${ln};stroke-width:4"/>`;
+  case 'warn':return `<path d="M0 -12 L12 10 L-12 10 Z" style="${st}"/><path d="M0 -4 V3" style="stroke:#fff;stroke-width:2.6;stroke-linecap:round"/><circle cx="0" cy="7" r="1.5" fill="#fff"/>`;
+  case 'exclam':return `<circle r="11" style="${st}"/><path d="M0 -6 V2" style="stroke:#fff;stroke-width:3;stroke-linecap:round"/><circle cx="0" cy="6.5" r="1.7" fill="#fff"/>`;
+  case 'question':return `<circle r="11" style="${st}"/><path d="M-4 -4 A4 4 0 1 1 1 0 Q0 1 0 3" style="stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round"/><circle cx="0" cy="7" r="1.6" fill="#fff"/>`;
+  case 'target':return `<circle r="11" style="fill:#fff;stroke:${c};stroke-width:2.6"/><circle r="6.5" style="fill:none;stroke:${c};stroke-width:2.6"/><circle r="2.4" style="fill:${c}"/>`;
+  case 'dot':return `<circle r="7" style="${st}"/>`;
+  case 'heart':return `<path d="M0 10 C-14 0 -9 -11 0 -4 C9 -11 14 0 0 10 Z" style="${st}"/>`;
+  case 'skull':return `<path d="M-9 1 A9 9 0 1 1 9 1 L6 4 V9 H-6 V4 Z" style="${st}"/><circle cx="-3.4" cy="-1" r="2.3" fill="#fff"/><circle cx="3.4" cy="-1" r="2.3" fill="#fff"/><path d="M-2 9 V6 M2 9 V6" style="stroke:#fff;stroke-width:1.4"/>`;
+  case 'house':return `<path d="M-11 -1 L0 -11 L11 -1 V10 H-11 Z" style="${st}"/><rect x="-3" y="3" width="6" height="7" fill="#fff"/>`;
+  case 'tent':return `<path d="M-12 10 L0 -11 L12 10 Z" style="${st}"/><path d="M0 -11 L-3 10 M0 -11 L3 10" style="stroke:#fff;stroke-width:1.5"/>`;
+ }return '';}
+function arrowHead(a,b,w,c){const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l,L=Math.max(10,w*3.4),H=Math.max(6,w*2.1);
+ return `<polygon points="${b[0]},${b[1]} ${b[0]-ux*L-uy*H},${b[1]-uy*L+ux*H} ${b[0]-ux*L+uy*H},${b[1]-uy*L-ux*H}" style="fill:${c}"/>`;}
+function noteSvg(n,live){const sel=UI.nsel===n.id&&live;const c=n.color||'#d8402e',w=n.w||4;const cls=`note ${sel?'nsel':''}`;const da=`data-ni="${n.id}"`;
+ if(n.t==='pen'){const d=pathD(n.pts);return `<g class="${cls}" ${da}><path d="${d}" class="n-hit" style="stroke-width:${w+12}px"/><path d="${d}" style="fill:none;stroke:${c};stroke-width:${w}px;stroke-linecap:round;stroke-linejoin:round"/></g>`;}
+ if(n.t==='arrow'){const a=n.pts[0],b=n.pts[1];const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1;const L=Math.max(10,w*3.4)*0.8;const bb=[b[0]-dx/l*L,b[1]-dy/l*L];
+  return `<g class="${cls}" ${da}><line class="n-hit" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" style="stroke-width:${w+12}px"/><line x1="${a[0]}" y1="${a[1]}" x2="${bb[0]}" y2="${bb[1]}" style="stroke:${c};stroke-width:${w}px;stroke-linecap:round${n.dash?';stroke-dasharray:'+(w*2.5)+' '+(w*2)+'':''}"/>${arrowHead(a,b,w,c)}${n.both?arrowHead(b,a,w,c):''}</g>`;}
+ if(n.t==='text'){const fs=n.size||18,t=esc(n.text||'メモ');const lines=String(n.text||'メモ').split('\n');const wd=Math.max(...lines.map(x=>[...x].length))*fs*0.98+14,ht=lines.length*fs*1.25+8;
+  const FS=itemFontStyle(n,curMap());
+  return `<g class="${cls}" ${da} transform="translate(${n.x},${n.y})${n.rot?` rotate(${n.rot})`:''}">${n.box?`<rect x="${-wd/2}" y="${-ht/2}" width="${wd}" height="${ht}" rx="4" style="fill:#fff;stroke:${c};stroke-width:2"/>`:`<rect class="n-hit" x="${-wd/2}" y="${-ht/2}" width="${wd}" height="${ht}"/>`}
+   <text text-anchor="middle" style="${FS}font-size:${fs}px;font-weight:700;fill:${n.box?'#1b1d21':c};${n.box?'':'paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;'}">${lines.map((x,i)=>`<tspan x="0" y="${(i-(lines.length-1)/2)*fs*1.25+fs*0.36}">${esc(x)}</tspan>`).join('')}</text></g>`;}
+ if(n.t==='icon'){const s=(n.size||24)/24;return `<g class="${cls}" ${da} transform="translate(${n.x},${n.y}) scale(${s})"><circle class="n-hit" r="14"/>${nIcon(n.icon||'star',c)}${n.text?`<text y="26" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#1b1d21;paint-order:stroke;stroke:#fff;stroke-width:3.5px">${esc(n.text)}</text>`:''}</g>`;}
+ return '';}
+function notesLayer(m,live){if(UI.nShow===false&&!live)return '';const ns=m.notes||[];return `<g class="notes ${live?'live':''}">${ns.map(n=>noteSvg(n,live)).join('')}</g><path id="n-temp" class="n-temp" d="" style="display:none"/><line id="n-tline" x1="0" y1="0" x2="0" y2="0" style="display:none"/>`;}
+function noteBar(){const t=UI.ntool||'pen';const T=[['select','選択・移動',ICON.move],['pen','ペン',`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 14 C5 9 7 12 9 7 S12 3 14 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`],['arrow','矢印',`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 14 L12 4 M7 4 H12 V9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`],['text','文字',ICO.text],['icon','アイコン',`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><polygon points="8,1.5 9.9,6 14.5,6.2 10.9,9.1 12.1,13.8 8,11.2 3.9,13.8 5.1,9.1 1.5,6.2 6.1,6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>`],['erase','消しゴム',ICO.erase]];
+ const HN={select:'記入したものを押して選び、ドラッグで動かします。Deleteで消せます。',pen:'ドラッグして自由に線を書きます。',arrow:'ドラッグした向きに矢印を書きます。',text:'地図を押すと文字を置きます。右の欄で文字を書き換えられます。',icon:'地図を押すと、選んだアイコンを置きます。',erase:'記入したものを押すと消えます。'};
+ return `<div class="gmodebar notebar"><div class="gmode mtools" role="toolbar" aria-label="記入の道具">${T.map(([k,l,ic])=>`<button aria-pressed="${t===k}" data-act="ntool" data-v="${k}" title="${l}">${ic}<span>${l}</span></button>`).join('')}</div>
+  <div class="ncolors" role="group" aria-label="色">${NCOLORS.map(([c,l])=>`<button class="nc ${(UI.ncolor||'#d8402e')===c?'on':''}" data-act="ncolor" data-v="${c}" title="${l}" aria-label="${l}" style="background:${c}"></button>`).join('')}</div>
+  <span class="ghint">${HN[t]}</span></div>`;}
+function notePanel(m){const n=(m.notes||[]).find(x=>x.id===UI.nsel);const t=UI.ntool||'pen';
+ const widthCtl=(id,val,dk)=>`<label class="fld2"><span>太さ：${val}</span><input type="range" id="${id}" min="1" max="24" value="${val}" ${dk}></label>`;
+ let opts='';
+ if(t==='pen'||t==='arrow')opts=widthCtl('nw-def',UI.nw||4,'data-act="nwDef"')+(t==='arrow'?`<label class="pf-check"><input type="checkbox" id="nb-def" data-act="nbDef" ${UI.nboth?'checked':''}> 両方向の矢印</label><label class="pf-check"><input type="checkbox" id="nd-def" data-act="ndDef" ${UI.ndash?'checked':''}> 点線</label>`:'');
+ if(t==='text')opts=`<label class="fld2"><span>文字の大きさ：${UI.nfs||18}</span><input type="range" id="nfs-def" min="10" max="60" value="${UI.nfs||18}" data-act="nfsDef"></label><label class="pf-check"><input type="checkbox" id="nbox-def" data-act="nboxDef" ${UI.nbox?'checked':''}> 白い枠（ふきだし）にする</label>`;
+ if(t==='icon')opts=`<div class="nicons">${Object.entries(NICONS).map(([k,l])=>`<button class="pal ${(UI.nicon||'star')===k?'on':''}" data-act="nicon" data-v="${k}" title="${l}"><svg viewBox="-15 -15 30 30" width="28" height="28" aria-hidden="true">${nIcon(k,UI.ncolor||'#d8402e')}</svg><span>${l}</span></button>`).join('')}</div><label class="fld2"><span>大きさ：${UI.nis||24}</span><input type="range" id="nis-def" min="12" max="64" value="${UI.nis||24}" data-act="nisDef"></label>`;
+ const selP=n?`<div class="mpanel"><h4>選んだ記入：${{pen:'ペン',arrow:'矢印',text:'文字',icon:'アイコン'}[n.t]}</h4>
+   ${n.t==='text'||n.t==='icon'?`<label class="fld2"><span>${n.t==='text'?'文字（改行できます）':'アイコンの下の文字（任意）'}</span><textarea id="ntxt-${n.id}" data-f="note" data-k="text" data-live="1" rows="2" style="border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:5px 8px;color:var(--ink);font:inherit">${esc(n.text||'')}</textarea></label>`:''}
+   <div class="ncolors">${NCOLORS.map(([c,l])=>`<button class="nc ${n.color===c?'on':''}" data-act="nSetColor" data-v="${c}" aria-label="${l}" style="background:${c}"></button>`).join('')}</div>
+   ${n.t==='pen'||n.t==='arrow'?widthCtl('nw-'+n.id,n.w||4,'data-f="note" data-k="w" data-live="1"'):''}
+   ${n.t==='text'?`<label class="fld2"><span>大きさ：${n.size||18}</span><input type="range" id="nfs-${n.id}" min="10" max="60" value="${n.size||18}" data-f="note" data-k="size" data-live="1"></label><label class="pf-check"><input type="checkbox" id="nbox-${n.id}" data-f="note" data-k="box" ${n.box?'checked':''}> 白い枠（ふきだし）</label><div class="tfbar"><button class="btn sm" data-act="nRot" data-v="-15">⟲15°</button><button class="btn sm" data-act="nRot" data-v="15">⟳15°</button></div>`:''}
+   ${n.t==='icon'?`<label class="fld2"><span>大きさ：${n.size||24}</span><input type="range" id="nis-${n.id}" min="12" max="64" value="${n.size||24}" data-f="note" data-k="size" data-live="1"></label>`:''}
+   ${n.t==='arrow'?`<label class="pf-check"><input type="checkbox" id="nb-${n.id}" data-f="note" data-k="both" ${n.both?'checked':''}> 両方向</label><label class="pf-check"><input type="checkbox" id="nd-${n.id}" data-f="note" data-k="dash" ${n.dash?'checked':''}> 点線</label>`:''}
+   <div class="tfbar"><button class="btn sm" data-act="nDup">複製</button><button class="btn sm danger" data-act="nDel">削除</button><button class="btn sm" data-act="nDesel">選択を解除</button></div></div>`:'';
+ const cnt=(m.notes||[]).length;
+ return `${selP}<div class="mpanel"><h4>記入モード</h4>${opts||'<p class="muted" style="margin:0;font-size:12px">左上の道具を選んで、地図の上に書き込みます。地図そのものは変わりません。</p>'}
+  <div class="muted" style="font-size:12px">記入の数：${cnt}</div>
+  ${cnt?`<button class="btn sm danger ${UI.confirm==='nclr'?'armed':''}" data-act="nClear">${UI.confirm==='nclr'?'もう一度押すと記入をすべて消す':'記入をすべて消す'}</button>`:''}</div>`;}
+function noteDown(e,svg,pt,m){const t=UI.ntool||'pen';const cap=()=>{try{svg.setPointerCapture(e.pointerId);}catch(_){}};m.notes=m.notes||[];
+ const g=e.target.closest('[data-ni]');const n=g&&m.notes.find(x=>x.id===g.dataset.ni);
+ if(t==='erase'){if(n){m.notes=m.notes.filter(x=>x!==n);if(UI.nsel===n.id)UI.nsel=null;save();snapshotNow();render();}else{const v=zView(svg.dataset.vk,+svg.dataset.bw,+svg.dataset.bh);zdrag={kind:'pan',svg,sx:e.clientX,sy:e.clientY,v0:{...v},moved:false};cap();}return true;}
+ if(t==='select'){if(n){e.preventDefault();UI.nsel=n.id;svg.querySelectorAll('.note.nsel').forEach(x=>x.classList.remove('nsel'));g.classList.add('nsel');zdrag={kind:'nmove',svg,n,orig:JSON.parse(JSON.stringify(n)),sx:pt.x,sy:pt.y,moved:false};cap();return true;}
+  UI.nsel=null;const v=zView(svg.dataset.vk,+svg.dataset.bw,+svg.dataset.bh);zdrag={kind:'pan',svg,sx:e.clientX,sy:e.clientY,v0:{...v},moved:false,nsel:true};cap();return true;}
+ e.preventDefault();const c=UI.ncolor||'#d8402e';
+ if(t==='pen'){zdrag={kind:'npen',svg,pts:[[pt.x,pt.y]],c,w:UI.nw||4};const tp=svg.querySelector('#n-temp');if(tp){tp.style.display='inline';tp.setAttribute('d',`M${pt.x} ${pt.y}`);tp.style.stroke=c;tp.style.strokeWidth=(UI.nw||4)+'px';}cap();return true;}
+ if(t==='arrow'){zdrag={kind:'narrow',svg,a:[pt.x,pt.y],b:[pt.x,pt.y],c,w:UI.nw||4};const l=svg.querySelector('#n-tline');if(l){l.style.display='inline';['x1','x2'].forEach(k=>l.setAttribute(k,pt.x));['y1','y2'].forEach(k=>l.setAttribute(k,pt.y));l.style.stroke=c;l.style.strokeWidth=(UI.nw||4)+'px';}cap();return true;}
+ if(t==='text'){const n2={id:uid(),t:'text',x:Math.round(pt.x),y:Math.round(pt.y),text:'メモ',color:c,size:UI.nfs||18,box:!!UI.nbox};m.notes.push(n2);UI.nsel=n2.id;UI.ntool='select';save();snapshotNow();render();setTimeout(()=>{const el=document.getElementById('ntxt-'+n2.id);if(el){el.focus();el.select();}},30);return true;}
+ if(t==='icon'){const n2={id:uid(),t:'icon',x:Math.round(pt.x),y:Math.round(pt.y),icon:UI.nicon||'star',color:c,size:UI.nis||24,text:''};m.notes.push(n2);UI.nsel=n2.id;save();snapshotNow();render();return true;}
+ return false;}
+function noteMove(z,pt){if(z.kind==='npen'){const last=z.pts[z.pts.length-1];if(Math.hypot(pt.x-last[0],pt.y-last[1])>2){z.pts.push([pt.x,pt.y]);const tp=z.svg.querySelector('#n-temp');if(tp)tp.setAttribute('d',pathD(z.pts));}return true;}
+ if(z.kind==='narrow'){z.b=[pt.x,pt.y];const l=z.svg.querySelector('#n-tline');if(l){l.setAttribute('x2',pt.x);l.setAttribute('y2',pt.y);}return true;}
+ if(z.kind==='nmove'){const dx=pt.x-z.sx,dy=pt.y-z.sy;if(!z.moved&&Math.abs(dx)+Math.abs(dy)<1.5)return true;z.moved=true;const n=z.n,o=z.orig;if(n.pts)n.pts=o.pts.map(p=>[p[0]+dx,p[1]+dy]);else{n.x=o.x+dx;n.y=o.y+dy;}const sv=z.svg.isConnected?z.svg:(document.querySelector('.msvg')||z.svg);const g=sv.querySelector(`[data-ni="${n.id}"]`);if(g){const tmp=document.createElementNS('http://www.w3.org/2000/svg','g');tmp.innerHTML=noteSvg(n,true);const ng=tmp.firstElementChild;if(ng)g.replaceWith(ng);}return true;}
+ return false;}
+function noteUp(z,m){if(z.kind==='npen'){if(z.pts.length>1&&m){m.notes=m.notes||[];m.notes.push({id:uid(),t:'pen',pts:simplifyPts(z.pts,0.7).map(p=>[Math.round(p[0]*10)/10,Math.round(p[1]*10)/10]),color:z.c,w:z.w});save();snapshotNow();}render();return true;}
+ if(z.kind==='narrow'){if(Math.hypot(z.b[0]-z.a[0],z.b[1]-z.a[1])>8&&m){m.notes=m.notes||[];m.notes.push({id:uid(),t:'arrow',pts:[z.a.map(Math.round),z.b.map(Math.round)],color:z.c,w:z.w,both:!!UI.nboth,dash:!!UI.ndash});save();snapshotNow();}render();return true;}
+ if(z.kind==='nmove'){const n=z.n;if(n.pts)n.pts=n.pts.map(p=>[Math.round(p[0]),Math.round(p[1])]);else{n.x=Math.round(n.x);n.y=Math.round(n.y);}if(z.moved){save();snapshotNow();}render();return true;}
+ return false;}
+
 function newMap(kind){const indoor=kind==='indoor';const m=indoor?{id:uid(),kind:'indoor',name:'新しい建物',cols:30,rows:20,cs:32,unit:'1m',w:960,h:640,bg:'plain',grid:true,img:'',imgOp:0.5,items:[],cells:{},walls:[]}
  :{id:uid(),kind:'world',name:'新しい地図',w:1000,h:700,bg:'sea',grid:true,img:'',imgOp:0.6,items:[]};S.maps=S.maps||[];S.maps.push(m);UI.mapId=m.id;UI.msel=null;UI.mdraw=null;UI.mtool=indoor?'paint':'select';return m;}
 function resample(pts,step){const out=[];for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],l=Math.hypot(b[0]-a[0],b[1]-a[1]),n=Math.max(1,Math.ceil(l/step));for(let k=0;k<n;k++)out.push([a[0]+(b[0]-a[0])*k/n,a[1]+(b[1]-a[1])*k/n,i]);}out.push([...pts[pts.length-1],pts.length-1]);return out;}
@@ -2481,6 +2571,23 @@ function act(a,d,el){
   case 'mapSel':UI.mapId=d.id;UI.msel=null;UI.mdraw=null;break;
   case 'mapNew':newMap(d.k);UI.mset=true;break;
   case 'mtile':UI.mtile=d.v;break;
+  case 'mmode':UI.mmode=d.v;UI.msel=null;UI.mdraw=null;UI.nsel=null;if(d.v==='note'){UI.m3d=false;if(!UI.ntool)UI.ntool='pen';}break;
+  case 'ntool':UI.ntool=d.v;if(d.v!=='select')UI.nsel=null;break;
+  case 'ncolor':UI.ncolor=d.v;break;
+  case 'nicon':UI.nicon=d.v;break;
+  case 'nwDef':UI.nw=+el.value;break;
+  case 'nbDef':UI.nboth=el.checked;break;
+  case 'ndDef':UI.ndash=el.checked;break;
+  case 'nfsDef':UI.nfs=+el.value;break;
+  case 'nboxDef':UI.nbox=el.checked;break;
+  case 'nisDef':UI.nis=+el.value;break;
+  case 'nShowT':UI.nShow=el.checked;break;
+  case 'nSetColor':{const m=curMap();const n=m&&(m.notes||[]).find(x=>x.id===UI.nsel);if(n)n.color=d.v;UI.ncolor=d.v;break;}
+  case 'nRot':{const m=curMap();const n=m&&(m.notes||[]).find(x=>x.id===UI.nsel);if(n)n.rot=(((n.rot||0)+(+d.v))%360+360)%360;break;}
+  case 'nDup':{const m=curMap();const n=m&&(m.notes||[]).find(x=>x.id===UI.nsel);if(!n)break;const c=JSON.parse(JSON.stringify(n));c.id=uid();if(c.pts)c.pts=c.pts.map(p=>[p[0]+20,p[1]+20]);else{c.x+=20;c.y+=20;}m.notes.push(c);UI.nsel=c.id;break;}
+  case 'nDel':{const m=curMap();if(m)m.notes=(m.notes||[]).filter(x=>x.id!==UI.nsel);UI.nsel=null;break;}
+  case 'nDesel':UI.nsel=null;break;
+  case 'nClear':{const m=curMap();if(!m)break;if(prevConfirm!=='nclr'){UI.confirm='nclr';break;}m.notes=[];UI.nsel=null;toast('記入をすべて消しました（元に戻すで戻せます）');break;}
   case 'm3d':UI.m3d=d.v==='1';UI.mdraw=null;break;
   case 'm3dRotBtn':UI.m3dRot=d.v==='reset'?0:((UI.m3dRot||0)+(+d.v)+360)%360;redraw3D();return;
   case 'm3dSize':UI.m3dSize=el.value;break;
@@ -2495,7 +2602,7 @@ function act(a,d,el){
   case 'floorAdd':{const m=curMap();if(!m)break;const nf=addFloor(m,+d.dir,'empty');toast(`「${nf.name}」を追加しました`);break;}
   case 'floorAddCopy':{const m=curMap();if(!m)break;const mode=(document.getElementById('floor-copy')||{}).value||'layout';UI.floorCopy=mode;const from=m.floors[m.fcur].name;const nf=addFloor(m,+d.dir,mode);toast(mode==='empty'?`「${nf.name}」を追加しました`:`「${from}」をもとに「${nf.name}」を作りました`);break;}
   case 'floorMv':{const m=curMap();if(!m)break;syncFloor(m);const i=m.fcur,j=i+(+d.d);if(j<0||j>=m.floors.length)break;[m.floors[i],m.floors[j]]=[m.floors[j],m.floors[i]];m.fcur=j;break;}
-  case 'floorDel':{const m=curMap();if(!m||m.floors.length<2)break;const f=m.floors[m.fcur];if(prevConfirm!=='fdel-'+f.id){UI.confirm='fdel-'+f.id;break;}m.floors.splice(m.fcur,1);const ni=Math.max(0,m.fcur-1);m.fcur=ni;const g=m.floors[ni];m.cells=g.cells||{};m.walls=g.walls||[];m.items=g.items||[];UI.msel=null;toast(`「${f.name}」を削除しました（元に戻すで戻せます）`);break;}
+  case 'floorDel':{const m=curMap();if(!m||m.floors.length<2)break;const f=m.floors[m.fcur];if(prevConfirm!=='fdel-'+f.id){UI.confirm='fdel-'+f.id;break;}m.floors.splice(m.fcur,1);const ni=Math.max(0,m.fcur-1);m.fcur=ni;const g=m.floors[ni];m.cells=g.cells||{};m.walls=g.walls||[];m.items=g.items||[];m.notes=g.notes||[];UI.msel=null;toast(`「${f.name}」を削除しました（元に戻すで戻せます）`);break;}
   case 'floorGhostT':UI.floorGhost=el.checked;break;
   case 'floorUpT':UI.floorUp=el.checked;break;
   case 'miSnapRail':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)break;const rs=railSnap(m,it.x,it.y,200);if(rs){it.x=Math.round(rs.x);it.y=Math.round(rs.y);it.angle=Math.round(rs.angle);}else toast('近くに鉄道の線がありません');break;}
@@ -2599,6 +2706,7 @@ function setField(el,live){
   case 'tpln':{const t=S.templates.find(x=>x.id===d.tid);if(t)t.name=v;break;}
   case 'fs':{const f=S.foreshadows.find(x=>x.id===d.fid);if(f)f.name=v;break;}
   case 'cd':{const c=card(d.cid);if(c)c[d.k]=v;break;}
+  case 'note':{const m=curMap();const n=m&&(m.notes||[]).find(x=>x.id===UI.nsel);if(!n)return;n[d.k]=['w','size'].includes(d.k)?Number(v):v;const g=document.querySelector(`.msvg [data-ni="${n.id}"]`);if(g)g.outerHTML=noteSvg(n,true);if(live){save();return;}break;}
   case 'floor':{const m=curMap();const f=m&&m.floors&&m.floors[m.fcur];if(!f)return;f[d.k]=v;if(live){const b=document.querySelector('.floorchip.on');if(b)b.textContent=v||'階';}break;}
   case 'mi':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)return;
    if(d.k==='shape'){const from=it.shape||'ellipse';if(v==='poly'&&from!=='poly'){if(from==='rect')it.pts=[[it.x,it.y],[it.x+it.w,it.y],[it.x+it.w,it.y+it.h],[it.x,it.y+it.h]];else{it.pts=[];for(let i=0;i<12;i++){const a=i/12*Math.PI*2;it.pts.push([Math.round(it.x+it.w/2+Math.cos(a)*it.w/2),Math.round(it.y+it.h/2+Math.sin(a)*it.h/2)]);}}}
@@ -2713,7 +2821,7 @@ document.addEventListener('pointerdown',e=>{
  const svg=e.target.closest&&e.target.closest('.zsvg');if(!svg)return;
  const pt=svgPt(svg,e);
  if(svg.classList.contains('msvg')){
-  const m=curMap();if(!m)return;const tool=UI.mtool;const cap=()=>{try{svg.setPointerCapture(e.pointerId);}catch(_){}};
+  const m=curMap();if(!m)return;if(UI.mmode==='note'&&!UI.m3d){if(noteDown(e,svg,pt,m))return;}const tool=UI.mtool;const cap=()=>{try{svg.setPointerCapture(e.pointerId);}catch(_){}};
   if(tool==='station'){e.preventDefault();const rs=railSnap(m,pt.x,pt.y,snapTol(svg,m)*2.5);const it={id:uid(),kind:'station',x:Math.round(rs?rs.x:pt.x),y:Math.round(rs?rs.y:pt.y),angle:rs?Math.round(rs.angle):0,size:28,place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:UI.mplace&&card(UI.mplace)?'':'新しい駅'};m.items.push(it);UI.msel=it.id;UI.mselNew=true;UI.mplace='';UI.mtool='select';save();snapshotNow();render();setTimeout(()=>{const t=document.getElementById('mi-label-'+it.id);if(t&&it.label){t.focus();t.select();}},30);return;}
   if(tool==='pin'||tool==='text'){e.preventDefault();const it=tool==='pin'?{id:uid(),kind:'pin',x:Math.round(pt.x),y:Math.round(pt.y),place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:''}:{id:uid(),kind:'label',x:Math.round(pt.x),y:Math.round(pt.y),label:'部屋の名前',size:16};
    m.items.push(it);UI.msel=it.id;UI.mselNew=true;UI.mplace='';UI.mtool='select';save();snapshotNow();render();if(tool==='text')setTimeout(()=>{const t=document.getElementById('mi-label-'+it.id);if(t){t.focus();t.select();}},30);return;}
@@ -2738,6 +2846,7 @@ document.addEventListener('pointermove',e=>{
   const r=svg.querySelector('#m-rubber');if(r&&UI.mdraw&&UI.mdraw.length){r.setAttribute('x2',sp?sp[0]:pt.x);r.setAttribute('y2',sp?sp[1]:pt.y);}}}
  if(UI.tab==='map'&&UI.mtool==='wall'&&!zdrag){const svg=document.querySelector('.msvg.indoor');const m=curMap();const c=svg&&svg.querySelector('#m-snap');if(c&&m&&e.target.closest&&e.target.closest('.msvg')){const v=snapV(m,svgPt(svg,e)),s=m.cs||32;c.style.display='inline';c.setAttribute('cx',v[0]*s);c.setAttribute('cy',v[1]*s);}}
  if(!zdrag)return;const z=zdrag;
+ if(['npen','narrow','nmove'].includes(z.kind)){noteMove(z,svgPt(z.svg,e));return;}
  if(z.kind==='pan'){const dx=e.clientX-z.sx,dy=e.clientY-z.sy;if(Math.abs(dx)+Math.abs(dy)>4)z.moved=true;if(!z.moved)return;const k=z.v0.w/(z.svg.clientWidth||1);zSet(z.svg,{...z.v0,x:z.v0.x-dx*k,y:z.v0.y-dy*k});z.svg.classList.add('panning');return;}
  const pt=svgPt(z.svg,e);const m=curMap();if(!m)return;
  if(z.kind==='paint'){const [x0,y0]=z.last,s=m.cs||32;const steps=Math.max(1,Math.ceil(Math.hypot(pt.x-x0,pt.y-y0)/(s/3)));for(let i=1;i<=steps;i++)paintAt(m,x0+(pt.x-x0)*i/steps,y0+(pt.y-y0)*i/steps,z.erase);z.last=[pt.x,pt.y];redrawCells(z.svg,m);return;}
@@ -2753,7 +2862,8 @@ document.addEventListener('pointermove',e=>{
 });
 document.addEventListener('pointerup',e=>{if(!zdrag)return;const z=zdrag;zdrag=null;try{z.svg.releasePointerCapture(e.pointerId);}catch(_){}z.svg.classList.remove('panning');
  const m=curMap();
- if(z.kind==='pan'){if(!z.moved&&z.svg.classList.contains('msvg')&&UI.msel){UI.msel=null;render();}return;}
+ if(['npen','narrow','nmove'].includes(z.kind)){noteUp(z,m);return;}
+ if(z.kind==='pan'){if(z.nsel&&!z.moved){render();return;}if(!z.moved&&z.svg.classList.contains('msvg')&&UI.msel){UI.msel=null;render();}return;}
  if(z.kind==='paint'){save();snapshotNow();return;}
  if(z.kind==='wall'){const a=z.v0,b=z.v1;if(m&&b&&(a[0]!==b[0]||a[1]!==b[1])){m.walls=m.walls||[];const dup=m.walls.some(w=>(w[0]===a[0]&&w[1]===a[1]&&w[2]===b[0]&&w[3]===b[1])||(w[0]===b[0]&&w[1]===b[1]&&w[2]===a[0]&&w[3]===a[1]));if(!dup)m.walls.push([a[0],a[1],b[0],b[1]]);save();snapshotNow();}
   const l=z.svg.querySelector('#m-wallprev');if(l)l.style.display='none';if(m)redrawCells(z.svg,m);return;}
@@ -2777,6 +2887,7 @@ document.addEventListener('keydown',e=>{
  if(UI.mdraw&&e.key==='Escape'){UI.mdraw=null;render();return;}
  if((e.key==='r'||e.key==='R')&&!e.ctrlKey&&!e.metaKey&&UI.mtool==='paint'){UI.mrot=(UI.mrot+(e.shiftKey?270:90))%360;render();return;}
  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&['c','v','d'].includes(e.key.toLowerCase())){const k=e.key.toLowerCase();if(k==='v'&&UI.mclip){e.preventDefault();act('miPaste',{},null);return;}if(UI.msel&&(k==='c'||k==='d')){e.preventDefault();act(k==='c'?'miCopy':'miDup',{},null);return;}}
+ if(UI.mmode==='note'&&UI.nsel&&(e.key==='Delete'||e.key==='Backspace')){const m=curMap();if(m){m.notes=(m.notes||[]).filter(x=>x.id!==UI.nsel);UI.nsel=null;save();snapshotNow();render();}e.preventDefault();return;}
  if(UI.msel&&(e.key==='Delete'||e.key==='Backspace')){const m=curMap();if(m){m.items=m.items.filter(x=>x.id!==UI.msel);UI.msel=null;save();snapshotNow();render();toast('削除しました（元に戻すで戻せます）');}e.preventDefault();}
 });
 
