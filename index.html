@@ -170,6 +170,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .m-roth{fill:var(--sheet);stroke:var(--blue);stroke-width:2;cursor:grab}
 .m-rotline{stroke:var(--blue);stroke-width:1.2;stroke-dasharray:3 3;pointer-events:none}
 .tfbar{display:flex;flex-wrap:wrap;gap:4px}
+.mi.locked{pointer-events:none}
+.lockopt{display:inline-flex;gap:4px;align-items:center;font-size:12px;border:1px solid var(--line);border-radius:6px;padding:2px 4px 2px 8px;background:var(--sheet)}
+.lockopt.on{border-color:var(--warn);background:var(--warn-wash)}
+.lockopt select{border:0;background:transparent;color:var(--ink);font-size:12px}
 .viewbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:8px}
 .viewbar label{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
 .viewbar .gmode button{padding:5px 12px}
@@ -1994,7 +1998,10 @@ function frame3D(m){const r=render3D(m);const [FW,FH]=m3dFrameSize();
  return {w:FW,h:FH,svg:`<rect class="m3d-bg" x="0" y="0" width="${FW}" height="${FH}"/><g transform="translate(${tx.toFixed(1)},${ty.toFixed(1)}) scale(${k.toFixed(4)})">${r.svg}</g>${r.comp?`<g transform="translate(36,${FH-34})">${r.comp}</g>`:''}`};
 }
 
-function mapItemSvg(it){
+const LOCKS={'':'固定しない',nonbld:'建物以外を固定',bld:'建物を固定'};
+function isLockedIt(it,m){m=m||curMap();const L=m&&m.lock;if(!L)return false;const b=isBuilding(it);return L==='nonbld'?!b:L==='bld'?b:false;}
+function mapItemSvg(it){let h=mapItemSvg0(it);if(isLockedIt(it))h=h.replace('class="mi ','class="mi locked ');return h;}
+function mapItemSvg0(it){
  const sel=UI.msel===it.id,pl=it.place&&card(it.place),label=esc(it.label||(pl?pl.title:''));const FS=itemFontStyle(it,curMap());
  const rotH=x=>{if(!sel)return '';const b=x.pts?bboxOf(x.pts):{x:x.x,y:x.y,w:x.w,h:x.h};const cx=b.x+b.w/2,ty=b.y-30;return `<line class="m-rotline" x1="${cx}" y1="${b.y}" x2="${cx}" y2="${ty+7}"/><circle class="m-roth" data-mrot="1" cx="${cx}" cy="${ty}" r="7"><title>ドラッグで回転（Shiftで15°ずつ）</title></circle>`;};
  const vtx=pts=>sel?pts.map((p,i)=>{const n=pts[(i+1)%pts.length];const mid=it.kind==='line'&&i===pts.length-1?'':`<circle class="m-mid" data-mm="${i}" cx="${(p[0]+n[0])/2}" cy="${(p[1]+n[1])/2}" r="5"/>`;return `<circle class="m-vh" data-mv="${i}" cx="${p[0]}" cy="${p[1]}" r="6"/>`+mid;}).join(''):'';
@@ -2024,7 +2031,7 @@ function cloneItem(it,dx,dy){const c=JSON.parse(JSON.stringify(it));c.id=uid();i
 function bboxOf(pts){let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;(pts||[]).forEach(p=>{x0=Math.min(x0,p[0]);y0=Math.min(y0,p[1]);x1=Math.max(x1,p[0]);y1=Math.max(y1,p[1]);});return x0===Infinity?{x:0,y:0,w:0,h:0}:{x:x0,y:y0,w:x1-x0,h:y1-y0};}
 const ICO={
  pin:`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 15s5-5.2 5-8.5A5 5 0 0 0 3 6.5C3 9.8 8 15 8 15z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6.5" r="1.8" fill="currentColor"/></svg>`,
- area:`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><ellipse cx="8" cy="8" rx="6.5" ry="5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/></svg>`,
+ area:`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/></svg>`,
  poly:`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 11 L5 2.5 L13 4 L14.5 11 L7 14 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
  line:`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M1.5 12.5C5 12 4 5 8 6s3 6 6.5 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,
  station:`<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M1 8H15" stroke="currentColor" stroke-width="2.4"/><path d="M1 8H15" stroke="var(--sheet)" stroke-width="1" stroke-dasharray="3 3"/><rect x="4.5" y="5" width="7" height="6" rx="1.5" fill="var(--sheet)" stroke="currentColor" stroke-width="1.6"/></svg>`,
@@ -2052,7 +2059,7 @@ function mapTab(){
   text:'地図を押すと文字（部屋の名前など）を置きます。',station:'鉄道の線の近くを押すと、線の上に向きをそろえて駅を置きます。線のない所にも置けます。',paint:`マスを押すかドラッグで「${TILES[UI.mtile]}」を塗ります。Rキーか右の⟳で向きを変えられます。`,
   wall:'マスの角から角へドラッグすると壁線を引きます。斜めにも引けます。',erase:'ドラッグした所のマスの塗りと壁線を消します。',
   select:'要素を押して選び、ドラッグで動かします。多角形や線は角の丸をドラッグで動かし、辺の中央の丸で角を足し、角をダブルクリックで消せます。背景のドラッグで地図を動かせます。'};
- const sel=UI.msel&&m.items.find(it=>it.id===UI.msel);if(UI.msel&&!sel)UI.msel=null;
+ let sel=UI.msel&&m.items.find(it=>it.id===UI.msel);if(UI.msel&&!sel)UI.msel=null;if(sel&&isLockedIt(sel,m)&&!UI.mselNew){UI.msel=null;sel=null;}UI.mselNew=false;
  const placeOpts=v=>`<option value="">（場所カードなし）</option>${places.map(p=>`<option value="${p.id}" ${v===p.id?'selected':''}>${esc(p.title)}${p.facility?'（施設）':''}</option>`).join('')}`;
  const kindName=it=>it.kind==='station'?'駅':it.kind==='pin'?'ピン':it.kind==='label'?'文字':it.kind==='area'?(it.shape==='poly'?'多角形の範囲':'範囲'):LSTY[it.style||'road'];
  const selPanel=sel?`<div class="mpanel"><h4>選択中：${kindName(sel)}</h4>
@@ -2123,7 +2130,8 @@ function mapTab(){
  <div class="viewbar"><div class="gmode" role="group" aria-label="表示"><button aria-pressed="${!UI.m3d}" data-act="m3d" data-v="0">平面</button><button aria-pressed="${!!UI.m3d}" data-act="m3d" data-v="1">立体（積み木）</button></div>
   ${UI.m3d?`<label>表示サイズ <select id="m3d-size" data-act="m3dSize">${Object.entries(M3SIZE).map(([k,l])=>`<option value="${k}" ${(UI.m3dSize||'900x560')===k?'selected':''}>${l}</option>`).join('')}</select></label>${(UI.m3dSize||'')==='custom'?`<label>幅 <input type="number" id="m3d-cw" min="300" max="4000" step="10" value="${UI.m3dCW||1000}" style="width:76px"></label><label>高さ <input type="number" id="m3d-ch" min="200" max="4000" step="10" value="${UI.m3dCH||600}" style="width:76px"></label>`:''}<label>大きさ <input type="range" id="m3d-fit" min="50" max="200" value="${Math.round((UI.m3dFit||1.3)*100)}" data-act="m3dFit"></label><label>傾き <input type="range" id="m3d-tilt" min="35" max="95" value="${Math.round((UI.m3dTilt||0.6)*100)}" data-act="m3dTilt"></label><label>高さの倍率 <input type="range" id="m3d-scale" min="4" max="30" value="${UI.m3dScale||10}" data-act="m3dScale"></label>${indoor?`<label>壁の高さ <input type="number" id="m3d-wallh" min="1" max="10" value="${m.wallH||3}" data-f="map" data-k="wallH" style="width:56px"></label>`:''}<label>向き <button class="btn sm" data-act="m3dRotBtn" data-v="-45" aria-label="左に回す">⟲</button><span class="mono" id="m3d-rot" style="min-width:34px;text-align:center">${Math.round(((UI.m3dRot||0)%360+360)%360)}°</span><button class="btn sm" data-act="m3dRotBtn" data-v="45" aria-label="右に回す">⟳</button><button class="btn sm" data-act="m3dRotBtn" data-v="reset">北を上に</button></label><span class="muted" style="font-size:12px">ドラッグで回転（上下に動かすと傾き）、Shiftを押しながらドラッグで移動。立体表示は見るための画面で、編集は「平面」に戻して行います。</span>`:''}</div>
  <div class="gmodebar" ${UI.m3d?'hidden':''}><div class="gmode mtools" role="toolbar" aria-label="地図の道具">${TB.map(([k,l,ic])=>`<button aria-pressed="${UI.mtool===k}" data-act="mtool" data-v="${k}" title="${l}">${ic}<span>${l}</span></button>`).join('')}</div>
-  <span class="ghint">${HINT[UI.mtool]||''}</span>${drawing?`<button class="btn sm pri" data-act="mLineDone">完了</button><button class="btn sm" data-act="mLineCancel">取り消し</button>`:''}</div>
+  <label class="lockopt ${m.lock?'on':''}" title="固定した図形は、押しても選ばれず、動きません">🔒 <select id="map-lock-${m.id}" data-f="map" data-k="lock" aria-label="固定">${Object.entries(LOCKS).map(([k,l])=>`<option value="${k}" ${(m.lock||'')===k?'selected':''}>${l}</option>`).join('')}</select></label>
+  <span class="ghint">${HINT[UI.mtool]||''}${m.lock?`<b style="color:var(--warn)">（${LOCKS[m.lock]}中：${m.lock==='nonbld'?'建物だけ動かせます':'建物は動きません'}）</b>`:''}</span>${drawing?`<button class="btn sm pri" data-act="mLineDone">完了</button><button class="btn sm" data-act="mLineCancel">取り消し</button>`:''}</div>
  <div class="mapgrid"><div class="gwrap zwrap mapwrap ${UI.mapFS?'fs':''}"><div class="fsbar"><button class="btn sm" data-act="mapFS" title="${UI.mapFS?'全画面を終わる（Esc）':'地図を画面いっぱいに表示'}">${UI.mapFS?'✕ 全画面を終わる':'⛶ 全画面'}</button><button class="btn sm" data-act="viewReset" title="拡大・移動を元に戻す">表示位置をリセット</button>${UI.mapFS?`<button class="btn sm" data-act="m3d" data-v="${UI.m3d?'0':'1'}">${UI.m3d?'平面にする':'立体にする'}</button>${UI.m3d?`<button class="btn sm" data-act="m3dRotBtn" data-v="-45" aria-label="左に回す">⟲</button><button class="btn sm" data-act="m3dRotBtn" data-v="45" aria-label="右に回す">⟳</button><button class="btn sm" data-act="m3dRotBtn" data-v="reset">北を上に</button>`:''}`:''}</div>${UI.m3d?(()=>{const r=frame3D(m);const k3=m3dKey(vk);return zBar(k3,r.w,r.h)+zOpen(k3,r.w,r.h,'m3d',esc(m.name)+'（立体）')+r.svg+'</svg>';})():zBar(vk,m.w,m.h)+svg}</div><div class="mside">${indoor?floorPanel(m):''}${palette}${selPanel}${plist}${settings}</div></div>
  <div class="legend">${legend}</div>
  </div>`;
@@ -2163,8 +2171,8 @@ function mergeRoads(m,keepId,mode){const roads=m.items.filter(isRoad);let change
   pcs.forEach((pc,n)=>{m.items.splice(idx+n,0,{id:uid(),kind:'line',style:'road',pts:pc,width:B.width||LW0.road,align:'center',label:n===0?B.label||'':'',bridges:B.bridges,font:B.font});});changed++;});
  return changed;}
 function finishLine(){const m=curMap();if(!m||!UI.mdraw)return;const pts=UI.mdraw.map(p=>[Math.round(p[0]),Math.round(p[1])]);
- if(UI.mtool==='poly'){if(pts.length>=3){const it={id:uid(),kind:'area',shape:'poly',pts,terrain:m.kind==='indoor'?'floor':'land',place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:''};m.items.push(it);enforceGap(m,it);UI.msel=it.id;UI.mplace='';UI.mtool='select';toast('多角形の範囲を描きました。角の丸をドラッグして形を整えられます');}else toast('多角形には3点以上が必要です');}
- else if(pts.length>=2){const it={id:uid(),kind:'line',pts,style:'road',label:''};m.items.push(it);UI.msel=it.id;UI.mtool='select';toast('線を描きました。右の欄で種類や幅を変えられます');}
+ if(UI.mtool==='poly'){if(pts.length>=3){const it={id:uid(),kind:'area',shape:'poly',pts,terrain:m.kind==='indoor'?'floor':'land',place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:''};m.items.push(it);enforceGap(m,it);UI.msel=it.id;UI.mselNew=true;UI.mplace='';UI.mtool='select';toast('多角形の範囲を描きました。角の丸をドラッグして形を整えられます');}else toast('多角形には3点以上が必要です');}
+ else if(pts.length>=2){const it={id:uid(),kind:'line',pts,style:'road',label:''};m.items.push(it);UI.msel=it.id;UI.mselNew=true;UI.mtool='select';toast('線を描きました。右の欄で種類や幅を変えられます');}
  UI.mdraw=null;save();snapshotNow();render();}
 function downscaleImage(file,cb){const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const max=1600,k=Math.min(1,max/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);let url;try{url=cv.toDataURL('image/jpeg',0.82);}catch(e){url=fr.result;}cb(url);};img.onerror=()=>cb(null);img.src=fr.result;};fr.onerror=()=>cb(null);fr.readAsDataURL(file);}
 function segDist(px,py,x1,y1,x2,y2){const dx=x2-x1,dy=y2-y1,l=dx*dx+dy*dy;let t=l?((px-x1)*dx+(py-y1)*dy)/l:0;t=Math.max(0,Math.min(1,t));return Math.hypot(px-(x1+t*dx),py-(y1+t*dy));}
@@ -2468,11 +2476,11 @@ function act(a,d,el){
   case 'mtool':if(UI.mtool!==d.v)UI.mdraw=null;UI.mtool=d.v;UI.msel=d.v==='select'?UI.msel:null;if(d.v==='select')UI.mplace='';break;
   case 'mPlace':UI.mplace=d.pid;UI.mtool=d.t;UI.mdraw=null;UI.msel=null;break;
   case 'mPlaceNew':{const np={id:uid(),type:'place',title:'新しい場所',body:'',tags:''};S.cards.push(np);UI.mplace=np.id;UI.mtool='pin';toast('地図を押してピンを置いてください。名前はカード置き場で変えられます');break;}
-  case 'miPick':UI.msel=d.id;UI.mtool='select';break;
+  case 'miPick':{const m=curMap();const it=m&&m.items.find(x=>x.id===d.id);if(it&&isLockedIt(it,m)){toast(`固定中のため選べません（${LOCKS[m.lock]}）。固定を外すと選べます`);break;}UI.msel=d.id;UI.mtool='select';break;}
   case 'miZ':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)break;if(!reorderItem(m,it,d.v))toast(d.v==='up'||d.v==='top'?'すでにいちばん上です':'すでにいちばん下です');break;}
   case 'miCopy':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)break;UI.mclip=JSON.parse(JSON.stringify(it));UI.mpasteN=0;toast('コピーしました。Ctrl+V か「貼り付け」で貼れます');break;}
-  case 'miPaste':{const m=curMap();if(!m||!UI.mclip)break;UI.mpasteN=(UI.mpasteN||0)+1;const c=cloneItem(UI.mclip,24*UI.mpasteN,24*UI.mpasteN);m.items.push(c);UI.msel=c.id;UI.mtool='select';toast('貼り付けました');break;}
-  case 'miDup':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)break;const c=cloneItem(it,24,24);m.items.push(c);UI.msel=c.id;toast('複製しました');break;}
+  case 'miPaste':{const m=curMap();if(!m||!UI.mclip)break;UI.mpasteN=(UI.mpasteN||0)+1;const c=cloneItem(UI.mclip,24*UI.mpasteN,24*UI.mpasteN);m.items.push(c);UI.msel=c.id;UI.mselNew=true;UI.mtool='select';toast('貼り付けました');break;}
+  case 'miDup':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)break;const c=cloneItem(it,24,24);m.items.push(c);UI.msel=c.id;UI.mselNew=true;toast('複製しました');break;}
   case 'miDel':{const m=curMap();if(m)m.items=m.items.filter(x=>x.id!==UI.msel);UI.msel=null;break;}
   case 'miDesel':UI.msel=null;break;
   case 'mLineDone':finishLine();return;
@@ -2666,9 +2674,9 @@ document.addEventListener('pointerdown',e=>{
  const pt=svgPt(svg,e);
  if(svg.classList.contains('msvg')){
   const m=curMap();if(!m)return;const tool=UI.mtool;const cap=()=>{try{svg.setPointerCapture(e.pointerId);}catch(_){}};
-  if(tool==='station'){e.preventDefault();const rs=railSnap(m,pt.x,pt.y,snapTol(svg,m)*2.5);const it={id:uid(),kind:'station',x:Math.round(rs?rs.x:pt.x),y:Math.round(rs?rs.y:pt.y),angle:rs?Math.round(rs.angle):0,size:28,place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:UI.mplace&&card(UI.mplace)?'':'新しい駅'};m.items.push(it);UI.msel=it.id;UI.mplace='';UI.mtool='select';save();snapshotNow();render();setTimeout(()=>{const t=document.getElementById('mi-label-'+it.id);if(t&&it.label){t.focus();t.select();}},30);return;}
+  if(tool==='station'){e.preventDefault();const rs=railSnap(m,pt.x,pt.y,snapTol(svg,m)*2.5);const it={id:uid(),kind:'station',x:Math.round(rs?rs.x:pt.x),y:Math.round(rs?rs.y:pt.y),angle:rs?Math.round(rs.angle):0,size:28,place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:UI.mplace&&card(UI.mplace)?'':'新しい駅'};m.items.push(it);UI.msel=it.id;UI.mselNew=true;UI.mplace='';UI.mtool='select';save();snapshotNow();render();setTimeout(()=>{const t=document.getElementById('mi-label-'+it.id);if(t&&it.label){t.focus();t.select();}},30);return;}
   if(tool==='pin'||tool==='text'){e.preventDefault();const it=tool==='pin'?{id:uid(),kind:'pin',x:Math.round(pt.x),y:Math.round(pt.y),place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:''}:{id:uid(),kind:'label',x:Math.round(pt.x),y:Math.round(pt.y),label:'部屋の名前',size:16};
-   m.items.push(it);UI.msel=it.id;UI.mplace='';UI.mtool='select';save();snapshotNow();render();if(tool==='text')setTimeout(()=>{const t=document.getElementById('mi-label-'+it.id);if(t){t.focus();t.select();}},30);return;}
+   m.items.push(it);UI.msel=it.id;UI.mselNew=true;UI.mplace='';UI.mtool='select';save();snapshotNow();render();if(tool==='text')setTimeout(()=>{const t=document.getElementById('mi-label-'+it.id);if(t){t.focus();t.select();}},30);return;}
   if(tool==='area'){e.preventDefault();zdrag={kind:'newarea',svg,x0:pt.x,y0:pt.y,moved:false};cap();return;}
   if(tool==='line'||tool==='poly'){e.preventDefault();if(!e.altKey){const sp=snapPoint(m,pt.x,pt.y,snapTol(svg,m));if(sp){pt.x=sp[0];pt.y=sp[1];}}UI.mdraw=UI.mdraw||[];const last=UI.mdraw[UI.mdraw.length-1];if(!last||Math.hypot(last[0]-pt.x,last[1]-pt.y)>4)UI.mdraw.push([pt.x,pt.y]);render();return;}
   if(m.kind==='indoor'&&(tool==='paint'||tool==='erase')){e.preventDefault();paintAt(m,pt.x,pt.y,tool==='erase');redrawCells(svg,m);zdrag={kind:'paint',svg,last:[pt.x,pt.y],erase:tool==='erase'};cap();return;}
@@ -2709,7 +2717,7 @@ document.addEventListener('pointerup',e=>{if(!zdrag)return;const z=zdrag;zdrag=n
  if(z.kind==='paint'){save();snapshotNow();return;}
  if(z.kind==='wall'){const a=z.v0,b=z.v1;if(m&&b&&(a[0]!==b[0]||a[1]!==b[1])){m.walls=m.walls||[];const dup=m.walls.some(w=>(w[0]===a[0]&&w[1]===a[1]&&w[2]===b[0]&&w[3]===b[1])||(w[0]===b[0]&&w[1]===b[1]&&w[2]===a[0]&&w[3]===a[1]));if(!dup)m.walls.push([a[0],a[1],b[0],b[1]]);save();snapshotNow();}
   const l=z.svg.querySelector('#m-wallprev');if(l)l.style.display='none';if(m)redrawCells(z.svg,m);return;}
- if(z.kind==='newarea'){if(z.moved&&z.rect&&z.rect.w>12&&z.rect.h>12&&m){const r=z.rect;const indoor=m.kind==='indoor';const it={id:uid(),kind:'area',x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.w),h:Math.round(r.h),shape:indoor?'rect':'ellipse',terrain:indoor?'floor':'land',place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:''};m.items.push(it);enforceGap(m,it);UI.msel=it.id;UI.mplace='';UI.mtool='select';save();snapshotNow();}render();return;}
+ if(z.kind==='newarea'){if(z.moved&&z.rect&&z.rect.w>12&&z.rect.h>12&&m){const r=z.rect;const indoor=m.kind==='indoor';const it={id:uid(),kind:'area',x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.w),h:Math.round(r.h),shape:'rect',terrain:indoor?'floor':'land',place:UI.mplace&&card(UI.mplace)?UI.mplace:'',label:''};m.items.push(it);enforceGap(m,it);UI.msel=it.id;UI.mselNew=true;UI.mplace='';UI.mtool='select';save();snapshotNow();}render();return;}
  const it=z.it;
  if(it.pts)it.pts=it.pts.map(p=>[Math.round(p[0]),Math.round(p[1])]);else{it.x=Math.round(it.x);it.y=Math.round(it.y);if(it.w)it.w=Math.round(it.w);if(it.h)it.h=Math.round(it.h);}
  if(z.moved){if(m)enforceGap(m,it);save();snapshotNow();}UI.msel=it.id;render();
