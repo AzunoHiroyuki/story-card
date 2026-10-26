@@ -170,6 +170,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .m-roth{fill:var(--sheet);stroke:var(--blue);stroke-width:2;cursor:grab}
 .m-rotline{stroke:var(--blue);stroke-width:1.2;stroke-dasharray:3 3;pointer-events:none}
 .tfbar{display:flex;flex-wrap:wrap;gap:4px}
+.viewbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:8px}
+.viewbar label{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.viewbar .gmode button{padding:5px 12px}
+.b3-side,.b3-top{stroke:var(--ink);stroke-opacity:.35;stroke-width:1;stroke-linejoin:round}
+.b3-side{stroke-opacity:.08;stroke-width:.8}
+.b3-shade{fill:#000;stroke:none;pointer-events:none}
+.b3-wall{fill:var(--m-wall)}
+.b3-side.b3-wall,.b3-top.b3-wall{stroke:var(--ink);stroke-opacity:.5}
+.b3-top.b3-wall{fill:color-mix(in srgb,var(--m-wall) 80%,var(--sheet))}
+.b3-lab,.b3-tlab,.b3-plab{font-family:var(--f-body);font-weight:700;fill:var(--ink);paint-order:stroke;stroke:var(--sheet);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none}
+.b3-lab{font-size:13px}.b3-tlab{font-size:15px}.b3-plab{font-size:12px}
+.b3-mini{font-size:9px;fill:var(--muted);font-family:var(--f-body)}
+.b3-stem{stroke:var(--ink);stroke-width:1.5}
+.m3d{background:var(--paper)}
 .floorbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--sheet)}
 .floorchip{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:4px 14px;font-family:var(--f-mono);font-weight:500;font-size:13px;color:var(--ink)}
 .floorchip.on{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
@@ -1894,6 +1908,71 @@ function ensureFont(k){const f=MFONTS[k];if(!f||!f.g)return;const id='gf-'+k;if(
 function itemFontStyle(it,m){const k=(it&&it.font)||(m&&m.font)||'default';const f=MFONTS[k];return f&&f.css?`font-family:${f.css};`:'';}
 function fontSelect(id,val,dataAttrs,inherit){return `<select id="${id}" ${dataAttrs}>${inherit?`<option value="" ${!val?'selected':''}>地図の設定と同じ</option>`:''}${Object.entries(MFONTS).map(([k,f])=>`<option value="${k}" ${val===k?'selected':''}>${f.n}</option>`).join('')}</select>`;}
 function fontPreview(k,text){const f=MFONTS[k||'default'];ensureFont(k);return `<div class="fprev" style="${f&&f.css?`font-family:${f.css}`:''}">${esc(text||'灯島 港町 Abc 123')}</div>`;}
+/* ===== block (isometric-like) view ===== */
+const H_DEF={mountain:3,building:2,city:1,forest:1,snow:1};
+function areaH(it,m){if(it.height!=null&&it.height!=='')return Number(it.height);const t=it.terrain||'land';
+ if(t==='land'){m=m||curMap();return m&&m.kind!=='indoor'&&(m.bg||'sea')==='sea'&&!parentArea(m,it)?1:0;}
+ if(t==='forest'||t==='snow'||t==='city'){m=m||curMap();return m&&(m.bg||'sea')==='sea'?H_DEF[t]:0;}return H_DEF[t]||0;}
+function render3D(m){
+ const K=UI.m3dTilt||0.6,HU=UI.m3dScale||10,indoor=m.kind==='indoor',s=m.cs||32;
+ const areas=m.items.filter(it=>it.kind==='area').map(it=>({it,pts:areaPolyPts(it,40),bld:isBuilding(it)}));
+ const zt=new Map();const topOf=it=>{if(zt.has(it.id))return zt.get(it.id);zt.set(it.id,0);const p=parentArea(m,it);const b=p?topOf(p):0;const t=b+Math.max(0,areaH(it,m));zt.set(it.id,t);return t;};
+ const baseOf=it=>{const p=parentArea(m,it);return p?topOf(p):0;};
+ const depthOf=it=>{let d=0,p=parentArea(m,it),n=0;while(p&&n++<30){d++;p=parentArea(m,p);}return d;};
+ areas.forEach(a=>{a.base=baseOf(a.it);a.top=topOf(a.it);a.depth=depthOf(a.it);});
+ const groundZ=(x,y,incB)=>{let z=0;areas.forEach(a=>{if((incB||!a.bld)&&a.top>z&&pointInArea(a.it,x,y))z=a.top;});return z;};
+ const WALLH=m.wallH||3;
+ let maxZ=Math.max(0,...areas.map(a=>a.top));if(indoor)maxZ=Math.max(maxZ,WALLH);
+ const OY=maxZ*HU+24;
+ const PJ=(x,y,z)=>[x,y*K-z*HU+OY];
+ const P2=(x,y,z)=>{const q=PJ(x,y,z);return q[0].toFixed(1)+','+q[1].toFixed(1);};
+ const W=m.w,Hh=Math.ceil(m.h*K+OY+30);
+ const orient=pts=>{let A=0;for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];A+=p[0]*q[1]-q[0]*p[1];}return A;};
+ const prism=(pts,base,top,topCls,extra)=>{let out='';const A=orient(pts);
+  if(top>base){const sides=[];for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];const dx=q[0]-p[0],dy=q[1]-p[1],l=Math.hypot(dx,dy)||1;const nx=(A>0?dy:-dy)/l,ny=(A>0?-dx:dx)/l;if(ny<=0.02)continue;sides.push({p,q,nx,my:(p[1]+q[1])/2});}
+   sides.sort((a,b)=>a.my-b.my).forEach(e=>{const pp=`${P2(e.p[0],e.p[1],base)} ${P2(e.q[0],e.q[1],base)} ${P2(e.q[0],e.q[1],top)} ${P2(e.p[0],e.p[1],top)}`;out+=`<polygon class="b3-side ${topCls}" points="${pp}"/><polygon class="b3-shade" points="${pp}" style="fill-opacity:${(0.16+0.16*Math.max(0,e.nx)+0.06*(1-Math.abs(e.nx))).toFixed(2)}"/>`;});}
+  out+=`<polygon class="b3-top ${topCls}" points="${pts.map(p=>P2(p[0],p[1],top)).join(' ')}"/>`+(extra||'');return out;};
+ const FS=itemFontStyle(null,m);
+ const lab=(x,y,z,t,cls)=>{const q=PJ(x,y,z);return `<text class="${cls||'b3-lab'}" style="${FS}" x="${q[0]}" y="${q[1]}" text-anchor="middle" dominant-baseline="middle">${esc(t)}</text>`;};
+ const nameOf=it=>it.label||(it.place&&card(it.place)?card(it.place).title:'');
+ let ground='',blocks='',lines='',tops='';
+ // background plate
+ ground+=`<polygon class="m-bg bg-${indoor?'plain':(m.bg||'sea')}" points="${P2(0,0,0)} ${P2(m.w,0,0)} ${P2(m.w,m.h,0)} ${P2(0,m.h,0)}"/>`;
+ if(indoor){
+  Object.entries(m.cells||{}).forEach(([k,v])=>{const [cx,cy]=k.split(',').map(Number);if(cx>=m.cols||cy>=m.rows)return;if(['wall','pillar','diag'].includes(v.t))return;const cls=v.t==='tatami'?'tl-tatami':v.t==='water'?'tl-water':v.t==='grass'?'tl-grass':v.t==='table'?'tl-table':'tl-floor';
+   const x=cx*s,y=cy*s;ground+=`<polygon class="${cls}" points="${P2(x,y,0)} ${P2(x+s,y,0)} ${P2(x+s,y+s,0)} ${P2(x,y+s,0)}"/>`;
+   if(v.t==='stairs')ground+=lab(x+s/2,y+s/2,0,'階段','b3-mini');if(v.t==='door')ground+=lab(x+s/2,y+s/2,0,'扉','b3-mini');});
+ }
+ const order=[...areas].sort((a,b)=>(a.bld-b.bld)||(a.depth-b.depth)||(a.base-b.base)||(Math.max(...a.pts.map(p=>p[1]))-Math.max(...b.pts.map(p=>p[1]))));
+ const nb=order.filter(a=>!a.bld),bl=order.filter(a=>a.bld);
+ const drawArea=a=>{const c=a.pts.reduce((t,p)=>[t[0]+p[0]/a.pts.length,t[1]+p[1]/a.pts.length],[0,0]);const nm=nameOf(a.it);return prism(a.pts,a.base,a.top,'ter-'+(a.it.terrain||'land'),nm?lab(c[0],c[1],a.top,nm+(a.top>a.base?` ▲${a.top-a.base}`:'')):'');};
+ const lineOn=new Map();let groundLines='';
+ m.items.filter(it=>it.kind==='line').forEach(it=>{const w=it.width||LW0[it.style||'road'];const vis=offsetPts(it.pts,lineOffset(it,m));
+  const samp=[];for(let i=0;i<vis.length;i++){samp.push(vis[i]);if(i<vis.length-1)samp.push([(vis[i][0]+vis[i+1][0])/2,(vis[i][1]+vis[i+1][1])/2]);}
+  const cnt=new Map();samp.forEach(p=>{let best=null,bt=-1;nb.forEach(a=>{if(a.top>bt&&pointInArea(a.it,p[0],p[1])){bt=a.top;best=a;}});const k=best?best.it.id:'';cnt.set(k,(cnt.get(k)||0)+1);});
+  let host='',hc=-1;cnt.forEach((c,k)=>{if(c>hc){hc=c;host=k;}});
+  const hz=host?(nb.find(a=>a.it.id===host)||{}).top||0:0;
+  const d=vis.map((p,i)=>(i?'L':'M')+PJ(p[0],p[1],hz)).join(' ');const svgL=lineDraw(d,it.style||'road',w*Math.max(0.6,K));
+  if(host)lineOn.set(host,(lineOn.get(host)||'')+svgL);else groundLines+=svgL;});
+ blocks+=groundLines;
+ nb.forEach(a=>{blocks+=drawArea(a);if(lineOn.has(a.it.id))blocks+=lineOn.get(a.it.id);});
+ // indoor wall blocks (cells + wall lines) mixed with buildings by depth
+ const solids=[];
+ if(indoor){Object.entries(m.cells||{}).forEach(([k,v])=>{const [cx,cy]=k.split(',').map(Number);if(cx>=m.cols||cy>=m.rows)return;const x=cx*s,y=cy*s;
+   if(v.t==='wall')solids.push({pts:[[x,y],[x+s,y],[x+s,y+s],[x,y+s]],h:WALLH,cls:'b3-wall'});
+   else if(v.t==='pillar')solids.push({pts:[[x+s*.25,y+s*.25],[x+s*.75,y+s*.25],[x+s*.75,y+s*.75],[x+s*.25,y+s*.75]],h:WALLH,cls:'b3-wall'});
+   else if(v.t==='diag'){let tri=[[x,y],[x+s,y],[x,y+s]];const r=((v.r||0)%360+360)%360;const c=[x+s/2,y+s/2];tri=tri.map(p=>{const a=r*Math.PI/180,dx=p[0]-c[0],dy=p[1]-c[1];return [c[0]+dx*Math.cos(a)-dy*Math.sin(a),c[1]+dx*Math.sin(a)+dy*Math.cos(a)];});solids.push({pts:tri,h:WALLH,cls:'b3-wall'});}});
+  (m.walls||[]).forEach(wl=>{const a=[wl[0]*s,wl[1]*s],b=[wl[2]*s,wl[3]*s];const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1,t=Math.max(4,s*0.2)/2,nx=-dy/l*t,ny=dx/l*t;solids.push({pts:[[a[0]+nx,a[1]+ny],[b[0]+nx,b[1]+ny],[b[0]-nx,b[1]-ny],[a[0]-nx,a[1]-ny]],h:WALLH,cls:'b3-wall'});});}
+ bl.forEach(a=>solids.push({area:a,my:Math.max(...a.pts.map(p=>p[1]))}));
+ solids.forEach(o=>{if(o.my==null)o.my=Math.max(...o.pts.map(p=>p[1]));});
+ solids.sort((a,b)=>a.my-b.my);
+ let solidSvg='';solids.forEach(o=>{solidSvg+=o.area?drawArea(o.area):prism(o.pts,0,o.h,o.cls);});
+ m.items.filter(it=>it.kind==='pin'||it.kind==='station'||it.kind==='label').forEach(it=>{const z=groundZ(it.x,it.y,true);const q=PJ(it.x,it.y,z);const t=nameOf(it)||(it.kind==='label'?'（文字）':'');
+  if(it.kind==='label')tops+=lab(it.x,it.y,z,t,'b3-tlab');
+  else tops+=`<g transform="translate(${q[0]},${q[1]})"><line class="b3-stem" x1="0" y1="0" x2="0" y2="-16"/><circle r="6" cy="-18" class="m-pin ${it.kind==='station'?'fac':''}"/>${t?`<text class="b3-plab" style="${FS}" x="9" y="-14">${esc(t)}</text>`:''}</g>`;});
+ return {w:W,h:Hh,svg:ground+blocks+lines+solidSvg+tops};
+}
+
 function mapItemSvg(it){
  const sel=UI.msel===it.id,pl=it.place&&card(it.place),label=esc(it.label||(pl?pl.title:''));const FS=itemFontStyle(it,curMap());
  const rotH=x=>{if(!sel)return '';const b=x.pts?bboxOf(x.pts):{x:x.x,y:x.y,w:x.w,h:x.h};const cx=b.x+b.w/2,ty=b.y-30;return `<line class="m-rotline" x1="${cx}" y1="${b.y}" x2="${cx}" y2="${ty+7}"/><circle class="m-roth" data-mrot="1" cx="${cx}" cy="${ty}" r="7"><title>ドラッグで回転（Shiftで15°ずつ）</title></circle>`;};
@@ -1961,6 +2040,7 @@ function mapTab(){
    <label class="fld2"><span>${sel.kind==='label'?'文字':'表示名'}${sel.place?'（空欄なら場所カードの名前）':''}</span><input type="text" id="mi-label-${sel.id}" data-f="mi" data-k="label" data-live="1" value="${esc(sel.label)}"></label>
    ${sel.kind==='station'?`<label class="fld2"><span>駅の大きさ：${sel.size||28}</span><input type="range" id="mi-size-${sel.id}" min="14" max="80" data-f="mi" data-k="size" data-live="1" value="${sel.size||28}"></label><button class="btn sm" data-act="miSnapRail">近くの鉄道に合わせる</button>`:''}
    ${sel.kind==='label'?`<label class="fld2"><span>文字の大きさ：${sel.size||16}</span><input type="range" id="mi-size-${sel.id}" min="10" max="48" data-f="mi" data-k="size" data-live="1" value="${sel.size||16}"></label>`:''}
+   ${sel.kind==='area'?`<label class="fld2"><span>高さ（段）${sel.height==null||sel.height===''?`：未設定なので地形の目安 ${areaH(sel,m)} 段`:''}</span><input type="number" id="mi-height-${sel.id}" min="0" max="40" data-f="mi" data-k="height" value="${sel.height??''}" placeholder="${areaH(sel,m)}" style="max-width:100px"><small class="muted" style="font-size:11px">中に置いた範囲は、外側の範囲の上に積み上がります（島の上の山、敷地の上の建物など）。「立体（積み木）」表示で確かめられます。</small></label>`:''}
    ${sel.kind==='area'?`<div class="row2b"><label class="fld2"><span>地形</span><select id="mi-ter-${sel.id}" data-f="mi" data-k="terrain">${Object.entries(TERR).map(([k,l])=>`<option value="${k}" ${sel.terrain===k?'selected':''}>${l}</option>`).join('')}</select></label><label class="fld2"><span>形</span><select id="mi-shape-${sel.id}" data-f="mi" data-k="shape"><option value="ellipse" ${!sel.shape||sel.shape==='ellipse'?'selected':''}>だ円</option><option value="rect" ${sel.shape==='rect'?'selected':''}>四角</option><option value="poly" ${sel.shape==='poly'?'selected':''}>多角形</option></select></label></div>`:''}
    ${sel.kind==='line'?`<label class="fld2"><span>種類</span><select id="mi-style-${sel.id}" data-f="mi" data-k="style">${Object.entries(LSTY).map(([k,l])=>`<option value="${k}" ${sel.style===k?'selected':''}>${l}</option>`).join('')}</select></label>
     <label class="fld2"><span>幅の広がる向き</span><select id="mi-align-${sel.id}" data-f="mi" data-k="align">${Object.entries(LALIGN).map(([k,l])=>`<option value="${k}" ${(sel.align||'auto')===k?'selected':''}>${l}</option>`).join('')}</select></label>
@@ -2018,9 +2098,11 @@ function mapTab(){
  <p class="lead">${indoor?'マスを塗って床・壁・扉などを置き、マスの角から角へ壁線を引いて間取りを作ります。部屋の名前は「文字」、施設の場所カードは「ピン」で置けます。':'物語の世界の地図を描き、場所カードを置きます。国や島は「多角形」か「範囲」、施設は「ピン」がおすすめです。置いた場所は、場所カードからも「地図で見る」で開けます。'}</p>
  ${mapsBar}
  ${indoor?floorBar(m):''}
- <div class="gmodebar"><div class="gmode mtools" role="toolbar" aria-label="地図の道具">${TB.map(([k,l,ic])=>`<button aria-pressed="${UI.mtool===k}" data-act="mtool" data-v="${k}" title="${l}">${ic}<span>${l}</span></button>`).join('')}</div>
+ <div class="viewbar"><div class="gmode" role="group" aria-label="表示"><button aria-pressed="${!UI.m3d}" data-act="m3d" data-v="0">平面</button><button aria-pressed="${!!UI.m3d}" data-act="m3d" data-v="1">立体（積み木）</button></div>
+  ${UI.m3d?`<label>傾き <input type="range" id="m3d-tilt" min="35" max="95" value="${Math.round((UI.m3dTilt||0.6)*100)}" data-act="m3dTilt"></label><label>高さの倍率 <input type="range" id="m3d-scale" min="4" max="30" value="${UI.m3dScale||10}" data-act="m3dScale"></label>${indoor?`<label>壁の高さ <input type="number" id="m3d-wallh" min="1" max="10" value="${m.wallH||3}" data-f="map" data-k="wallH" style="width:56px"></label>`:''}<span class="muted" style="font-size:12px">立体表示は見るための画面です。編集は「平面」に戻して行います。</span>`:''}</div>
+ <div class="gmodebar" ${UI.m3d?'hidden':''}><div class="gmode mtools" role="toolbar" aria-label="地図の道具">${TB.map(([k,l,ic])=>`<button aria-pressed="${UI.mtool===k}" data-act="mtool" data-v="${k}" title="${l}">${ic}<span>${l}</span></button>`).join('')}</div>
   <span class="ghint">${HINT[UI.mtool]||''}</span>${drawing?`<button class="btn sm pri" data-act="mLineDone">完了</button><button class="btn sm" data-act="mLineCancel">取り消し</button>`:''}</div>
- <div class="mapgrid"><div class="gwrap zwrap mapwrap">${zBar(vk,m.w,m.h)}${svg}</div><div class="mside">${indoor?floorPanel(m):''}${palette}${selPanel}${plist}${settings}</div></div>
+ <div class="mapgrid"><div class="gwrap zwrap mapwrap">${UI.m3d?(()=>{const r=render3D(m);const k3=vk+':3d';return zBar(k3,r.w,r.h)+zOpen(k3,r.w,r.h,'m3d',esc(m.name)+'（立体）')+r.svg+'</svg>';})():zBar(vk,m.w,m.h)+svg}</div><div class="mside">${indoor?floorPanel(m):''}${palette}${selPanel}${plist}${settings}</div></div>
  <div class="legend">${legend}</div>
  </div>`;
 }
@@ -2311,6 +2393,9 @@ function act(a,d,el){
   case 'mapSel':UI.mapId=d.id;UI.msel=null;UI.mdraw=null;break;
   case 'mapNew':newMap(d.k);UI.mset=true;break;
   case 'mtile':UI.mtile=d.v;break;
+  case 'm3d':UI.m3d=d.v==='1';UI.mdraw=null;break;
+  case 'm3dTilt':UI.m3dTilt=(+el.value)/100;break;
+  case 'm3dScale':UI.m3dScale=+el.value;break;
   case 'floorSel':{const m=curMap();if(m)switchFloor(m,+d.i);break;}
   case 'floorAdd':{const m=curMap();if(!m)break;const nf=addFloor(m,+d.dir,'empty');toast(`「${nf.name}」を追加しました`);break;}
   case 'floorAddCopy':{const m=curMap();if(!m)break;const mode=(document.getElementById('floor-copy')||{}).value||'layout';UI.floorCopy=mode;const from=m.floors[m.fcur].name;const nf=addFloor(m,+d.dir,mode);toast(mode==='empty'?`「${nf.name}」を追加しました`:`「${from}」をもとに「${nf.name}」を作りました`);break;}
@@ -2422,9 +2507,10 @@ function setField(el,live){
   case 'mi':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)return;
    if(d.k==='shape'){const from=it.shape||'ellipse';if(v==='poly'&&from!=='poly'){if(from==='rect')it.pts=[[it.x,it.y],[it.x+it.w,it.y],[it.x+it.w,it.y+it.h],[it.x,it.y+it.h]];else{it.pts=[];for(let i=0;i<12;i++){const a=i/12*Math.PI*2;it.pts.push([Math.round(it.x+it.w/2+Math.cos(a)*it.w/2),Math.round(it.y+it.h/2+Math.sin(a)*it.h/2)]);}}}
     else if(v!=='poly'&&from==='poly'){const b=bboxOf(it.pts);Object.assign(it,{x:Math.round(b.x),y:Math.round(b.y),w:Math.max(20,Math.round(b.w)),h:Math.max(20,Math.round(b.h))});delete it.pts;}it.shape=v;break;}
+   if(d.k==='height'){if(v===''||v==null)delete it.height;else it.height=Math.max(0,Math.min(40,Number(v)||0));break;}
    if(d.k==='width'||d.k==='size'){it[d.k]=Number(v);if(live){save();schedule();return;}break;}
    it[d.k]=v;if(!live&&['terrain','gap','place'].includes(d.k))enforceGap(m,it);break;}
-  case 'map':{const m=curMap();if(!m)return;if(d.k==='cols'||d.k==='rows'){m[d.k]=Math.max(5,Math.min(120,parseInt(v)||m[d.k]));m.w=m.cols*(m.cs||32);m.h=m.rows*(m.cs||32);delete UI.views['map:'+m.id];break;}if(d.k==='size'){const [w,h]=String(v).split('x').map(Number);if(w&&h){m.w=w;m.h=h;delete UI.views['map:'+m.id];}}else if(d.k==='imgOp')m.imgOp=Number(v)/100;else m[d.k]=v;break;}
+  case 'map':{const m=curMap();if(!m)return;if(d.k==='wallH'){m.wallH=Math.max(1,Math.min(10,Number(v)||3));break;}if(d.k==='cols'||d.k==='rows'){m[d.k]=Math.max(5,Math.min(120,parseInt(v)||m[d.k]));m.w=m.cols*(m.cs||32);m.h=m.rows*(m.cs||32);delete UI.views['map:'+m.id];break;}if(d.k==='size'){const [w,h]=String(v).split('x').map(Number);if(w&&h){m.w=w;m.h=h;delete UI.views['map:'+m.id];}}else if(d.k==='imgOp')m.imgOp=Number(v)/100;else m[d.k]=v;break;}
   case 'lk':{const l=S.links.find(x=>x.id===d.lid);if(l)l.label=v;break;}
   case 'aff':{const r=(S.affinity||[])[+d.i];if(!r)return;r[d.k]=d.k==='v'?Number(v):v;break;}
   case 'edge':{const info=edgeInfo(UI.edEdge);if(!info)return;info.set(v);
@@ -2451,7 +2537,7 @@ document.addEventListener('click',e=>{
  act(el.dataset.act,el.dataset,el);
 });
 document.addEventListener('change',e=>{const el=e.target;if(el.dataset.f)setField(el,false);else if(el.dataset.act)act(el.dataset.act,el.dataset,el);});
-document.addEventListener('input',e=>{const el=e.target;if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
+document.addEventListener('input',e=>{const el=e.target;if(el.id==='m3d-tilt'){UI.m3dTilt=(+el.value)/100;schedule();return;}if(el.id==='m3d-scale'){UI.m3dScale=+el.value;schedule();return;}if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
 const dropT=e=>e.target.closest&&e.target.closest('[data-drop],[data-dropnew]');
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-card][draggable="true"]');if(!c)return;const id=c.dataset.card;const ids=UI.picked.includes(id)?UI.picked.slice():[id];try{e.dataTransfer.setData('text/plain',JSON.stringify(ids));e.dataTransfer.effectAllowed='copy';}catch(_){}});
 document.addEventListener('dragover',e=>{const t=dropT(e);if(!t)return;e.preventDefault();t.classList.add('drop-on');});
