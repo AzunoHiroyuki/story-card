@@ -1035,6 +1035,7 @@ function header(iss){
    <button class="pill ${e?'err':w?'warn':'ok'}" data-act="tab" data-tab="check">${e||w?`破綻 ${e}・要確認 ${w}`:'破綻なし'}</button>
    <button class="btn" data-act="data">保存・読み込み</button>
    <button class="btn" data-act="pdfOpen">PDFに出力</button>
+   <a class="btn" href="manual.pdf" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit" title="使い方マニュアル（manual.pdf）を別のタブで開きます。このファイルと同じフォルダに manual.pdf を置いてください">？ 使い方マニュアル</a>
    <button class="btn danger ${UI.confirm==='wipe'?'armed':''}" data-act="wipe" title="すべてのカード・シーン・地図を消して最初の状態に戻します">${UI.confirm==='wipe'?'もう一度押すと初期化':'初期化'}</button>
   </div>
  </header>
