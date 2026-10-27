@@ -187,7 +187,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .modesw button[aria-pressed="true"]{background:var(--blue-ink)!important;color:var(--sheet)!important}
 .cimg{margin:2px -12px 2px;aspect-ratio:4/3;max-width:calc(100% + 24px);overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper)}
 .cimg img{width:100%;height:100%;object-fit:cover;display:block}
-.cimg.def{aspect-ratio:5/2}.cimg.def img{object-fit:contain}
+.cimg,.edimg{position:relative;container-type:inline-size}.edimg{display:block;width:200px;max-width:100%}.edimg img{display:block;width:100%}.edimg.cst::after{border-radius:4px}
+.cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.cst.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}
+.cst::after{content:"";position:absolute;inset:0;background:rgba(30,32,36,.28);pointer-events:none}
+.cst-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1;font-family:"Zen Kaku Gothic New",system-ui,sans-serif;font-weight:900;font-size:40px;font-size:clamp(16px,17cqw,64px);letter-spacing:.06em;color:rgba(255,255,255,.82);text-shadow:0 1px 3px rgba(0,0,0,.55);pointer-events:none;line-height:1}
+.cst-down .cst-txt{color:rgba(255,226,170,.9)}
+.cimg.def.cst img{filter:grayscale(.6);opacity:.45}.cimg.def.cst::after{background:rgba(30,32,36,.42)}.cimg.def{aspect-ratio:5/2}.cimg.def.cst .cst-txt{font-size:clamp(14px,12cqw,48px)}.cimg.def img{object-fit:contain}
 .defgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}.deftile{border:1px solid var(--line);border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:4px;font-size:12px}.deftile.custom{border-color:var(--acc,#4fa3d9);box-shadow:0 0 0 1px var(--acc,#4fa3d9) inset}.defpv{aspect-ratio:4/3;border-radius:4px;overflow:hidden}.defpv img{width:100%;height:100%;object-fit:contain;display:block}.deftile .tfbar{display:flex;flex-wrap:wrap;gap:4px}
 .card.hasimg{padding-top:8px}
 .imgfield{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
@@ -925,6 +930,9 @@ function setView(svg,v){UI.gview=v;if(svg)svg.setAttribute('viewBox',`${v.x} ${v
 function zoomAt(svg,f,cx,cy){const v=curView();const nw=Math.max(GW*0.15,Math.min(GW*2.5,v.w*f));const k=nw/v.w;const nh=nw*GH/GW;setView(svg,{x:cx-(cx-v.x)*k,y:cy-(cy-v.y)*(nh/v.h),w:nw,h:nh});}
 const STATUS={'':'生存',down:'行動不能',dead:'死亡',gone:'退場'};
 const STSHORT={down:'行動不能',dead:'故',gone:'退場'};
+const STIMG={dead:'DEATH',down:'DOWN',gone:'EXIT'};
+const stCls=c=>c.type==='person'&&STIMG[c.status]?` cst cst-${c.status}`:'';
+const stTxt=c=>c.type==='person'&&STIMG[c.status]?`<span class="cst-txt" aria-label="${STATUS[c.status]}">${STIMG[c.status]}</span>`:'';
 const isOut=c=>!!(c&&c.type==='person'&&(c.status==='dead'||c.status==='gone'));
 /* ===== default card pictures (used when a card has no image) ===== */
 const DEFIMG_C={person:['#f6e4ec','#b04a72'],personM:['#e1ecf7','#2f6fb0'],personU:['#ececec','#7a7f86'],place:['#e1f0e8','#2f7d5c'],item:['#f5ecd9','#9c6a12'],world:['#e9e6f6','#6555b0'],episode:['#dfecf5','#1b6595'],memo:['#eceef0','#66717d'],org:['#f2e7df','#8a5634']};
@@ -1299,7 +1307,7 @@ function cardHTML(c,selS,dup){
   return `<article class="card editing t-${c.type}" data-card="${c.id}">
    <div class="card-top"><select id="cd-type-${c.id}" data-f="cd" data-cid="${c.id}" data-k="type" aria-label="カードの種類">${Object.entries(CT).map(([t,l])=>`<option value="${t}" ${c.type===t?'selected':''}>${l}</option>`).join('')}</select>
     <button class="btn sm" data-act="closeCard">閉じる</button></div>
-   <div class="imgfield">${c.img?`<img src="${c.img}" alt="カードの画像">`:UI.defimg!==false?`<img src="${defImg(c)}" alt="標準の絵" style="opacity:.9"><small class="muted" style="display:block;font-size:11px">標準の絵（種類・性別に合わせて自動で表示。画像を付けると置き換わります。絵はカード置き場の「標準の絵の設定」で変えられます）</small>`:'<div class="imgph">画像なし</div>'}<div class="tfbar"><label class="btn sm filebtn">${c.img?'画像を変える':'画像を付ける'}<input type="file" id="cimg-${c.id}" accept="image/*"></label>${c.img?`<button class="btn sm" data-act="cimgDel" data-cid="${c.id}">画像を外す</button>`:''}</div><small class="muted" style="font-size:11px">カードの上部に表示されます（自動で 4:3 に切り抜き、小さくして保存します）。</small></div>
+   <div class="imgfield">${c.img?`<div class="edimg${stCls(c)}"><img src="${c.img}" alt="カードの画像">${stTxt(c)}</div>`:UI.defimg!==false?`<div class="edimg${stCls(c)}"><img src="${defImg(c)}" alt="標準の絵" style="opacity:.9">${stTxt(c)}</div><small class="muted" style="display:block;font-size:11px">標準の絵（種類・性別に合わせて自動で表示。画像を付けると置き換わります。絵はカード置き場の「標準の絵の設定」で変えられます）</small>`:'<div class="imgph">画像なし</div>'}<div class="tfbar"><label class="btn sm filebtn">${c.img?'画像を変える':'画像を付ける'}<input type="file" id="cimg-${c.id}" accept="image/*"></label>${c.img?`<button class="btn sm" data-act="cimgDel" data-cid="${c.id}">画像を外す</button>`:''}</div><small class="muted" style="font-size:11px">カードの上部に表示されます（自動で 4:3 に切り抜き、小さくして保存します）。</small></div>
    <input type="text" class="ctitle-in" id="cd-title-${c.id}" data-f="cd" data-cid="${c.id}" data-k="title" data-live="1" value="${esc(c.title)}" placeholder="カードの名前" aria-label="カードの名前">
    <textarea id="cd-body-${c.id}" data-f="cd" data-cid="${c.id}" data-k="body" data-live="1" placeholder="設定の中身や、起きる出来事" aria-label="カードの内容">${esc(c.body)}</textarea>
    ${(()=>{const mine=tagList(c.tags),mk=new Set(mine.map(norm)),dq=norm(UI.tagDraft);
@@ -1322,7 +1330,7 @@ function cardHTML(c,selS,dup){
  }
  return `<article class="card t-${c.type} ${picked?'picked':''} ${c.status?'st-'+c.status:''} ${cardImg(c)&&UI.cimg!==false?'hasimg':''}" draggable="true" data-card="${c.id}" data-act="openCard" data-cid="${c.id}">
   <div class="card-top"><span class="ctype">${CT[c.type]}${c.type==='place'&&c.facility?'<span class="badge">施設</span>':''}${c.status?`<span class="stbadge st-${c.status}">${STATUS[c.status]}</span>`:''}</span></div>
-  ${cardImg(c)&&UI.cimg!==false?(c.img?`<div class="cimg"><img src="${c.img}" alt=""></div>`:`<div class="cimg def" style="background:${defBg(c)}"><img src="${defImg(c)}" alt=""></div>`):''}
+  ${cardImg(c)&&UI.cimg!==false?(c.img?`<div class="cimg${stCls(c)}"><img src="${c.img}" alt="">${stTxt(c)}</div>`:`<div class="cimg def${stCls(c)}" style="background:${defBg(c)}"><img src="${defImg(c)}" alt="">${stTxt(c)}</div>`):''}
   <label class="pick"><input type="checkbox" id="pk-${c.id}${dup?'-d'+uid():''}" data-act="pickCard" data-cid="${c.id}" ${picked?'checked':''} aria-label="組み合わせに選ぶ"></label>
   <h3>${esc(c.title)||'（無題）'}</h3>
   ${c.body?`<p class="cbody">${esc(c.body)}</p>`:''}
@@ -2499,7 +2507,7 @@ function pdfDialog(){if(!UI.pdfOpen)return '';const o=UI.pdfOpt||{};const on=k=>
 function pickEl(html,sel){const t=document.createElement('template');t.innerHTML=html;const el=t.content.querySelector(sel);return el?el.outerHTML:'';}
 function withUI(patch,fn){const keep={};Object.keys(patch).forEach(k=>{keep[k]=UI[k];UI[k]=patch[k];});try{return fn();}finally{Object.assign(UI,keep);}}
 function pdfCard(c,img){return `<div class="pc t-${c.type} ${c.status?'st-'+c.status:''}"><div class="pc-h"><span class="ctype">${CT[c.type]}</span>${c.type==='place'&&c.facility?'<span class="badge">施設</span>':''}${c.status?`<span class="stbadge st-${c.status}">${STATUS[c.status]}</span>`:''}</div>
- ${img&&cardImg(c)?`<img class="pc-img" src="${cardImg(c)}" alt="">`:''}<h4>${esc(c.title)||'（無題）'}</h4>${c.body?`<p>${esc(c.body).replace(/\n/g,'<br>')}</p>`:''}${cardMeta(c)}${c.tags?`<div class="ctags">${tagList(c.tags).map(t=>'#'+esc(t)).join(' ')}</div>`:''}${(()=>{const u=usedIn(c.id);return u.length?`<div class="pc-use">使用：${u.map(s=>'#'+num(s.id)+' '+esc(s.title)).join('、')}</div>`:'';})()}</div>`;}
+ ${img&&cardImg(c)?`<div class="pc-imgw${stCls(c)}"><img class="pc-img" src="${cardImg(c)}" alt="">${stTxt(c)}</div>`:''}<h4>${esc(c.title)||'（無題）'}</h4>${c.body?`<p>${esc(c.body).replace(/\n/g,'<br>')}</p>`:''}${cardMeta(c)}${c.tags?`<div class="ctags">${tagList(c.tags).map(t=>'#'+esc(t)).join(' ')}</div>`:''}${(()=>{const u=usedIn(c.id);return u.length?`<div class="pc-use">使用：${u.map(s=>'#'+num(s.id)+' '+esc(s.title)).join('、')}</div>`:'';})()}</div>`;}
 /* ===== embed project data as pixels (PDF/PNG) and read it back ===== */
 const PD_MAGIC=[0x53,0x43,0x52,0x44];/* "SCRD" */
 function crc32(u8){let c,t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);for(let n=0;n<256;n++){c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}}c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=t[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
@@ -2594,7 +2602,7 @@ function buildPdfHtml(fname,di){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;c
  .pmeta{font-size:9pt;line-height:1.6}.pmeta span{color:#5d6874}
  .ptree .node-acts,.ptree select,.ptree button.btn{display:none!important}.ptree .node{max-width:none;break-inside:avoid}.ptree{font-size:9.5pt}
  .pcards{display:grid;grid-template-columns:repeat(${orient==='landscape'?4:3},1fr);gap:3mm}
- .pc{border:1px solid #d2e1eb;border-top:3mm solid var(--ct);border-radius:1.5mm;padding:2.5mm 3mm;break-inside:avoid;font-size:9pt;background:#fff}.pc h4{margin:1mm 0;font-size:11pt}.pc p{margin:0 0 1.5mm;color:#3b434c}.pc-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:1mm;margin:1mm 0}.pc-use{margin-top:1.5mm;color:#5d6874;font-size:8pt;border-top:1px dashed #d2e1eb;padding-top:1mm}
+ .pc{border:1px solid #d2e1eb;border-top:3mm solid var(--ct);border-radius:1.5mm;padding:2.5mm 3mm;break-inside:avoid;font-size:9pt;background:#fff}.pc h4{margin:1mm 0;font-size:11pt}.pc p{margin:0 0 1.5mm;color:#3b434c}.pc-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:1mm;margin:1mm 0;display:block}.pc-imgw{position:relative;container-type:inline-size}.pc-imgw.cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.pc-imgw.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}.pc-imgw .cst-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16cqw;letter-spacing:.06em;color:rgba(255,255,255,.85);text-shadow:0 .3mm 1mm rgba(0,0,0,.6);line-height:1}.pc-imgw.cst-down .cst-txt{color:rgba(255,226,170,.92)}.pc-use{margin-top:1.5mm;color:#5d6874;font-size:8pt;border-top:1px dashed #d2e1eb;padding-top:1mm}
  .pc.st-dead,.pc.st-gone{filter:grayscale(.8);opacity:.75}.pc-h{display:flex;align-items:center;gap:1mm}
  .pfig{break-inside:avoid;border:1px solid #d2e1eb;border-radius:1.5mm;padding:2mm}.pfig svg{width:100%!important;min-width:0!important;height:auto;max-height:${orient==='landscape'?165:240}mm;display:block}
  .pmap{break-inside:avoid;margin-bottom:6mm}
