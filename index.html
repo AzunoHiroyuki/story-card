@@ -187,6 +187,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .modesw button[aria-pressed="true"]{background:var(--blue-ink)!important;color:var(--sheet)!important}
 .cimg{margin:2px -12px 2px;aspect-ratio:4/3;max-width:calc(100% + 24px);overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper)}
 .cimg img{width:100%;height:100%;object-fit:cover;display:block}
+.cimg.def{aspect-ratio:5/2}.cimg.def img{object-fit:contain}
+.defgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}.deftile{border:1px solid var(--line);border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:4px;font-size:12px}.deftile.custom{border-color:var(--acc,#4fa3d9);box-shadow:0 0 0 1px var(--acc,#4fa3d9) inset}.defpv{aspect-ratio:4/3;border-radius:4px;overflow:hidden}.defpv img{width:100%;height:100%;object-fit:contain;display:block}.deftile .tfbar{display:flex;flex-wrap:wrap;gap:4px}
 .card.hasimg{padding-top:8px}
 .imgfield{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .imgfield img{width:200px;max-width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line);border-radius:4px}
@@ -242,7 +244,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .fg-st-lab.down{fill:var(--warn)}.fg-st-lab.up{fill:var(--c-world)}
 .ab-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 92px 24px;gap:6px;align-items:center}
 .card.editing .ab-row input,.card.editing .ab-row select{background:var(--sheet);width:100%;padding:4px 6px;font-size:13px}
-.aff-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto 76px 24px;gap:6px;align-items:center}
+.aff-rev{font-size:11px;white-space:nowrap}.aff-rev.ok{color:var(--muted)}.aff-rev.same{color:var(--warn,#a96600)}
+.aff-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto 76px auto 24px;gap:6px;align-items:center}
 .aff-row input,.aff-row select{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:4px 6px;min-width:0;width:100%;color:var(--ink);font-size:13px}
 .aff-w{font-size:13px;color:var(--muted)}
 @media (max-width:560px){.aff-row{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.aff-row select{grid-column:1 / 3}}
@@ -735,7 +738,7 @@ function sampleCards(d){
  ];
 }
 const SAMPLE_TAGS={c1:'主人公、灯台、島、15歳',c2:'東京、記者、カメラ、24歳',c3:'島、灯台廃止',c4:'灯台、ナギ',c5:'島、噂',c6:'灯台、ナギ、伏線',c7:'湊、カメラ、伏線候補',c8:'島、灯台、行事',c9:'湊、ナギ、カメラ、島',c10:'灯台、ナギ、湊、嵐',c11:'湊、カメラ、ナギ、結末案'};
-function migrate(d){d.foreshadows=d.foreshadows||[];d.scenes.forEach(s=>{s.cards=s.cards||[];});
+function migrate(d){d.foreshadows=d.foreshadows||[];if(!d.defImgs||typeof d.defImgs!=='object')d.defImgs={};d.scenes.forEach(s=>{s.cards=s.cards||[];});
  const isSample=d.story&&String(d.story.title).includes('サンプル');
  if(!Array.isArray(d.cards))d.cards=isSample?sampleCards(d):[];
  if(!(d.v>=2)){if(isSample)d.cards.forEach(c=>{if(SAMPLE_TAGS[c.id])c.tags=SAMPLE_TAGS[c.id];});d.v=2;}
@@ -923,7 +926,46 @@ function zoomAt(svg,f,cx,cy){const v=curView();const nw=Math.max(GW*0.15,Math.mi
 const STATUS={'':'生存',down:'行動不能',dead:'死亡',gone:'退場'};
 const STSHORT={down:'行動不能',dead:'故',gone:'退場'};
 const isOut=c=>!!(c&&c.type==='person'&&(c.status==='dead'||c.status==='gone'));
-function nodeW(c){const t=(c.title||'無題');return Math.max(56,Math.min(170,[...t].slice(0,11).length*13+26))+(c.img&&UI.gimg!==false?24:0);}
+/* ===== default card pictures (used when a card has no image) ===== */
+const DEFIMG_C={person:['#f6e4ec','#b04a72'],personM:['#e1ecf7','#2f6fb0'],personU:['#ececec','#7a7f86'],place:['#e1f0e8','#2f7d5c'],item:['#f5ecd9','#9c6a12'],world:['#e9e6f6','#6555b0'],episode:['#dfecf5','#1b6595'],memo:['#eceef0','#66717d'],org:['#f2e7df','#8a5634']};
+const DEFIMG_CACHE={};
+function defImgKey(c){if(c.type==='person')return 'person-'+(c.gender==='male'||c.gender==='female'?c.gender:'');if(c.type==='place')return c.facility?'place-f':'place';return c.type;}
+function defPal(k,c){return k==='person-male'?DEFIMG_C.personM:k==='person-'?DEFIMG_C.personU:DEFIMG_C[c.type]||DEFIMG_C.memo;}
+function defBg(c){return defPal(defImgKey(c),c)[0];}
+function defImg(c,builtin){const k=defImgKey(c);if(!builtin&&S.defImgs&&S.defImgs[k])return S.defImgs[k];if(DEFIMG_CACHE[k])return DEFIMG_CACHE[k];const [bg,fg]=defPal(k,c);let g='';
+ const L=`fill="none" stroke="${fg}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"`,F=`fill="${fg}"`,W='fill="#fff"';
+ switch(k){
+  case 'person-male':g=`<circle cx="60" cy="36" r="13" ${F}/><path d="M33 76c2-15 13-23 27-23s25 8 27 23z" ${F}/>`;break;
+  case 'person-female':g=`<circle cx="60" cy="36" r="13" ${F}/><path d="M33 76c2-15 13-23 27-23s25 8 27 23z" ${F}/>`;break;
+  case 'person-other':case 'person-':case 'person-unknown':g=`<circle cx="60" cy="36" r="13" ${F}/><path d="M33 76c2-15 13-23 27-23s25 8 27 23z" ${F}/>`;break;
+  case 'place':g=`<path d="M22 72l24-32 12 15 9-11 31 28z" ${F}/><path d="M46 40l6 8-6-3-5 4z" ${W} opacity=".8"/><circle cx="84" cy="27" r="7" ${F} opacity=".55"/>`;break;
+  case 'place-f':g=`<path d="M38 74V42l22-15 22 15v32z" ${F}/><rect x="54" y="56" width="12" height="18" ${W} opacity=".85"/><rect x="44" y="46" width="8" height="7" ${W} opacity=".7"/><rect x="68" y="46" width="8" height="7" ${W} opacity=".7"/><path d="M30 74h60" ${L}/>`;break;
+  case 'org':g=`<path d="M42 76V18" ${L}/><path d="M44 20h34l-7 10 7 10H44z" ${F}/><path d="M32 76h22" ${L}/>`;break;
+  case 'item':g=`<path d="M60 74L36 42l9-14h30l9 14z" ${F}/><path d="M36 42h48M50 28l-4 14 14 32 14-32-4-14" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" opacity=".7"/>`;break;
+  case 'world':g=`<circle cx="60" cy="45" r="28" ${L}/><ellipse cx="60" cy="45" rx="12" ry="28" ${L}/><path d="M33 36h54M33 54h54" ${L}/>`;break;
+  case 'episode':g=`<path d="M60 30c-9-6-20-7-30-5v44c10-2 21-1 30 5z" ${F}/><path d="M60 30c9-6 20-7 30-5v44c-10-2-21-1-30 5z" ${F} opacity=".7"/><path d="M60 30v44" stroke="#fff" stroke-width="2"/>`;break;
+  default:g=`<path d="M38 18h32l14 14v44H38z" ${F}/><path d="M70 18v14h14" fill="#fff" opacity=".5"/><path d="M46 44h28M46 54h28M46 64h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;}
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 90"><rect width="120" height="90" fill="${bg}"/>${g}</svg>`;
+ return DEFIMG_CACHE[k]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
+const DEF_KEYS=[['person-male','人物（男性）',{type:'person',gender:'male'}],['person-female','人物（女性）',{type:'person',gender:'female'}],['person-','人物（未設定・その他）',{type:'person'}],['place','場所',{type:'place'}],['place-f','施設',{type:'place',facility:true}],['org','組織',{type:'org'}],['item','小物',{type:'item'}],['world','世界観',{type:'world'}],['episode','エピソード',{type:'episode'}],['memo','メモ',{type:'memo'}]];
+function keepDefPref(){try{return localStorage.getItem(KEY+'-keepdef')!=='0';}catch(e){return true;}}
+function downloadBlob(name,text){const blob=new Blob([text],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}
+function defDialog(){if(!UI.defOpen)return '';const n=Object.keys(S.defImgs||{}).length;
+ return `<div class="overlay" data-act="defClose"><div class="dialog" role="dialog" aria-modal="true" aria-label="標準の絵の設定" style="max-width:760px">
+  <h3>標準の絵の設定</h3>
+  <p class="lead">画像を付けていないカードに出る絵を、種類ごとに好きな画像に変えられます。選んだ画像は自動で小さくして<b>この作品のデータに保存</b>されます（ファイル保存・PDFへの埋め込みにも入るので、PDFを開き直すと絵も戻ります）。</p>
+  <div class="defgrid">${DEF_KEYS.map(([k,l,c])=>{const cu=S.defImgs&&S.defImgs[k];const bg=defBg(c);return `<div class="deftile ${cu?'custom':''}"><div class="defpv" style="background:${bg}"><img src="${defImg(c)}" alt="${l}の標準の絵"></div><b>${l}</b><small class="muted">${cu?'自分の画像':'最初の絵'}</small><div class="tfbar"><label class="btn sm filebtn">画像を選ぶ<input type="file" id="defimg-${k}" accept="image/*"></label>${cu?`<button class="btn sm" data-act="defReset" data-k="${k}">最初の絵に戻す</button>`:''}</div></div>`;}).join('')}</div>
+  <div class="filebox" style="margin-top:12px">
+   <div class="filecol"><b>絵のセットを書き出す</b><small class="muted">標準の絵だけを1つのファイル（.json）に保存します。別の作品で読み込むと同じ絵が使えます。</small><button class="btn" data-act="defExport" ${n?'':'disabled'}>書き出す${n?`（${n}枚）`:''}</button></div>
+   <div class="filecol"><b>絵のセットを読み込む</b><small class="muted">書き出した「標準の絵.json」のほか、作品ファイル（.json）や作品データを埋め込んだPDFからも、その作品の標準の絵だけを取り込めます（元に戻すで戻せます）。</small><label class="btn filebtn">ファイルを選ぶ<input type="file" id="defset-file" accept=".json,.pdf,application/json,application/pdf"></label></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px">
+   <label style="font-size:13px"><input type="checkbox" id="def-keep" data-act="defKeep" ${keepDefPref()?'checked':''}> 初期化しても標準の絵を残す</label>
+   ${n?`<button class="btn danger ${UI.confirm==='defall'?'armed':''}" data-act="defResetAll">${UI.confirm==='defall'?'もう一度押すとすべて最初の絵に':'すべて最初の絵に戻す'}</button>`:''}
+   <button class="btn" data-act="defClose" style="margin-left:auto">閉じる</button>
+  </div></div></div>`;}
+function cardImg(c){return c.img||(UI.defimg!==false?defImg(c):'');}
+function nodeW(c){const t=(c.title||'無題');return Math.max(56,Math.min(170,[...t].slice(0,11).length*13+26))+(cardImg(c)&&UI.gimg!==false?24:0);}
 function downscaleCard(file,cb){const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const W=320,H=240,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');const r=Math.max(W/img.width,H/img.height),w=img.width*r,h=img.height*r;g.fillStyle='#fff';g.fillRect(0,0,W,H);g.drawImage(img,(W-w)/2,(H-h)/2,w,h);let u;try{u=cv.toDataURL('image/jpeg',0.8);}catch(e){u=null;}cb(u);};img.onerror=()=>cb(null);img.src=fr.result;};fr.onerror=()=>cb(null);fr.readAsDataURL(file);}
 function forceLayout(movable){
  const ids=S.cards.map(c=>c.id),TM=termMap(),P=S.gpos;if(!ids.length)return;
@@ -1257,7 +1299,7 @@ function cardHTML(c,selS,dup){
   return `<article class="card editing t-${c.type}" data-card="${c.id}">
    <div class="card-top"><select id="cd-type-${c.id}" data-f="cd" data-cid="${c.id}" data-k="type" aria-label="カードの種類">${Object.entries(CT).map(([t,l])=>`<option value="${t}" ${c.type===t?'selected':''}>${l}</option>`).join('')}</select>
     <button class="btn sm" data-act="closeCard">閉じる</button></div>
-   <div class="imgfield">${c.img?`<img src="${c.img}" alt="カードの画像">`:'<div class="imgph">画像なし</div>'}<div class="tfbar"><label class="btn sm filebtn">${c.img?'画像を変える':'画像を付ける'}<input type="file" id="cimg-${c.id}" accept="image/*"></label>${c.img?`<button class="btn sm" data-act="cimgDel" data-cid="${c.id}">画像を外す</button>`:''}</div><small class="muted" style="font-size:11px">カードの上部に表示されます（自動で 4:3 に切り抜き、小さくして保存します）。</small></div>
+   <div class="imgfield">${c.img?`<img src="${c.img}" alt="カードの画像">`:UI.defimg!==false?`<img src="${defImg(c)}" alt="標準の絵" style="opacity:.9"><small class="muted" style="display:block;font-size:11px">標準の絵（種類・性別に合わせて自動で表示。画像を付けると置き換わります。絵はカード置き場の「標準の絵の設定」で変えられます）</small>`:'<div class="imgph">画像なし</div>'}<div class="tfbar"><label class="btn sm filebtn">${c.img?'画像を変える':'画像を付ける'}<input type="file" id="cimg-${c.id}" accept="image/*"></label>${c.img?`<button class="btn sm" data-act="cimgDel" data-cid="${c.id}">画像を外す</button>`:''}</div><small class="muted" style="font-size:11px">カードの上部に表示されます（自動で 4:3 に切り抜き、小さくして保存します）。</small></div>
    <input type="text" class="ctitle-in" id="cd-title-${c.id}" data-f="cd" data-cid="${c.id}" data-k="title" data-live="1" value="${esc(c.title)}" placeholder="カードの名前" aria-label="カードの名前">
    <textarea id="cd-body-${c.id}" data-f="cd" data-cid="${c.id}" data-k="body" data-live="1" placeholder="設定の中身や、起きる出来事" aria-label="カードの内容">${esc(c.body)}</textarea>
    ${(()=>{const mine=tagList(c.tags),mk=new Set(mine.map(norm)),dq=norm(UI.tagDraft);
@@ -1278,9 +1320,9 @@ function cardHTML(c,selS,dup){
     <button class="btn danger ${UI.confirm==='card-'+c.id?'armed':''}" data-act="delCard" data-cid="${c.id}">${UI.confirm==='card-'+c.id?'もう一度押すと削除':'削除'}</button>
    </div></article>`;
  }
- return `<article class="card t-${c.type} ${picked?'picked':''} ${c.status?'st-'+c.status:''} ${c.img&&UI.cimg!==false?'hasimg':''}" draggable="true" data-card="${c.id}" data-act="openCard" data-cid="${c.id}">
+ return `<article class="card t-${c.type} ${picked?'picked':''} ${c.status?'st-'+c.status:''} ${cardImg(c)&&UI.cimg!==false?'hasimg':''}" draggable="true" data-card="${c.id}" data-act="openCard" data-cid="${c.id}">
   <div class="card-top"><span class="ctype">${CT[c.type]}${c.type==='place'&&c.facility?'<span class="badge">施設</span>':''}${c.status?`<span class="stbadge st-${c.status}">${STATUS[c.status]}</span>`:''}</span></div>
-  ${c.img&&UI.cimg!==false?`<div class="cimg"><img src="${c.img}" alt=""></div>`:''}
+  ${cardImg(c)&&UI.cimg!==false?(c.img?`<div class="cimg"><img src="${c.img}" alt=""></div>`:`<div class="cimg def" style="background:${defBg(c)}"><img src="${defImg(c)}" alt=""></div>`):''}
   <label class="pick"><input type="checkbox" id="pk-${c.id}${dup?'-d'+uid():''}" data-act="pickCard" data-cid="${c.id}" ${picked?'checked':''} aria-label="組み合わせに選ぶ"></label>
   <h3>${esc(c.title)||'（無題）'}</h3>
   ${c.body?`<p class="cbody">${esc(c.body)}</p>`:''}
@@ -1333,6 +1375,8 @@ function cardsTab(){
   <input type="search" class="search" id="card-q" value="${esc(UI.q)}" placeholder="カードを検索" aria-label="カードを検索">
   <label><input type="checkbox" id="card-unused" data-act="toggleUnused" ${UI.unused?'checked':''}> 未使用のみ</label>
   <label><input type="checkbox" id="card-img" data-act="cimgT" ${UI.cimg!==false?'checked':''}> 画像を表示</label>
+  <label title="画像を付けていないカードに、種類（人物は性別）に合わせた簡単な絵を表示します"><input type="checkbox" id="card-defimg" data-act="defimgT" ${UI.defimg!==false?'checked':''}> 画像のないカードに標準の絵</label>
+  <button class="btn sm" data-act="defOpen" title="標準の絵を種類ごとに好きな画像に変えます">標準の絵の設定</button>
   <label>並べ方 <select id="card-group" data-act="cgroup"><option value="none" ${UI.cgroup==='none'?'selected':''}>まとめない</option><option value="org" ${UI.cgroup==='org'?'selected':''}>組織ごと</option><option value="region" ${UI.cgroup==='region'?'selected':''}>地域ごと（国・県・市町村）</option><option value="type" ${UI.cgroup==='type'?'selected':''}>種類ごと</option></select></label>
   <button class="btn pri" data-act="addCard">＋${UI.ctype==='all'?'カード':CT[UI.ctype]+'カード'}を作る</button>
  </div>
@@ -1500,8 +1544,8 @@ function graphTab(){
   ${abE.map(e=>{const pth=abPath(e.a,e.b);const lbl=e.all?'有利':mLabel(e.win?e.s:-e.s)[0];const m=abMid(e.a,e.b);return `<path class="ge-ab ${e.win?'win':'lose'}" data-pa="${e.a}" data-pb="${e.b}" d="${pth}" marker-end="url(#${e.win?'arr-win':'arr-lose'})" stroke-width="${Math.min(4,1.4+e.s*0.4)}"/><text class="gl-ab ${e.win?'win':'lose'}" data-qa="${e.a}" data-qb="${e.b}" x="${m[0]}" y="${m[1]}" text-anchor="middle">${lbl}</text>`;}).join('')}
   ${attr.map(e=>lab(e,e.label,'attr '+(e.cls||''),'attr')).join('')}
   <defs><clipPath id="gcirc" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>
-  ${S.cards.map(c=>{if(!okN(c.id))return '';const w=nodeW(c),p=P[c.id],t=[...(c.title||'無題')];const tt=t.length>11?t.slice(0,10).join('')+'…':t.join('');const gi=c.img&&UI.gimg!==false;
-   return `<g class="gn t-${c.type} ${memSet.has(c.id)?'gmem':''} ${abNode[c.id]||''} ${from===c.id?'from':''} ${sel===c.id?'sel':''} ${randSet.has(c.id)?'rand':''} ${dimN(c.id)?'dim':''} ${c.status?'st-'+c.status:''}" data-node="${c.id}" transform="translate(${p.x},${p.y})"><title>${esc(c.title)}${c.status?'（'+STATUS[c.status]+'）':''} ${esc(c.tags)}</title><rect class="b" x="${-w/2}" y="-15" width="${w}" height="30" rx="4"/><rect class="s" x="${-w/2}" y="-15" width="5" height="30" rx="2"/>${gi?`<image href="${c.img}" x="${-w/2+8}" y="-11" width="22" height="22" preserveAspectRatio="xMidYMid slice" clip-path="url(#gcirc)"/>`:''}<text x="${gi?15:3}" y="4" text-anchor="middle">${esc(tt)}</text>${c.status?`<g class="gst st-${c.status}" transform="translate(${w/2-4},-15)"><rect x="${-[...STSHORT[c.status]].length*11-6}" y="-9" width="${[...STSHORT[c.status]].length*11+8}" height="15" rx="7"/><text x="${-[...STSHORT[c.status]].length*5.5-2}" y="2" text-anchor="middle">${STSHORT[c.status]}</text></g>`:''}</g>`;}).join('')}
+  ${S.cards.map(c=>{if(!okN(c.id))return '';const w=nodeW(c),p=P[c.id],t=[...(c.title||'無題')];const tt=t.length>11?t.slice(0,10).join('')+'…':t.join('');const gi=cardImg(c)&&UI.gimg!==false;
+   return `<g class="gn t-${c.type} ${memSet.has(c.id)?'gmem':''} ${abNode[c.id]||''} ${from===c.id?'from':''} ${sel===c.id?'sel':''} ${randSet.has(c.id)?'rand':''} ${dimN(c.id)?'dim':''} ${c.status?'st-'+c.status:''}" data-node="${c.id}" transform="translate(${p.x},${p.y})"><title>${esc(c.title)}${c.status?'（'+STATUS[c.status]+'）':''} ${esc(c.tags)}</title><rect class="b" x="${-w/2}" y="-15" width="${w}" height="30" rx="4"/><rect class="s" x="${-w/2}" y="-15" width="5" height="30" rx="2"/>${gi?`<image href="${cardImg(c)}" x="${-w/2+8}" y="-11" width="22" height="22" preserveAspectRatio="xMidYMid slice" clip-path="url(#gcirc)"/>`:''}<text x="${gi?15:3}" y="4" text-anchor="middle">${esc(tt)}</text>${c.status?`<g class="gst st-${c.status}" transform="translate(${w/2-4},-15)"><rect x="${-[...STSHORT[c.status]].length*11-6}" y="-9" width="${[...STSHORT[c.status]].length*11+8}" height="15" rx="7"/><text x="${-[...STSHORT[c.status]].length*5.5-2}" y="2" text-anchor="middle">${STSHORT[c.status]}</text></g>`:''}</g>`;}).join('')}
  </svg>`;
  let detail='';
  if(sel){const c=card(sel);const rel=related(sel,TM);const myL=man.filter(l=>l.a===sel||l.b===sel);
@@ -1724,6 +1768,13 @@ const AFF_PRESET=[['火','草',1],['草','水',1],['水','火',1],['雷','水',1
 function allAttrs(){const s=new Set();S.cards.forEach(c=>{(c.abilities||[]).forEach(a=>tagList(a.attr).forEach(x=>s.add(x)));tagList(c.weakAttr).forEach(x=>s.add(x));tagList(c.resistAttr).forEach(x=>s.add(x));});(S.affinity||[]).forEach(r=>{if(r.atk)s.add(r.atk);});return [...s];}
 function allEnvs(){const s=new Set();S.cards.forEach(c=>{tagList(c.env).forEach(x=>s.add(x));tagList(c.envGood).forEach(x=>s.add(x));tagList(c.envBad).forEach(x=>s.add(x));});return [...s];}
 function abilityDatalists(){return `<datalist id="dl-attr">${allAttrs().map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist><datalist id="dl-env">${allEnvs().map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist><datalist id="dl-attrenv">${[...new Set([...allAttrs(),...allEnvs()])].map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist>`;}
+function affIsEnv(x){const n=norm(x);return allEnvs().some(e=>norm(e)===n)&&!S.cards.some(c=>(c.abilities||[]).some(a=>tagList(a.attr).some(t=>norm(t)===n))||tagList(c.weakAttr).some(t=>norm(t)===n)||tagList(c.resistAttr).some(t=>norm(t)===n));}
+function affRevState(r){if(!r.atk||!r.def||norm(r.atk)===norm(r.def)||affIsEnv(r.def))return '';const q=(S.affinity||[]).find(q=>norm(q.atk)===norm(r.def)&&norm(q.def)===norm(r.atk));if(!q)return 'none';const a=(Number(r.v)||1)>0,b=(Number(q.v)||1)>0;return a===b?'same':'ok';}
+function affRevCell(r,i){const st=affRevState(r),v=(Number(r.v)||1)>0;const rev=`${r.def} は ${r.atk} に ${v?'不利':'有利'}`;
+ if(st==='none')return `<button class="btn sm aff-rev" data-act="affRev" data-i="${i}" title="「${esc(rev)}」を足します">⇄ 反対も作る</button>`;
+ if(st==='ok')return `<span class="aff-rev ok" title="反対の「${esc(rev)}」も決まっています">⇄ 反対あり</span>`;
+ if(st==='same')return `<span class="aff-rev same" title="反対向きも同じ「${v?'有利':'不利'}」です（お互いに${v?'効く':'効きにくい'}関係）。片方だけにしたいときは、反対の行を直してください">⇄ お互いに${v?'有利':'不利'}</span>`;
+ return '<span></span>';}
 function affV(x,y){let v=0;(S.affinity||[]).forEach(r=>{if(r.atk&&r.def&&norm(r.atk)===norm(x)&&norm(r.def)===norm(y))v+=(Number(r.v)||1);});return v;}
 const hasAbility=c=>c.type==='person'&&((c.abilities||[]).some(a=>a.name||a.attr)||c.weakAttr||c.resistAttr||c.envGood||c.envBad);
 function attackScore(A,B){const o={s:0,why:[]};const bw=tagList(B.weakAttr).map(norm),br=tagList(B.resistAttr).map(norm);
@@ -1764,11 +1815,12 @@ function abilityTab(){
    <input type="text" id="aff-${i}-def" list="dl-attrenv" data-f="aff" data-i="${i}" data-k="def" data-live="1" value="${esc(r.def)}" placeholder="相手の属性 または 環境" aria-label="相手の属性または環境">
    <span class="aff-w">に</span>
    <select id="aff-${i}-v" data-f="aff" data-i="${i}" data-k="v" aria-label="有利か不利か"><option value="1" ${(Number(r.v)||1)>0?'selected':''}>有利</option><option value="-1" ${Number(r.v)<0?'selected':''}>不利</option></select>
-   <button class="ibtn" aria-label="削除" data-act="affDel" data-i="${i}">×</button></div>`).join('');
+   ${affRevCell(r,i)}<button class="ibtn" aria-label="削除" data-act="affDel" data-i="${i}">×</button></div>`).join('');
+ const revMiss=S.affinity.filter(r=>affRevState(r)==='none').length;
  const affBox=`<details class="mpanel" ${UI.affOpen||!S.affinity.length?'open':''}><summary data-act="affT">相性表（属性どうし・属性と環境）</summary>
   <p class="muted" style="font-size:12px;margin:0">「火 は 草 に有利」のように決めます。右側に環境（水辺・雨など）を書くと、その環境で能力が強まる・弱まるという意味になります。</p>
   ${affRows||'<p class="muted" style="font-size:12px;margin:0">まだありません。</p>'}
-  <div class="tfbar"><button class="btn sm" data-act="affAdd">＋相性を追加</button>${S.affinity.length?'':`<button class="btn sm" data-act="affPreset">よくある相性を入れる（火・水・草など）</button>`}</div></details>`;
+  <div class="tfbar"><button class="btn sm" data-act="affAdd">＋相性を追加</button>${revMiss?`<button class="btn sm" data-act="affRevAll" title="反対向きの相性がまだない行に、有利・不利を逆にした行をまとめて足します">⇄ 反対の相性をまとめて作る（${revMiss}件）</button>`:''}${S.affinity.length?'':`<button class="btn sm" data-act="affPreset">よくある相性を入れる（火・水・草など）</button>`}</div></details>`;
  if(!ppl.length)return `<div class="sec"><h2>能力・相性</h2>${abilityDatalists()}<p class="lead">人物カードに能力や弱点を入れると、ここで誰に強くて誰に弱いか、どの場所で戦うと有利かが分かります。</p>
   <div class="empty-note">能力が入った人物カードがまだありません。カード置き場で人物カードを開き、「能力」欄に能力と属性を入れてください。</div>${affBox}</div>`;
  const others=ppl.filter(p=>p.id!==base.id&&!isOut(p)).map(p=>({p,m:matchup(base,p)})).sort((a,b)=>b.m.score-a.m.score);
@@ -2437,8 +2489,9 @@ function pdfDialog(){if(!UI.pdfOpen)return '';const o=UI.pdfOpt||{};const on=k=>
    <label class="pf-check"><input type="checkbox" id="pdf-img" data-act="pdfOpt" data-k="img" ${on('img')?'checked':''}> カードの画像を入れる</label>
    <label class="pf-check"><input type="checkbox" id="pdf-floors" data-act="pdfOpt" data-k="floors" ${on('floors')?'checked':''}> 建物の地図は全部の階を入れる</label>
    <label class="pf-check"><input type="checkbox" id="pdf-3d" data-act="pdfOpt" data-k="m3d" ${o.m3d?'checked':''}> 地図の立体表示も入れる</label>
-   <label class="pf-check" style="grid-column:1 / -1"><input type="checkbox" id="pdf-embed" data-act="pdfOpt" data-k="embed" ${on('embed')?'checked':''}> <b>作品データをPDFに埋め込む</b>（最後のページに読み込み用の模様を入れます。このPDFを「ファイルを開く」で選ぶと作品を開き直せます）</label>
+   <label class="pf-check" style="grid-column:1 / -1"><input type="checkbox" id="pdf-embed" data-act="pdfOpt" data-k="embed" ${on('embed')?'checked':''}> <b>作品データをPDFに埋め込む</b>（最後のページに読み込み用の模様を入れます。このPDFを「ファイルを開く」で選ぶと作品を開き直せます）</label>${Object.keys(S.defImgs||{}).length?`<small class="muted" style="grid-column:1 / -1;margin:-6px 0 0 26px;font-size:12px">標準の絵の設定（${Object.keys(S.defImgs).length}枚）も一緒に埋め込まれます。「標準の絵の設定」→「絵のセットを読み込む」でこのPDFを選ぶと、絵だけを別の作品に取り込めます。</small>`:''}
    <label class="pf-check" style="grid-column:1 / -1"><input type="checkbox" id="pdf-json" data-act="pdfOpt" data-k="json" ${on('json')?'checked':''}> 読み込み用の作品ファイル（.json）も一緒に保存する（念のための控え）</label>
+   ${Object.keys(S.defImgs||{}).length?`<label class="pf-check" style="grid-column:1 / -1"><input type="checkbox" id="pdf-defjson" data-act="pdfOpt" data-k="defjson" ${o.defjson?'checked':''}> 標準の絵のセット（標準の絵.json）も一緒に保存する</label>`:''}
    <label class="pf-check"><input type="checkbox" id="pdf-notes" data-act="pdfOpt" data-k="notes" ${on('notes')?'checked':''}> 地図の記入（書き込み）を入れる</label>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn pri" data-act="pdfMake">PDFを作る（印刷画面を開く）</button><button class="btn" data-act="pdfClose" style="margin-left:auto">閉じる</button></div>
@@ -2446,7 +2499,7 @@ function pdfDialog(){if(!UI.pdfOpen)return '';const o=UI.pdfOpt||{};const on=k=>
 function pickEl(html,sel){const t=document.createElement('template');t.innerHTML=html;const el=t.content.querySelector(sel);return el?el.outerHTML:'';}
 function withUI(patch,fn){const keep={};Object.keys(patch).forEach(k=>{keep[k]=UI[k];UI[k]=patch[k];});try{return fn();}finally{Object.assign(UI,keep);}}
 function pdfCard(c,img){return `<div class="pc t-${c.type} ${c.status?'st-'+c.status:''}"><div class="pc-h"><span class="ctype">${CT[c.type]}</span>${c.type==='place'&&c.facility?'<span class="badge">施設</span>':''}${c.status?`<span class="stbadge st-${c.status}">${STATUS[c.status]}</span>`:''}</div>
- ${img&&c.img?`<img class="pc-img" src="${c.img}" alt="">`:''}<h4>${esc(c.title)||'（無題）'}</h4>${c.body?`<p>${esc(c.body).replace(/\n/g,'<br>')}</p>`:''}${cardMeta(c)}${c.tags?`<div class="ctags">${tagList(c.tags).map(t=>'#'+esc(t)).join(' ')}</div>`:''}${(()=>{const u=usedIn(c.id);return u.length?`<div class="pc-use">使用：${u.map(s=>'#'+num(s.id)+' '+esc(s.title)).join('、')}</div>`:'';})()}</div>`;}
+ ${img&&cardImg(c)?`<img class="pc-img" src="${cardImg(c)}" alt="">`:''}<h4>${esc(c.title)||'（無題）'}</h4>${c.body?`<p>${esc(c.body).replace(/\n/g,'<br>')}</p>`:''}${cardMeta(c)}${c.tags?`<div class="ctags">${tagList(c.tags).map(t=>'#'+esc(t)).join(' ')}</div>`:''}${(()=>{const u=usedIn(c.id);return u.length?`<div class="pc-use">使用：${u.map(s=>'#'+num(s.id)+' '+esc(s.title)).join('、')}</div>`:'';})()}</div>`;}
 /* ===== embed project data as pixels (PDF/PNG) and read it back ===== */
 const PD_MAGIC=[0x53,0x43,0x52,0x44];/* "SCRD" */
 function crc32(u8){let c,t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);for(let n=0;n<256;n++){c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}}c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=t[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
@@ -2558,6 +2611,7 @@ async function makePdf(){syncAllFloors();const o=UI.pdfOpt||{};UI.pdfOpt=o;UI.pd
  if(o.json!==false){const data=JSON.stringify(S,null,1);const done=()=>{};
   if(DL)DL.save({filename:fname,data}).catch(()=>{});
   else{try{const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}catch(e){}}}
+ if(o.defjson&&Object.keys(S.defImgs||{}).length){const txt=JSON.stringify({kind:'storycard-defimgs',v:1,imgs:S.defImgs});setTimeout(()=>{try{if(DL)DL.save({filename:'標準の絵.json',data:txt}).catch(()=>{});else downloadBlob('標準の絵.json',txt);}catch(e){}},600);}
  toast(o.json!==false?`作品ファイル「${fname}」を保存し、印刷画面を開いています。送信先を「PDFに保存」にしてください`:'印刷画面を開いています。送信先を「PDFに保存」にしてください');}
 
 function dataDialog(){
@@ -2601,7 +2655,7 @@ function render(){
  const iss=checks();
  let main='';
  if(UI.tab==='reverse')main=reverseTab();else if(UI.tab==='cards')main=cardsTab();else if(UI.tab==='graph')main=graphTab();else if(UI.tab==='family')main=familyTab();else if(UI.tab==='orgchart')main=orgChartTab();else if(UI.tab==='ability')main=abilityTab();else if(UI.tab==='map')main=mapTab();else if(UI.tab==='structure')main=structureTab();else if(UI.tab==='panels')main=panelsTab();else if(UI.tab==='templates')main=templatesTab();else main=checkTab(iss);
- app.innerHTML=`<div class="stickyhead" id="stickyhead">${header(iss)}${tabs(iss)}</div>`+(['graph','family','orgchart','ability','map'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+pdfDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
+ app.innerHTML=`<div class="stickyhead" id="stickyhead">${header(iss)}${tabs(iss)}</div>`+(['graph','family','orgchart','ability','map'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+pdfDialog()+defDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
  app.querySelectorAll('[data-keep]').forEach(el=>{if(keep[el.dataset.keep])el.scrollTop=keep[el.dataset.keep];});
  if(UI.tab==='graph'&&UI.edEdge)placeEdPop();
  setHeadH();
@@ -2673,6 +2727,13 @@ function act(a,d,el){
   case 'addRel':{const c=card(d.cid);if(c){c[d.k]=c[d.k]||[];c[d.k].push(d.k==='orgRels'?{org:'',kind:'ally',note:''}:d.k==='abilities'?{name:'',attr:'',power:3}:{card:'',name:'',role:''});const i=c[d.k].length-1;setTimeout(()=>{const e=document.getElementById(`rl-${d.cid}-${d.k}-${i}-${d.k==='orgRels'?'org':d.k==='abilities'?'name':'card'}`);if(e)e.focus();},20);}break;}
   case 'cgroup':UI.cgroup=el.value;break;
   case 'cimgT':UI.cimg=el.checked;break;
+  case 'defimgT':UI.defimg=el.checked;break;
+  case 'defOpen':UI.defOpen=true;break;
+  case 'defClose':UI.defOpen=false;break;
+  case 'defReset':if(S.defImgs)delete S.defImgs[d.k];toast('最初の絵に戻しました');break;
+  case 'defResetAll':if(prevConfirm!=='defall'){UI.confirm='defall';break;}S.defImgs={};toast('すべて最初の絵に戻しました（元に戻すで戻せます）');break;
+  case 'defKeep':try{localStorage.setItem(KEY+'-keepdef',el.checked?'1':'0');}catch(e){}return;
+  case 'defExport':{const n=Object.keys(S.defImgs||{}).length;if(!n){toast('書き出す絵がありません');return;}const name='標準の絵.json';const txt=JSON.stringify({kind:'storycard-defimgs',v:1,imgs:S.defImgs});try{if(DL){DL.save({filename:name,data:txt}).catch(()=>{});}else downloadBlob(name,txt);toast(`「${name}」を保存しました（ダウンロードフォルダを確認してください）`);}catch(e){toast('書き出せませんでした');}return;}
   case 'goutT':UI.gout=el.checked;break;
   case 'gimgT':UI.gimg=el.checked;break;
   case 'cimgDel':{const c=card(d.cid);if(c)delete c.img;break;}
@@ -2684,6 +2745,8 @@ function act(a,d,el){
   case 'affT':UI.affOpen=!UI.affOpen;return;
   case 'affAdd':S.affinity=S.affinity||[];S.affinity.push({atk:'',def:'',v:1});UI.affOpen=true;setTimeout(()=>{const e=document.getElementById(`aff-${S.affinity.length-1}-atk`);if(e)e.focus();},20);break;
   case 'affDel':S.affinity.splice(+d.i,1);UI.affOpen=true;break;
+  case 'affRev':{const r=S.affinity[+d.i];if(!r||affRevState(r)!=='none')return;const v=(Number(r.v)||1)>0?-1:1;S.affinity.splice(+d.i+1,0,{atk:r.def,def:r.atk,v});UI.affOpen=true;toast(`「${r.def} は ${r.atk} に ${v>0?'有利':'不利'}」を足しました`);break;}
+  case 'affRevAll':{const add=[];S.affinity.forEach(r=>{if(affRevState(r)==='none'&&!add.some(q=>norm(q.atk)===norm(r.def)&&norm(q.def)===norm(r.atk)))add.push({atk:r.def,def:r.atk,v:(Number(r.v)||1)>0?-1:1});});S.affinity.push(...add);UI.affOpen=true;toast(`反対の相性を${add.length}件足しました`);break;}
   case 'affPreset':{S.affinity=S.affinity||[];AFF_PRESET.forEach(([a,b,v])=>{if(!S.affinity.some(r=>norm(r.atk)===norm(a)&&norm(r.def)===norm(b)))S.affinity.push({atk:a,def:b,v});});UI.affOpen=true;toast('よくある相性を入れました。自由に書き換えてください');break;}
   case 'famStart':if(el.value)UI.famSel=el.value;break;
   case 'famMode':UI.famMode=el.value;break;
@@ -2834,7 +2897,7 @@ function act(a,d,el){
    return;}
   case 'loadData':{const ta=document.getElementById('data-text');try{const d2=JSON.parse(ta.value);if(!d2||!Array.isArray(d2.scenes)||!d2.story||!Array.isArray(d2.templates))throw 0;S=migrate(d2);cleanLabels();resetUI();UI.sel=(S.scenes[0]||{}).id;UI.tplSel=S.story.templateId;UI.dataOpen=false;toast('読み込みました');}catch(e){toast('読み込めませんでした。コピーしたテキスト全体を貼り付けてください');UI.dataOpen=true;}break;}
   case 'resetSample':if(prevConfirm!=='reset'){UI.confirm='reset';break;}S=migrate(sample());resetUI();UI.sel=S.scenes[S.scenes.length-1].id;toast('サンプルを読み込みました（元に戻すで戻せます）');break;
-  case 'wipe':if(prevConfirm!=='wipe'){UI.confirm='wipe';break;}S=blankData();resetUI();toast('初期化しました（元に戻すで戻せます）');break;
+  case 'wipe':if(prevConfirm!=='wipe'){UI.confirm='wipe';break;}{const keep=S.defImgs;S=blankData();if(keepDefPref()&&keep&&Object.keys(keep).length)S.defImgs=keep;}resetUI();toast('初期化しました（元に戻すで戻せます）');break;
  }
  save();snapshotNow();render();
 }
@@ -2900,7 +2963,7 @@ document.addEventListener('keydown',e=>{
  if((e.ctrlKey||e.metaKey)&&!typing&&(e.key==='z'||e.key==='Z'||e.key==='y')){e.preventDefault();if(e.key==='y'||e.shiftKey)redo();else undo();return;}
  if(e.target.id==='ed-text'&&!e.isComposing&&(e.key==='Enter'||e.key==='Escape')){e.preventDefault();UI.edEdge=null;save();render();return;}
  if(e.key==='Escape'&&UI.edEdge){UI.edEdge=null;render();return;}
- if(e.key==='Escape'&&UI.dataOpen){UI.dataOpen=false;render();}else if(e.key==='Escape'&&UI.glinkFrom){UI.glinkFrom=null;render();}if(e.key==='Enter'&&e.target.id==='fs-new'){e.preventDefault();act('addFs',{id:UI.sel},null);}if(e.key==='Enter'&&e.target.id&&e.target.id.startsWith('rank-new-')&&!e.isComposing){e.preventDefault();act('rankAdd',{cid:e.target.id.slice(9)},null);}
+ if(e.key==='Escape'&&UI.defOpen){UI.defOpen=false;render();}else if(e.key==='Escape'&&UI.dataOpen){UI.dataOpen=false;render();}else if(e.key==='Escape'&&UI.glinkFrom){UI.glinkFrom=null;render();}if(e.key==='Enter'&&e.target.id==='fs-new'){e.preventDefault();act('addFs',{id:UI.sel},null);}if(e.key==='Enter'&&e.target.id&&e.target.id.startsWith('rank-new-')&&!e.isComposing){e.preventDefault();act('rankAdd',{cid:e.target.id.slice(9)},null);}
  if(e.key==='Enter'&&e.target.id==='quick-add'&&!e.isComposing){e.preventDefault();act('quickAdd',{},null);}
  if(e.target.id&&e.target.id.startsWith('tag-in-')&&!e.isComposing){const cid=e.target.id.slice(7);
   if(e.key==='Enter'){e.preventDefault();const v=e.target.value.trim();if(v){addTag(cid,v);UI.tagDraft='';save();render();}}
@@ -3021,6 +3084,9 @@ document.addEventListener('dblclick',e=>{const svg=e.target.closest&&e.target.cl
  const vh=e.target.closest('[data-mv]'),g=e.target.closest('[data-mi]');const m=curMap();const it=m&&g&&m.items.find(x=>x.id===g.dataset.mi);
  if(vh&&it&&it.pts){const min=it.kind==='line'?2:3;if(it.pts.length>min){it.pts.splice(+vh.dataset.mv,1);save();snapshotNow();render();}else toast(`これ以上は角を減らせません（${min}点以上必要です）`);}});
 document.addEventListener('change',e=>{if(!e.target.id||!e.target.id.startsWith('cimg-'))return;const cid=e.target.id.slice(5),c=card(cid),f=e.target.files&&e.target.files[0];if(!c||!f)return;downscaleCard(f,u=>{if(!u){toast('画像を読み込めませんでした');return;}c.img=u;save();snapshotNow();render();toast('画像を付けました');});});
+document.addEventListener('change',e=>{const id=e.target.id||'';if(!id.startsWith('defimg-'))return;const k=id.slice(7),f=e.target.files&&e.target.files[0];if(!f||!DEF_KEYS.some(x=>x[0]===k))return;downscaleCard(f,u=>{if(!u){toast('画像を読み込めませんでした');return;}S.defImgs=S.defImgs||{};S.defImgs[k]=u;save();snapshotNow();render();toast('標準の絵を変えました');});});
+async function readDefSet(f){const h=new Uint8Array(await f.slice(0,5).arrayBuffer());if(h[0]===0x25&&h[1]===0x50&&h[2]===0x44&&h[3]===0x46){let d=null;try{d=await readPdfData(await f.arrayBuffer());}catch(_){}return d&&d.defImgs?{kind:'storycard-defimgs',imgs:d.defImgs,pdf:true}:{pdf:true};}try{return JSON.parse(await f.text());}catch(_){return null;}}
+document.addEventListener('change',e=>{if(e.target.id!=='defset-file')return;const f=e.target.files&&e.target.files[0];if(!f)return;readDefSet(f).then(d=>{if(d&&d.pdf&&!d.imgs){toast('このPDFには標準の絵が入っていません');return;}if(d&&!d.kind&&d.defImgs&&Array.isArray(d.scenes))d={kind:'storycard-defimgs',imgs:d.defImgs};const imgs=d&&d.kind==='storycard-defimgs'&&d.imgs;if(!imgs||typeof imgs!=='object'){toast('標準の絵のファイルではないようです');return;}let n=0;S.defImgs=S.defImgs||{};DEF_KEYS.forEach(([k])=>{const v=imgs[k];if(typeof v==='string'&&/^data:image\/(png|jpeg|webp|gif);base64,/.test(v)){S.defImgs[k]=v;n++;}});save();snapshotNow();render();toast(n?`標準の絵を${n}枚読み込みました（元に戻すで戻せます）`:'読み込める絵がありませんでした');}).catch(()=>toast('ファイルを読み込めませんでした'));});
 document.addEventListener('change',e=>{if(e.target.id!=='open-file')return;const f=e.target.files&&e.target.files[0];if(!f)return;toast('読み込んでいます…');openAnyFile(f).then(err=>{toast(err||`「${f.name}」を開きました（元に戻すで戻せます）`);render();}).catch(()=>{toast('ファイルを読み込めませんでした');});});
 document.addEventListener('change',e=>{if(e.target.id!=='map-img')return;const f=e.target.files&&e.target.files[0];const m=curMap();if(!f||!m)return;toast('画像を読み込んでいます…');
  downscaleImage(f,url=>{if(!url){toast('画像を読み込めませんでした。別の画像を試してください');return;}m.img=url;save();snapshotNow();render();toast('下絵を読み込みました');});});
