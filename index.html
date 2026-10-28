@@ -187,6 +187,29 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .modesw button[aria-pressed="true"]{background:var(--blue-ink)!important;color:var(--sheet)!important}
 .cimg{margin:2px -12px 2px;aspect-ratio:4/3;max-width:calc(100% + 24px);overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper)}
 .cimg img{width:100%;height:100%;object-fit:cover;display:block}
+.wk{text-decoration:underline dotted;text-decoration-color:var(--c-world);text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:help;border-radius:2px}.wk:hover,.wk:focus{background:color-mix(in srgb,var(--c-world) 14%,transparent);outline:none}
+.wkc{text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ink) 35%,transparent);text-underline-offset:3px;cursor:pointer}.wkc:hover,.wkc:focus{background:var(--paper);outline:none}
+#wktip{position:fixed;z-index:60;display:none;background:var(--sheet,#fff);color:var(--ink,#15181d);border:1px solid var(--line,#d2e1eb);border-left:3px solid var(--c-world,#6555b0);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.18);padding:8px 10px;font-size:12px;line-height:1.6;pointer-events:none}#wktip.on{display:block}
+#wktip b{font-size:13px}#wktip .wt-cat{margin-left:6px;font-size:10px;padding:0 6px;border-radius:99px;background:var(--paper,#eef4f8);color:var(--muted,#5d6874)}#wktip .wt-al{color:var(--muted,#5d6874);font-size:11px}#wktip .wt-b{margin-top:4px;white-space:pre-wrap}#wktip .wt-f{margin-top:4px;color:var(--c-world,#6555b0);font-size:10px}
+.wkgrid{display:grid;grid-template-columns:minmax(180px,260px) minmax(0,1fr);gap:14px;margin-top:10px;align-items:start}
+@media (max-width:760px){.wkgrid{grid-template-columns:1fr}}
+.wklist{border:1px solid var(--line);border-radius:6px;padding:6px;max-height:70vh;overflow:auto}
+.wkg{margin-bottom:6px}.wkg-h{font-size:11px;font-weight:700;color:var(--muted);padding:4px 6px;display:flex;justify-content:space-between}
+.wkitem{display:block;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:4px;font:inherit;font-size:13px;color:var(--ink);cursor:pointer}.wkitem small{display:block;font-size:10px}.wkitem:hover{background:var(--paper)}.wkitem.on{background:color-mix(in srgb,var(--c-world) 14%,transparent);font-weight:700}
+.wkdetail{border:1px solid var(--line);border-top:3px solid var(--c-world);border-radius:6px;padding:12px 14px;min-width:0}.wk-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.wk-h h3{margin:0;font-size:18px}
+.wkbody{white-space:pre-wrap;line-height:1.85;font-size:14px;margin:6px 0 10px}.wksec{margin-top:10px;font-size:12px;display:flex;flex-direction:column;gap:4px}.wksec .chips{display:flex;flex-wrap:wrap;gap:4px}
+.wkedit .fld{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;font-size:12px}.wkedit input,.wkedit textarea,.wkedit select{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:6px 8px;font:inherit;font-size:13px;color:var(--ink);width:100%}.wkedit textarea{min-height:160px;resize:vertical}.wkedit .chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.wkchip{border-left:3px solid var(--c-world)}.wkx{text-decoration-style:solid}.wkmiss{text-decoration:underline dotted;text-decoration-color:var(--err,#bf3a27);text-underline-offset:3px;cursor:pointer;color:var(--err,#bf3a27)}
+.wklinkbox{border:1.5px dashed color-mix(in srgb,var(--c-world) 55%,transparent);background:color-mix(in srgb,var(--c-world) 6%,transparent);border-radius:8px;padding:10px 12px;margin:-2px 0 12px;font-size:12.5px;transition:border-color .15s,background .15s}
+.wklinkbox.ready{border-style:solid;border-color:var(--c-world);background:color-mix(in srgb,var(--c-world) 11%,transparent)}
+.wlb-h{display:flex;gap:6px;align-items:center;font-size:13.5px;margin-bottom:6px;color:var(--c-world)}.wlb-ico{font-size:15px}
+.wlb-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.wlb-steps li{display:flex;gap:8px;align-items:flex-start}.wlb-steps li>div{flex:1;min-width:0}
+.wlb-n{flex:none;width:20px;height:20px;border-radius:50%;background:var(--c-world);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.wlb-sel{margin-top:4px;padding:4px 8px;border-radius:4px;background:var(--sheet);border:1px solid var(--line);min-height:26px}.wlb-word{color:var(--c-world);font-size:14px}.wlb-bad{color:var(--err,#bf3a27)}
+.wkedit .wlb-select{display:block;margin-top:4px;width:100%;max-width:360px;font-weight:700;border:1.5px solid var(--c-world);background:var(--sheet);cursor:pointer}.wkedit .wlb-select:disabled{opacity:.5;cursor:not-allowed;border-color:var(--line);font-weight:400}
+.wlb-more{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}.wlb-more .btn:disabled{opacity:.5}
+.wlb-help{margin-top:6px;font-size:11px;color:var(--muted)}.wlb-help summary{cursor:pointer}.wlb-help p{margin:4px 0 0}.wkfound{font-size:12px;margin:-2px 0 6px}
+.chipbtn{border:1px solid var(--line);background:var(--sheet);border-radius:99px;padding:2px 10px;font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}.chipbtn.on{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
 .cimg,.edimg{position:relative;container-type:inline-size}.edimg{display:block;width:200px;max-width:100%}.edimg img{display:block;width:100%}.edimg.cst::after{border-radius:4px}
 .cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.cst.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}
 .cst::after{content:"";position:absolute;inset:0;background:rgba(30,32,36,.28);pointer-events:none}
@@ -745,6 +768,7 @@ function sampleCards(d){
 const SAMPLE_TAGS={c1:'主人公、灯台、島、15歳',c2:'東京、記者、カメラ、24歳',c3:'島、灯台廃止',c4:'灯台、ナギ',c5:'島、噂',c6:'灯台、ナギ、伏線',c7:'湊、カメラ、伏線候補',c8:'島、灯台、行事',c9:'湊、ナギ、カメラ、島',c10:'灯台、ナギ、湊、嵐',c11:'湊、カメラ、ナギ、結末案'};
 function migrate(d){d.foreshadows=d.foreshadows||[];if(!d.defImgs||typeof d.defImgs!=='object')d.defImgs={};d.scenes.forEach(s=>{s.cards=s.cards||[];});
  const isSample=d.story&&String(d.story.title).includes('サンプル');
+ if(!Array.isArray(d.wiki))d.wiki=isSample?sampleWiki():[];
  if(!Array.isArray(d.cards))d.cards=isSample?sampleCards(d):[];
  if(!(d.v>=2)){if(isSample)d.cards.forEach(c=>{if(SAMPLE_TAGS[c.id])c.tags=SAMPLE_TAGS[c.id];});d.v=2;}
  if(!(d.v>=3)){if(isSample){const f=id=>d.cards.find(c=>c.id===id);
@@ -782,7 +806,7 @@ function restoreSnap(js){S=migrate(JSON.parse(js));try{localStorage.setItem(KEY,
 function undo(){if(HIST.timer)snapshotNow();if(!HIST.past.length)return;HIST.future.push(HIST.last);HIST.last=HIST.past.pop();restoreSnap(HIST.last);toast('元に戻しました');render();}
 function redo(){if(HIST.timer)snapshotNow();if(!HIST.future.length)return;HIST.past.push(HIST.last);HIST.last=HIST.future.pop();restoreSnap(HIST.last);toast('やり直しました');render();}
 
-function blankData(){return {v:6,affinity:[],story:{title:'',ending:'',totalPages:32,templateId:'kishou',firstSingle:true,endingSceneId:''},templates:builtinTemplates(),foreshadows:[],cards:[],scenes:[],links:[],cuts:[],gpos:{},maps:[]};}
+function blankData(){return {v:6,affinity:[],wiki:[],story:{title:'',ending:'',totalPages:32,templateId:'kishou',firstSingle:true,endingSceneId:''},templates:builtinTemplates(),foreshadows:[],cards:[],scenes:[],links:[],cuts:[],gpos:{},maps:[]};}
 let S=load()||blankData();
 let UI={tab:'cards',treeDir:'back',sel:(S.scenes[S.scenes.length-1]||{}).id,tplSel:S.story.templateId,confirm:null,dataOpen:false,filter:'all',toast:'',ctype:'all',q:'',unused:false,picked:[],card:null,qtype:'person',tagQ:'',ftags:[],tagDraft:'',cgroup:'none',ghull:true,gab:false,lines:{},views:{},famPerson:'',famSel:null,famMutual:true,famMode:'new',famRel:'父',mapId:null,mtool:'select',mplace:'',msel:null,mdraw:null,mset:false,mtile:'floor',mrot:0,gmode:'select',glinkFrom:null,lastCut:null,gsel:null,gtag:'',gmin:1,gauto:true,rand:null};
 const norm=s=>String(s||'').normalize('NFKC').trim().toLowerCase();
@@ -1093,7 +1117,7 @@ function header(iss){
 }
 function tabs(iss){
  const n=iss.filter(i=>i.lvl!=='info').length;
- const T=[['cards','カード置き場'],['graph','つながり'],['family','家系図'],['orgchart','組織図'],['ability','能力・相性'],['map','地図'],['reverse','ツリー'],['check','破綻チェック']];
+ const T=[['cards','カード置き場'],['graph','つながり'],['family','家系図'],['orgchart','組織図'],['ability','能力・相性'],['map','地図'],['reverse','ツリー'],['wiki','用語集'],['check','破綻チェック']];
  const b=([k,l],sub)=>`<button role="tab" class="${sub?'subtab':''}" aria-selected="${UI.tab===k}" data-act="tab" data-tab="${k}">${l}${k==='check'&&n?`<span class="cnt">${n}</span>`:''}</button>`;
  return `<nav class="tabs" role="tablist">${T.map(t=>b(t)).join('')}</nav>`;
 }
@@ -1310,6 +1334,7 @@ function cardHTML(c,selS,dup){
    <div class="imgfield">${c.img?`<div class="edimg${stCls(c)}"><img src="${c.img}" alt="カードの画像">${stTxt(c)}</div>`:UI.defimg!==false?`<div class="edimg${stCls(c)}"><img src="${defImg(c)}" alt="標準の絵" style="opacity:.9">${stTxt(c)}</div><small class="muted" style="display:block;font-size:11px">標準の絵（種類・性別に合わせて自動で表示。画像を付けると置き換わります。絵はカード置き場の「標準の絵の設定」で変えられます）</small>`:'<div class="imgph">画像なし</div>'}<div class="tfbar"><label class="btn sm filebtn">${c.img?'画像を変える':'画像を付ける'}<input type="file" id="cimg-${c.id}" accept="image/*"></label>${c.img?`<button class="btn sm" data-act="cimgDel" data-cid="${c.id}">画像を外す</button>`:''}</div><small class="muted" style="font-size:11px">カードの上部に表示されます（自動で 4:3 に切り抜き、小さくして保存します）。</small></div>
    <input type="text" class="ctitle-in" id="cd-title-${c.id}" data-f="cd" data-cid="${c.id}" data-k="title" data-live="1" value="${esc(c.title)}" placeholder="カードの名前" aria-label="カードの名前">
    <textarea id="cd-body-${c.id}" data-f="cd" data-cid="${c.id}" data-k="body" data-live="1" placeholder="設定の中身や、起きる出来事" aria-label="カードの内容">${esc(c.body)}</textarea>
+   ${(()=>{const f=wkFound([c.title,c.body].join(' '));return f.length?`<div class="wkfound"><span class="muted">用語集の言葉：</span>${f.map(x=>`<span class="wk" data-act="wikiGo" data-wid="${x.id}" tabindex="0">${esc(x.title)}</span>`).join('　')}</div>`:'';})()}
    ${(()=>{const mine=tagList(c.tags),mk=new Set(mine.map(norm)),dq=norm(UI.tagDraft);
      const sug=allTags().filter(t=>!mk.has(t.key)&&(!dq||t.key.includes(dq))).slice(0,dq?30:14);
      const exact=dq&&(mk.has(dq)||allTags().some(t=>t.key===dq));
@@ -1333,7 +1358,7 @@ function cardHTML(c,selS,dup){
   ${cardImg(c)&&UI.cimg!==false?(c.img?`<div class="cimg${stCls(c)}"><img src="${c.img}" alt="">${stTxt(c)}</div>`:`<div class="cimg def${stCls(c)}" style="background:${defBg(c)}"><img src="${defImg(c)}" alt="">${stTxt(c)}</div>`):''}
   <label class="pick"><input type="checkbox" id="pk-${c.id}${dup?'-d'+uid():''}" data-act="pickCard" data-cid="${c.id}" ${picked?'checked':''} aria-label="組み合わせに選ぶ"></label>
   <h3>${esc(c.title)||'（無題）'}</h3>
-  ${c.body?`<p class="cbody">${esc(c.body)}</p>`:''}
+  ${c.body?`<p class="cbody">${wkLink(esc(c.body))}</p>`:''}
   ${cardMeta(c)}
   ${c.tags?`<div class="ctags">${tagList(c.tags).map(t=>`<button class="tagb" data-act="ftag" data-v="${esc(norm(t))}" title="このタグで絞り込む">#${esc(t)}</button>`).join('')}</div>`:''}
   <div class="cuse ${used.length?'':'unused'}">${used.length?'使用：'+used.map(s=>'#'+num(s.id)).join(' '):'未使用'}${relN&&relN[c.id]?`<span class="muted" style="margin-left:auto">つながり ${relN[c.id]}</span>`:''}</div>
@@ -1560,7 +1585,7 @@ function graphTab(){
   const memLine=c.type==='org'?`<div style="margin-top:8px;font-size:12px"><span class="pf-l">メンバー：</span>${memberSort(c.id).map(p=>`<button class="cchip-b cchip t-person" data-act="gsel" data-cid="${p.id}">${esc(p.title)}${roleIn(p,c.id)?`（${esc(roleIn(p,c.id))}）`:''}</button>`).join(' ')||'<span class="muted">まだいません</span>'}</div>`:'';
   const abLine=UI.gab&&c.type==='person'&&hasAbility(c)?`<div style="margin-top:8px;font-size:12px"><span class="pf-l">能力の相性：</span>${abE.length?abE.map(e=>{const o=card(e.a===c.id?e.b:e.a);return `<span class="mlab ${e.win?'g2':'b2'}" style="margin-right:4px">${esc(o.title)}に${e.win?'有利':'不利'}</span>`;}).join(''):'<span class="muted">有利・不利な相手はいません</span>'} <button class="btn sm" data-act="abBase" data-id="${c.id}">能力・相性タブで詳しく</button></div>`:'';
   detail=`<div class="gdetail"><div style="min-width:0"><span class="ctype t-${c.type}" style="color:var(--ct)">${CT[c.type]}</span><h3>${esc(c.title)||'（無題）'}</h3>
-   ${c.body?`<p class="lead" style="margin:0 0 8px;color:var(--ink);white-space:pre-wrap">${esc(c.body)}</p>`:''}
+   ${c.body?`<p class="lead" style="margin:0 0 8px;color:var(--ink);white-space:pre-wrap">${wkLink(esc(c.body))}</p>`:''}
    <div>${tagList(c.tags).map(t=>`<button class="tagchip" data-act="gtag" data-v="${esc(norm(t))}">#${esc(t)}</button>`).join('')}</div>
    ${memLine}${abLine}
    <div class="card-acts" style="margin-top:10px"><button class="btn sm" data-act="gotoCard" data-cid="${c.id}">カードを編集</button><button class="btn sm" data-act="cardToScene" data-cid="${c.id}">シーンにする</button><button class="btn sm" data-act="gsel" data-cid="">選択を解除</button></div>
@@ -2486,7 +2511,7 @@ let DL=null,DLready=false;
 try{const u=window.claude&&window.claude.use;if(u)window.claude.use('downloads').then(n=>{DL=n;DLready=true;if(UI.dataOpen)render();}).catch(()=>{DLready=true;});else DLready=true;}catch(e){DLready=true;}
 function saveFileName(){const t=(S.story.title||'').trim()||'ストーリーカード';const d=new Date(),z=n=>String(n).padStart(2,'0');return `${t.replace(/[\\/:*?"<>|]/g,'_')}_${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}.json`;}
 /* ===== PDF export (print view) ===== */
-const PDF_SECS=[['cover','表紙・あらすじ'],['story','ストーリー（シーン一覧・ツリー）'],['fs','伏線の一覧'],['cards','カード一覧'],['graph','つながり図'],['family','家系図'],['org','組織図'],['ability','能力・相性'],['maps','地図'],['check','破綻チェック']];
+const PDF_SECS=[['cover','表紙・あらすじ'],['story','ストーリー（シーン一覧・ツリー）'],['fs','伏線の一覧'],['cards','カード一覧'],['graph','つながり図'],['family','家系図'],['org','組織図'],['ability','能力・相性'],['maps','地図'],['wiki','用語集'],['check','破綻チェック']];
 function pdfDialog(){if(!UI.pdfOpen)return '';const o=UI.pdfOpt||{};const on=k=>o[k]!==false;
  return `<div class="overlay" data-act="pdfClose"><div class="dialog" role="dialog" aria-modal="true" aria-label="PDFに出力">
   <h3>PDFに出力</h3>
@@ -2583,6 +2608,7 @@ function buildPdfHtml(fname,di){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;c
    if(m.floors&&m.fcur!==cur)switchFloor(m,cur);});UI.mapId=keepMap;parts.push(`<section class="ps ps-maps"><h2>地図</h2>${b}</section>`);}
  // check
  const dataSec=di?`<section class="ps ps-data"><h2>読み込み用データ</h2><p>このページの模様には、この作品のデータ（カード・シーン・地図など）がすべて入っています。ストーリーカードの「保存・読み込み」→「ファイルを開く」でこのPDFを選ぶと、作品を開き直せます。</p><p class="muted">模様を切り取ったり、PDFを画像として保存し直したりすると読み込めなくなります。</p><div class="pdata"><img src="${di.url}" alt="作品データ" width="${di.w}" height="${di.h}"></div><p class="muted" style="font-size:9pt">データの大きさ：${Math.ceil(di.bytes/1024)} KB（${di.w}×${di.h} 画素）</p></section>`:'';
+ if(on('wiki')&&(S.wiki||[]).length){const W=[...S.wiki].sort((a,b)=>((a.cat||'~')+a.title).localeCompare((b.cat||'~')+b.title,'ja'));let cur=null,h='';W.forEach(e=>{const g=(e.cat||'').trim()||'分類なし';if(g!==cur){h+=`<h3 class="pwk-g">${esc(g)}</h3>`;cur=g;}h+=`<div class="pwk"><h4>${esc(e.title)||'（無題）'}${aliasList(e.aliases).length?`<small>（${esc(aliasList(e.aliases).join('、'))}）</small>`:''}</h4>${e.body?`<p>${esc(wkPlain(e.body)).replace(/\n/g,'<br>')}</p>`:''}${(e.cards||[]).filter(card).length?`<div class="pc-use">関連カード：${e.cards.filter(card).map(id=>esc(card(id).title)).join('、')}</div>`:''}</div>`;});sec('wiki','用語集',h);}
  if(on('check')){const iss=checks();const LV={err:'破綻',warn:'要確認',info:'メモ'};sec('check','破綻チェック',iss.length?`<ul class="pchk">${iss.sort((a,b)=>({err:0,warn:1,info:2}[a.lvl]-{err:0,warn:1,info:2}[b.lvl])).map(i=>`<li class="${i.lvl}"><b>${LV[i.lvl]}</b><span class="muted">［${i.cat}］</span>${esc(i.msg)}</li>`).join('')}</ul>`:'<p>見つかった問題はありません。</p>');}
  const css=[...document.querySelectorAll('style')].map(s2=>s2.textContent).join('\n');
  const links=[...document.querySelectorAll('link[rel="stylesheet"]')].map(l=>l.outerHTML).join('');
@@ -2602,7 +2628,7 @@ function buildPdfHtml(fname,di){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;c
  .pmeta{font-size:9pt;line-height:1.6}.pmeta span{color:#5d6874}
  .ptree .node-acts,.ptree select,.ptree button.btn{display:none!important}.ptree .node{max-width:none;break-inside:avoid}.ptree{font-size:9.5pt}
  .pcards{display:grid;grid-template-columns:repeat(${orient==='landscape'?4:3},1fr);gap:3mm}
- .pc{border:1px solid #d2e1eb;border-top:3mm solid var(--ct);border-radius:1.5mm;padding:2.5mm 3mm;break-inside:avoid;font-size:9pt;background:#fff}.pc h4{margin:1mm 0;font-size:11pt}.pc p{margin:0 0 1.5mm;color:#3b434c}.pc-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:1mm;margin:1mm 0;display:block}.pc-imgw{position:relative;container-type:inline-size}.pc-imgw.cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.pc-imgw.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}.pc-imgw .cst-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16cqw;letter-spacing:.06em;color:rgba(255,255,255,.85);text-shadow:0 .3mm 1mm rgba(0,0,0,.6);line-height:1}.pc-imgw.cst-down .cst-txt{color:rgba(255,226,170,.92)}.pc-use{margin-top:1.5mm;color:#5d6874;font-size:8pt;border-top:1px dashed #d2e1eb;padding-top:1mm}
+ .pc{border:1px solid #d2e1eb;border-top:3mm solid var(--ct);border-radius:1.5mm;padding:2.5mm 3mm;break-inside:avoid;font-size:9pt;background:#fff}.pc h4{margin:1mm 0;font-size:11pt}.pc p{margin:0 0 1.5mm;color:#3b434c}.pc-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:1mm;margin:1mm 0;display:block}.pc-imgw{position:relative;container-type:inline-size}.pc-imgw.cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.pc-imgw.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}.pc-imgw .cst-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16cqw;letter-spacing:.06em;color:rgba(255,255,255,.85);text-shadow:0 .3mm 1mm rgba(0,0,0,.6);line-height:1}.pc-imgw.cst-down .cst-txt{color:rgba(255,226,170,.92)}.pc-use{margin-top:1.5mm;color:#5d6874;font-size:8pt;border-top:1px dashed #d2e1eb;padding-top:1mm}.pwk-g{font-size:11pt;margin:4mm 0 1.5mm;padding-left:2mm;border-left:1mm solid #6555b0}.pwk{border:1px solid #d2e1eb;border-radius:1.5mm;padding:2mm 3mm;margin:0 0 2mm;break-inside:avoid;font-size:9pt}.pwk h4{margin:0 0 1mm;font-size:10.5pt}.pwk h4 small{font-weight:400;color:#5d6874;font-size:8.5pt;margin-left:1mm}.pwk p{margin:0;color:#3b434c}
  .pc.st-dead,.pc.st-gone{filter:grayscale(.8);opacity:.75}.pc-h{display:flex;align-items:center;gap:1mm}
  .pfig{break-inside:avoid;border:1px solid #d2e1eb;border-radius:1.5mm;padding:2mm}.pfig svg{width:100%!important;min-width:0!important;height:auto;max-height:${orient==='landscape'?165:240}mm;display:block}
  .pmap{break-inside:avoid;margin-bottom:6mm}
@@ -2650,7 +2676,112 @@ function applyLoaded(txt){let d2;try{d2=JSON.parse(txt);}catch(e){return 'ファ
 /* ---------- main render ---------- */
 let pending=false;
 function schedule(){if(pending)return;pending=true;setTimeout(()=>{pending=false;render();},0);}
-const TABS_OK=['cards','graph','family','orgchart','ability','map','reverse','check'];
+const TABS_OK=['cards','graph','family','orgchart','ability','map','reverse','wiki','check'];
+/* ===== wiki (用語集) ===== */
+const aliasList=s=>String(s||'').split(/[、,，\n]+/).map(x=>x.trim()).filter(Boolean);
+function wikiList(){if(!Array.isArray(S.wiki))S.wiki=[];return S.wiki;}
+const wk=id=>(S.wiki||[]).find(x=>x.id===id);
+function wkTerms(e){return [e.title,...aliasList(e.aliases)].map(x=>(x||'').trim()).filter(Boolean);}
+let WKIX=null,WKKEY='';
+function wkIndex(){const useC=UI.wkCards!==false;const key=JSON.stringify([(S.wiki||[]).map(e=>[e.id,e.title,e.aliases]),useC?S.cards.map(c=>[c.id,c.title]):0]);if(key===WKKEY)return WKIX;WKKEY=key;
+ const map=new Map();(S.wiki||[]).forEach(e=>wkTerms(e).forEach(t=>{const k=esc(t);if(!map.has(k))map.set(k,{w:e.id});}));
+ if(useC)S.cards.forEach(c=>{const t=(c.title||'').trim();if(t){const k=esc(t);if(!map.has(k))map.set(k,{c:c.id});}});
+ const ks=[...map.keys()].sort((a,b)=>b.length-a.length);WKIX=ks.length?{rx:new RegExp(ks.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g'),map}:null;return WKIX;}
+const WKX=/\[\[([^\[\]|\n]+?)(?:\|([^\[\]\n]+?))?\]\]/g;
+const wkPlain=t=>String(t||'').replace(WKX,(m,a)=>a);
+function wkFind(name){const n=norm(name);if(!n)return null;const W=S.wiki||[];return W.find(e=>norm(e.title)===n)||W.find(e=>aliasList(e.aliases).some(a=>norm(a)===n))||null;}
+const unesc=t=>String(t).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+/* html = already-escaped plain text (no tags). [[表示|用語]] / [[用語]] = 自分で付けたリンク */
+function wkLink(html,opt){opt=opt||{};if(!html)return html;const off=UI.wklink===false&&!opt.force;
+ let out='',last=0;html.replace(WKX,(m,a,b,i)=>{out+=wkAuto(html.slice(last,i),opt,off);const e=wkFind(unesc(b||a));
+  if(off)out+=a;else if(e)out+=`<span class="wk wkx" data-act="wikiGo" data-wid="${e.id}" tabindex="0">${a}</span>`;
+  else out+=`<span class="wkmiss" data-act="wkAddTitle" data-title="${b||a}" tabindex="0" title="「${b||a}」という用語はまだありません。押すと作ります">${a}</span>`;last=i+m.length;return m;});
+ return out+wkAuto(html.slice(last),opt,off);}
+function wkAuto(html,opt,off){if(!html||off)return html;const ix=wkIndex();if(!ix)return html;
+ return html.replace(ix.rx,m=>{const h=ix.map.get(m);if(!h)return m;
+  if(h.w){if(h.w===opt.self)return m;return `<span class="wk" data-act="wikiGo" data-wid="${h.w}" tabindex="0">${m}</span>`;}
+  if(h.c&&opt.cards&&h.c!==opt.selfCard)return `<span class="wkc" data-act="gotoCard" data-cid="${h.c}" tabindex="0">${m}</span>`;return m;});}
+function wkFound(text,self){const t=String(text||'');if(!t)return [];return (S.wiki||[]).filter(e=>e.id!==self&&wkHas(t,e));}
+const wkHas=(text,e)=>{const raw=String(text||'');if(!raw)return false;let hit=false;raw.replace(WKX,(m,a,b)=>{if(wkFind(b||a)===e)hit=true;return m;});return hit||wkTerms(e).some(x=>wkPlain(raw).includes(x));};
+function wkRenameLinks(old,nw){let n=0;const fix=t=>String(t||'').replace(WKX,(m,a,b)=>{const tgt=b||a;if(norm(tgt)!==norm(old))return m;n++;return `[[${a}|${nw}]]`;});(S.wiki||[]).forEach(e=>{if(e.body)e.body=fix(e.body);});S.cards.forEach(c=>{if(c.body)c.body=fix(c.body);});return n;}
+document.addEventListener('focusin',e=>{const id=e.target&&e.target.id||'';if(id.startsWith('wk-title-')){const w=wk(id.slice(9));if(w)UI.wkTitleWas={id:w.id,t:w.title};}});
+function wkSelUI(id,ta){const box=document.getElementById('wk-linkbox-'+id);if(!box)return;const s0=Math.min(ta.selectionStart,ta.selectionEnd),e0=Math.max(ta.selectionStart,ta.selectionEnd);const t=ta.value.slice(s0,e0);const ok=!!t.trim()&&!/[\[\]\n|]/.test(t);
+ const sh=document.getElementById('wk-selshow-'+id);if(sh)sh.innerHTML=!t?'<span class="muted">まだ選ばれていません</span>':ok?`選んでいる文字：<b class="wlb-word">${esc(t.length>30?t.slice(0,30)+'…':t)}</b>`:'<span class="wlb-bad">改行や [ ] | をふくまない範囲を選んでください</span>';
+ box.classList.toggle('ready',ok);box.querySelectorAll('.wlb-select,[data-act="wkNewFromSel"]').forEach(x=>x.disabled=!ok);}
+['select','mouseup','keyup','input'].forEach(ev=>document.addEventListener(ev,e=>{const ta=e.target;if(!ta||!ta.id||!ta.id.startsWith('wk-body-'))return;const id=ta.id.slice(8);UI.wkRange={id,s:ta.selectionStart,e:ta.selectionEnd};wkSelUI(id,ta);}));
+document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('[data-keepsel]'))e.preventDefault();});
+function wikiTab(){const W=wikiList();const q=norm(UI.wkQ||'');
+ const cats=[...new Set(W.map(e=>(e.cat||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));
+ if(UI.wkCat&&!cats.includes(UI.wkCat))UI.wkCat='';
+ const list=W.filter(e=>(!UI.wkCat||(e.cat||'').trim()===UI.wkCat)&&(!q||norm([e.title,e.aliases,e.body,e.cat].join(' ')).includes(q))).sort((a,b)=>(a.title||'').localeCompare(b.title||'','ja'));
+ if(UI.wkSel&&!wk(UI.wkSel))UI.wkSel=null;if(!UI.wkSel&&list.length)UI.wkSel=list[0].id;
+ const e=wk(UI.wkSel);
+ const groups={};list.forEach(x=>{const g=(x.cat||'').trim()||'分類なし';(groups[g]=groups[g]||[]).push(x);});
+ const gk=Object.keys(groups).sort((a,b)=>a==='分類なし'?1:b==='分類なし'?-1:a.localeCompare(b,'ja'));
+ const left=`<div class="wklist" data-keep="wklist">${W.length?'':'<p class="muted" style="font-size:12px">まだ用語がありません。</p>'}${gk.map(g=>`<div class="wkg"><div class="wkg-h">${esc(g)}<span class="muted">${groups[g].length}</span></div>${groups[g].map(x=>`<button class="wkitem ${x.id===UI.wkSel?'on':''}" data-act="wkSel" data-wid="${x.id}">${esc(x.title)||'（無題）'}${aliasList(x.aliases).length?`<small class="muted">${esc(aliasList(x.aliases).join('・'))}</small>`:''}</button>`).join('')}</div>`).join('')}${W.length&&!list.length?'<p class="muted" style="font-size:12px">条件に合う用語がありません。</p>':''}</div>`;
+ let right='';
+ if(e&&UI.wkEdit){right=`<div class="wkdetail wkedit">
+   <label class="fld"><span>見出し（用語の名前）</span><input type="text" id="wk-title-${e.id}" data-f="wk" data-wid="${e.id}" data-k="title" data-live="1" value="${esc(e.title)}" placeholder="例：灯の祭り"></label>
+   <label class="fld"><span>合言葉・別の呼び方（読点で区切る）</span><input type="text" id="wk-alias-${e.id}" data-f="wk" data-wid="${e.id}" data-k="aliases" data-live="1" value="${esc(e.aliases)}" placeholder="例：灯祭、ともしび祭"></label>
+   <label class="fld"><span>分類</span><input type="text" id="wk-cat-${e.id}" list="dl-wkcat" data-f="wk" data-wid="${e.id}" data-k="cat" data-live="1" value="${esc(e.cat)}" placeholder="例：行事、地名、用語、歴史"></label>
+   <datalist id="dl-wkcat">${cats.map(c=>`<option value="${esc(c)}"></option>`).join('')}</datalist>
+   <label class="fld"><span>内容</span><textarea id="wk-body-${e.id}" data-f="wk" data-wid="${e.id}" data-k="body" data-live="1" rows="9" placeholder="説明を書きます。ほかの用語やカードの名前を書くと、自動でリンクになります。">${esc(e.body)}</textarea></label>
+   ${(()=>{const r=UI.wkRange&&UI.wkRange.id===e.id?UI.wkRange:null;const t=r?String(e.body||'').slice(Math.min(r.s,r.e),Math.max(r.s,r.e)):'';UI._wkReady=!!t.trim()&&!/[\[\]\n|]/.test(t);UI._wkWord=t;return '';})()}
+   <div class="wklinkbox ${UI._wkReady?'ready':''}" id="wk-linkbox-${e.id}">
+    <div class="wlb-h"><span class="wlb-ico" aria-hidden="true">🔗</span><b>内容の文字をほかの用語にリンクする</b></div>
+    <ol class="wlb-steps">
+     <li><span class="wlb-n">1</span><div>上の「内容」の中で、リンクにしたい文字を<b>マウスでなぞって選びます</b>。<div class="wlb-sel" id="wk-selshow-${e.id}">${UI._wkReady?`選んでいる文字：<b class="wlb-word">${esc(UI._wkWord.length>30?UI._wkWord.slice(0,30)+'…':UI._wkWord)}</b>`:'<span class="muted">まだ選ばれていません</span>'}</div></div></li>
+     <li><span class="wlb-n">2</span><div>リンク先の用語を選びます。選んだ時点でリンクになります。
+      <select id="wk-linkto-${e.id}" class="wlb-select" data-act="wkLinkSel" data-wid="${e.id}" aria-label="選んだ文字をリンクする先の用語" ${UI._wkReady?'':'disabled'}><option value="">▼ リンク先の用語を選ぶ</option>${W.filter(x=>x.id!==e.id&&x.title).sort((a,b)=>a.title.localeCompare(b.title,'ja')).map(x=>`<option value="${x.id}">${esc(x.title)}${x.cat?`（${esc(x.cat)}）`:''}</option>`).join('')}</select></div></li>
+    </ol>
+    <div class="wlb-more"><span class="muted">ほかに：</span><button class="btn sm" data-keepsel="1" data-act="wkNewFromSel" data-wid="${e.id}" ${UI._wkReady?'':'disabled'}>選んだ文字で新しい用語を作る</button><button class="btn sm" data-keepsel="1" data-act="wkUnlinkSel" data-wid="${e.id}">選んだリンクを外す</button></div>
+    <details class="wlb-help"><summary>しくみ</summary><p>リンクは内容の中に <code>[[表示する文字|用語の見出し]]</code> の形で入ります（同じ文字なら <code>[[用語の見出し]]</code>）。直接書いても使えます。表示のときは記号が消え、実線の下線になります。見出しや合言葉と同じ言葉は、選ばなくても自動でリンク（点線の下線）になります。</p></details>
+   </div>
+   <div class="fld"><span>関連カード</span><div class="chips">${(e.cards||[]).filter(card).map(id=>{const c=card(id);return `<span class="cchip t-${c.type}"><button class="cchip-b" data-act="gotoCard" data-cid="${id}">${esc(c.title)}</button><button class="ibtn" aria-label="外す" data-act="wkCardRm" data-wid="${e.id}" data-cid="${id}">×</button></span>`;}).join(' ')}</div>
+    <select id="wk-cardadd-${e.id}" data-act="wkCardAdd" data-wid="${e.id}" aria-label="関連カードを付ける"><option value="">カードを付ける…</option>${S.cards.filter(c=>!(e.cards||[]).includes(c.id)).map(c=>`<option value="${c.id}">${CT[c.type]}・${esc(c.title)||'（無題）'}</option>`).join('')}</select></div>
+   <div class="tfbar"><button class="btn pri" data-act="wkEdit">完了</button><button class="btn danger ${UI.confirm==='wk-'+e.id?'armed':''}" data-act="wkDel" data-wid="${e.id}" style="margin-left:auto">${UI.confirm==='wk-'+e.id?'もう一度押すと削除':'この用語を削除'}</button></div></div>`;}
+ else if(e){const terms=wkTerms(e);
+  const bc=S.cards.filter(c=>wkHas([c.title,c.body,c.tags].join(' '),e));
+  const bw=W.filter(x=>x.id!==e.id&&wkHas(x.body,e));
+  const bs=S.scenes.filter(sc=>wkHas([sc.title,sc.role,sc.note].join(' '),e));
+  const out=wkFound(e.body,e.id);
+  const chipC=c=>`<button class="cchip-b cchip t-${c.type}" data-act="gotoCard" data-cid="${c.id}">${esc(c.title)||'（無題）'}</button>`;
+  right=`<div class="wkdetail"><div class="wk-h"><h3>${esc(e.title)||'（無題）'}</h3>${e.cat?`<span class="badge">${esc(e.cat)}</span>`:''}<button class="btn sm" data-act="wkEdit" style="margin-left:auto">編集</button></div>
+   ${aliasList(e.aliases).length?`<p class="muted" style="font-size:12px;margin:0 0 8px">合言葉・別の呼び方：${aliasList(e.aliases).map(esc).join('、')}</p>`:''}
+   <div class="wkbody" data-wid="${e.id}">${e.body?wkLink(esc(e.body),{self:e.id,cards:true,force:true}):'<span class="muted">内容はまだありません。「編集」から書けます。</span>'}</div>
+   ${(e.cards||[]).filter(card).length?`<div class="wksec"><b>関連カード</b><div class="chips">${(e.cards||[]).filter(card).map(id=>chipC(card(id))).join(' ')}</div></div>`:''}
+   <div class="wksec"><b>この言葉が出てくるカード</b>${bc.length?`<div class="chips">${bc.map(chipC).join(' ')}</div>`:'<span class="muted">なし</span>'}</div>
+   ${bs.length?`<div class="wksec"><b>この言葉が出てくるシーン</b><div class="chips">${bs.map(sc=>`<button class="cchip-b cchip" data-act="wkScene" data-id="${sc.id}">#${num(sc.id)} ${esc(sc.title)}</button>`).join(' ')}</div></div>`:''}
+   ${out.length||bw.length?`<div class="wksec"><b>つながる用語</b><div class="chips">${[...new Map([...out,...bw].map(x=>[x.id,x])).values()].map(x=>`<button class="cchip-b cchip wkchip" data-act="wkSel" data-wid="${x.id}">${esc(x.title)}</button>`).join(' ')}</div></div>`:''}
+   <p class="muted" style="font-size:11px;margin-top:10px">この用語として扱う言葉：${terms.map(esc).join('、')||'（見出しを入れてください）'}</p></div>`;}
+ else right=`<div class="wkdetail"><div class="empty-note">左の「＋用語を追加」で用語を作ります。カードの内容に用語の見出しや合言葉が出てくると、自動でリンクになり、カーソルを合わせると説明が見えます。</div></div>`;
+ return `<div class="sec"><h2>用語集（wiki）</h2>
+  <p class="lead">物語の中の言葉（地名・行事・組織の決まり・専門用語など）を説明する辞書です。カードの内容に見出しや合言葉が出てくると点線の下線が付き、カーソルを合わせると説明が出て、押すとここに来ます。</p>
+  <div class="ctrls"><input type="search" class="search" id="wk-q" value="${esc(UI.wkQ||'')}" placeholder="用語を検索" aria-label="用語を検索">
+   <button class="btn pri" data-act="wkAdd">＋用語を追加</button>
+   <select id="wk-fromcard" data-act="wkFromCard" aria-label="カードから用語を作る"><option value="">カードから用語を作る…</option>${S.cards.filter(c=>c.title&&!W.some(x=>norm(x.title)===norm(c.title))).map(c=>`<option value="${c.id}">${CT[c.type]}・${esc(c.title)}</option>`).join('')}</select></div>
+  ${cats.length?`<div class="ctrls"><button class="chipbtn ${!UI.wkCat?'on':''}" data-act="wkCat" data-cat="">すべて ${W.length}</button>${cats.map(c=>`<button class="chipbtn ${UI.wkCat===c?'on':''}" data-act="wkCat" data-cat="${esc(c)}">${esc(c)} ${W.filter(x=>(x.cat||'').trim()===c).length}</button>`).join('')}</div>`:''}
+  <div class="ctrls"><label><input type="checkbox" id="wk-link" data-act="wkLinkT" ${UI.wklink!==false?'checked':''}> カードの中の用語をリンクにする</label><label><input type="checkbox" id="wk-cards" data-act="wkCardsT" ${UI.wkCards!==false?'checked':''}> 用語集の中でカードの名前もリンクにする</label></div>
+  <div class="wkgrid">${left}${right}</div>
+  <details class="pf-help" style="margin-top:12px"><summary><span class="help-ico" aria-hidden="true">?</span>使い方</summary><p>「見出し」と「合言葉・別の呼び方」に書いた言葉が、カードの内容・シーン・ほかの用語の中に出てくると、その用語へのリンクになります（長い言葉が優先されます）。用語の内容にカードの名前を書くと、そのカードへのリンクになります。カーソルを合わせると説明が出て、押すと開きます。「この言葉が出てくるカード」には、名前・内容・タグにその言葉があるカードが自動で並びます。</p></details></div>`;}
+function wkTipEl(){let t=document.getElementById('wktip');if(!t){t=document.createElement('div');t.id='wktip';t.setAttribute('role','tooltip');document.body.appendChild(t);}return t;}
+function wkTipShow(el){const t=wkTipEl();let h='';
+ if(el.classList.contains('wkmiss')){t.innerHTML=`<b>${esc(el.dataset.title)}</b><div class="wt-b">この用語はまだありません。</div><div class="wt-f">押すと用語を作る</div>`;}
+ else if(el.classList.contains('wk')){const e=wk(el.dataset.wid);if(!e)return;const b=wkPlain(e.body);h=`<b>${esc(e.title)}</b>${e.cat?`<span class="wt-cat">${esc(e.cat)}</span>`:''}${aliasList(e.aliases).length?`<div class="wt-al">別名：${esc(aliasList(e.aliases).join('、'))}</div>`:''}<div class="wt-b">${b?esc(b.length>160?b.slice(0,160)+'…':b):'（内容はまだありません）'}</div><div class="wt-f">押すと用語集を開く</div>`;}
+ else{const c=card(el.dataset.cid);if(!c)return;const b=wkPlain(c.body);h=`<b>${esc(c.title)}</b><span class="wt-cat">${CT[c.type]}</span><div class="wt-b">${b?esc(b.length>120?b.slice(0,120)+'…':b):''}</div><div class="wt-f">押すとカードを開く</div>`;}
+ if(h)t.innerHTML=h;t.classList.add('on');const r=el.getBoundingClientRect();const tw=Math.min(300,window.innerWidth-16);t.style.width=tw+'px';
+ let x=Math.max(8,Math.min(window.innerWidth-tw-8,r.left));let y=r.bottom+6;t.style.left=x+'px';t.style.top=y+'px';
+ const th=t.offsetHeight;if(y+th>window.innerHeight-8)t.style.top=Math.max(8,r.top-th-6)+'px';}
+function wkTipHide(){const t=document.getElementById('wktip');if(t)t.classList.remove('on');}
+document.addEventListener('mouseover',e=>{const el=e.target.closest&&e.target.closest('.wk,.wkc,.wkmiss');if(el)wkTipShow(el);else wkTipHide();});
+document.addEventListener('focusin',e=>{const el=e.target.closest&&e.target.closest('.wk,.wkc,.wkmiss');if(el)wkTipShow(el);else wkTipHide();});
+document.addEventListener('scroll',wkTipHide,true);
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){const el=e.target.closest&&e.target.closest('.wk,.wkc,.wkmiss');if(el){e.preventDefault();act(el.dataset.act,el.dataset,el);render();}}});
+function sampleWiki(){return [
+ {id:'w1',title:'灯の祭り',aliases:'灯祭、ともしび祭',cat:'行事',body:'年に一度、島中の家が窓に灯をともす祭り。灯台の灯が島を守ってきたことへの感謝を表す。\n灯台廃止が決まった年は、祭りを続けるかどうかで島の青年団の意見が割れている。',cards:['c10']},
+ {id:'w2',title:'定期船',aliases:'船便',cat:'暮らし',body:'本土と灯島を結ぶ唯一の船。週に2回、港に着く。嵐の夜には欠航する。',cards:[]},
+ {id:'w3',title:'灯台廃止',aliases:'廃止の決定',cat:'出来事',body:'灯台管理局が決めた、灯台の運用をやめる計画。自動の灯標に置き換える予定。灯の祭りの存続にも関わる。',cards:[]}];}
+
 function setHeadH(){const h=document.getElementById('stickyhead');let v=0;if(h){const st=getComputedStyle(h).position==='sticky';v=st?h.offsetHeight:((document.querySelector('.tabs')||{}).offsetHeight||0);h.classList.toggle('stuck',st&&window.scrollY>4);}document.documentElement.style.setProperty('--headh',v+'px');}
 window.addEventListener('resize',()=>{setHeadH();if(UI.mapFS&&UI.tab==='map'){clearTimeout(window.__fsT);window.__fsT=setTimeout(render,120);}});
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&UI.mapFS){UI.mapFS=false;render();}});
@@ -2662,8 +2793,8 @@ function render(){
  const keep={};app.querySelectorAll('[data-keep]').forEach(el=>keep[el.dataset.keep]=el.scrollTop);
  const iss=checks();
  let main='';
- if(UI.tab==='reverse')main=reverseTab();else if(UI.tab==='cards')main=cardsTab();else if(UI.tab==='graph')main=graphTab();else if(UI.tab==='family')main=familyTab();else if(UI.tab==='orgchart')main=orgChartTab();else if(UI.tab==='ability')main=abilityTab();else if(UI.tab==='map')main=mapTab();else if(UI.tab==='structure')main=structureTab();else if(UI.tab==='panels')main=panelsTab();else if(UI.tab==='templates')main=templatesTab();else main=checkTab(iss);
- app.innerHTML=`<div class="stickyhead" id="stickyhead">${header(iss)}${tabs(iss)}</div>`+(['graph','family','orgchart','ability','map'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+pdfDialog()+defDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
+ if(UI.tab==='reverse')main=reverseTab();else if(UI.tab==='cards')main=cardsTab();else if(UI.tab==='graph')main=graphTab();else if(UI.tab==='family')main=familyTab();else if(UI.tab==='orgchart')main=orgChartTab();else if(UI.tab==='ability')main=abilityTab();else if(UI.tab==='map')main=mapTab();else if(UI.tab==='wiki')main=wikiTab();else if(UI.tab==='structure')main=structureTab();else if(UI.tab==='panels')main=panelsTab();else if(UI.tab==='templates')main=templatesTab();else main=checkTab(iss);
+ app.innerHTML=`<div class="stickyhead" id="stickyhead">${header(iss)}${tabs(iss)}</div>`+(['graph','family','orgchart','ability','map','wiki'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+pdfDialog()+defDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
  app.querySelectorAll('[data-keep]').forEach(el=>{if(keep[el.dataset.keep])el.scrollTop=keep[el.dataset.keep];});
  if(UI.tab==='graph'&&UI.edEdge)placeEdPop();
  setHeadH();
@@ -2880,7 +3011,28 @@ function act(a,d,el){
   case 'ftagClear':UI.ftags=[];break;
   case 'rmTag':{const c=card(d.cid);if(c){const t=tagList(c.tags);t.splice(+d.i,1);c.tags=t.join('、');}break;}
   case 'addTagBtn':{addTag(d.cid,d.v);UI.tagDraft='';setTimeout(()=>{const e=document.getElementById('tag-in-'+d.cid);if(e)e.focus();},20);break;}
-  case 'gotoCard':UI.tab='cards';UI.card=d.cid;UI.tagDraft='';UI.ftags=[];UI.ctype='all';UI.q='';UI.unused=false;try{localStorage.setItem(KEY+'-tab2','cards');}catch(e){}setTimeout(()=>{const e=document.querySelector(`[data-card="${d.cid}"]`);if(e)e.scrollIntoView({block:'nearest'});},20);break;
+  case 'wikiGo':UI.tab='wiki';UI.wkSel=d.wid;UI.wkEdit=false;UI.wkQ='';UI.wkCat='';wkTipHide();try{localStorage.setItem(KEY+'-tab2','wiki');}catch(e){}setTimeout(()=>window.scrollTo({top:0}),20);break;
+  case 'wkSel':UI.wkSel=d.wid;UI.wkEdit=false;break;
+  case 'wkEdit':UI.wkEdit=!UI.wkEdit;break;
+  case 'wkCat':UI.wkCat=d.cat||'';break;
+  case 'wkAdd':{const w={id:'w'+uid(),title:'',aliases:'',cat:UI.wkCat||'',body:'',cards:[]};wikiList().push(w);UI.wkSel=w.id;UI.wkEdit=true;UI.wkQ='';setTimeout(()=>{const e=document.getElementById('wk-title-'+w.id);if(e)e.focus();},30);break;}
+  case 'wkFromCard':{const c=card(el.value);if(!c)return;const w={id:'w'+uid(),title:c.title,aliases:'',cat:CT[c.type],body:c.body||'',cards:[c.id]};wikiList().push(w);UI.wkSel=w.id;UI.wkEdit=true;UI.wkQ='';toast(`「${c.title}」の用語を作りました`);break;}
+  case 'wkDel':if(prevConfirm!=='wk-'+d.wid){UI.confirm='wk-'+d.wid;break;}S.wiki=wikiList().filter(x=>x.id!==d.wid);UI.wkSel=null;UI.wkEdit=false;toast('用語を削除しました（元に戻すで戻せます）');break;
+  case 'wkLinkSel':case 'wkNewFromSel':case 'wkUnlinkSel':{const w=wk(d.wid);if(!w)return;const ta=document.getElementById('wk-body-'+w.id);const body=ta?ta.value:(w.body||'');w.body=body;
+   const r=UI.wkRange&&UI.wkRange.id===w.id?UI.wkRange:{s:ta?ta.selectionStart:0,e:ta?ta.selectionEnd:0};const s0=Math.min(r.s,r.e),e0=Math.max(r.s,r.e);
+   if(a==='wkUnlinkSel'){let hit=0;const nb=body.replace(WKX,(m,x,y,i)=>{if(i<=e0&&i+m.length>=s0){hit++;return x;}return m;});if(!hit){toast('リンクの文字を選ぶか、リンクの中にカーソルを置いてください');render();return;}w.body=nb;UI.wkRange=null;toast('リンクを外しました');break;}
+   const txt=body.slice(s0,e0);if(!txt.trim()){if(el&&el.tagName==='SELECT')el.value='';toast('先に「内容」の中で、リンクにしたい文字を選んでください');render();return;}
+   if(/[\[\]\n|]/.test(txt)){if(el&&el.tagName==='SELECT')el.value='';toast('改行や [ ] | をふくまない範囲を選んでください');render();return;}
+   if(a==='wkNewFromSel'){const t=txt.trim();if(wkFind(t)){toast(`「${t}」はもう用語集にあります`);render();return;}const nw={id:'w'+uid(),title:t,aliases:'',cat:'',body:'',cards:[]};wikiList().push(nw);toast(`「${t}」を新しい用語にしました（中身はあとで書けます）`);break;}
+   const tg=wk(el.value);if(!tg)return;const ins=norm(txt)===norm(tg.title)?`[[${txt}]]`:`[[${txt}|${tg.title}]]`;w.body=body.slice(0,s0)+ins+body.slice(e0);UI.wkRange=null;
+   const pos=s0+ins.length;setTimeout(()=>{const t2=document.getElementById('wk-body-'+w.id);if(t2){t2.focus();t2.setSelectionRange(pos,pos);}},30);toast(`「${txt}」を「${tg.title}」へのリンクにしました`);break;}
+  case 'wkAddTitle':{const t=String(d.title||'').trim();if(!t)return;let e2=wkFind(t);if(!e2){e2={id:'w'+uid(),title:t,aliases:'',cat:'',body:'',cards:[]};wikiList().push(e2);toast(`「${t}」の用語を作りました`);}UI.tab='wiki';UI.wkSel=e2.id;UI.wkEdit=true;wkTipHide();break;}
+  case 'wkCardAdd':{const w=wk(d.wid);if(!w||!el.value)return;w.cards=w.cards||[];if(!w.cards.includes(el.value))w.cards.push(el.value);break;}
+  case 'wkCardRm':{const w=wk(d.wid);if(w)w.cards=(w.cards||[]).filter(x=>x!==d.cid);break;}
+  case 'wkLinkT':UI.wklink=el.checked;break;
+  case 'wkCardsT':UI.wkCards=el.checked;break;
+  case 'wkScene':UI.tab='cards';UI.sel=d.id;try{localStorage.setItem(KEY+'-tab2','cards');}catch(e){}break;
+  case 'gotoCard':wkTipHide();UI.tab='cards';UI.card=d.cid;UI.tagDraft='';UI.ftags=[];UI.ctype='all';UI.q='';UI.unused=false;try{localStorage.setItem(KEY+'-tab2','cards');}catch(e){}setTimeout(()=>{const e=document.querySelector(`[data-card="${d.cid}"]`);if(e)e.scrollIntoView({block:'nearest'});},20);break;
   case 'pickCard':UI.picked=el.checked?[...new Set([...UI.picked,d.cid])]:UI.picked.filter(x=>x!==d.cid);break;
   case 'pickClear':UI.picked=[];break;
   case 'pickToScene':{const ns=sceneFromCards(UI.picked);if(ns){toast(`「${ns.title}」を作りました`);UI.picked=[];}break;}
@@ -2920,6 +3072,7 @@ function setField(el,live){
   case 'tpln':{const t=S.templates.find(x=>x.id===d.tid);if(t)t.name=v;break;}
   case 'fs':{const f=S.foreshadows.find(x=>x.id===d.fid);if(f)f.name=v;break;}
   case 'cd':{const c=card(d.cid);if(c)c[d.k]=v;break;}
+  case 'wk':{const w=wk(d.wid);if(!w)return;w[d.k]=v;if(d.k==='title'&&!live&&UI.wkTitleWas&&UI.wkTitleWas.id===w.id){const old=UI.wkTitleWas.t;if(old&&v&&old!==v){const n=wkRenameLinks(old,v);if(n)setTimeout(()=>toast(`リンク${n}か所の行き先を新しい見出しに直しました`),10);}UI.wkTitleWas={id:w.id,t:v};}break;}
   case 'note':{const m=curMap();const n=m&&(m.notes||[]).find(x=>x.id===UI.nsel);if(!n)return;n[d.k]=['w','size'].includes(d.k)?Number(v):v;const g=document.querySelector(`.msvg [data-ni="${n.id}"]`);if(g)g.outerHTML=noteSvg(n,true);if(live){save();return;}break;}
   case 'floor':{const m=curMap();const f=m&&m.floors&&m.floors[m.fcur];if(!f)return;f[d.k]=v;if(live){const b=document.querySelector('.floorchip.on');if(b)b.textContent=v||'階';}break;}
   case 'mi':{const m=curMap();const it=m&&m.items.find(x=>x.id===UI.msel);if(!it)return;
@@ -2955,7 +3108,7 @@ document.addEventListener('click',e=>{
  act(el.dataset.act,el.dataset,el);
 });
 document.addEventListener('change',e=>{const el=e.target;if(el.dataset.f)setField(el,false);else if(el.dataset.act)act(el.dataset.act,el.dataset,el);});
-document.addEventListener('input',e=>{const el=e.target;if(el.id==='m3d-tilt'){UI.m3dTilt=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-fit'){UI.m3dFit=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-cw'||el.id==='m3d-ch'){const v=Math.max(el.id==='m3d-cw'?300:200,Math.min(4000,parseInt(el.value)||0));if(!v)return;if(el.id==='m3d-cw')UI.m3dCW=v;else UI.m3dCH=v;clearTimeout(window.__cwT);window.__cwT=setTimeout(render,400);return;}if(el.id==='m3d-scale'){UI.m3dScale=+el.value;redraw3D();return;}if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
+document.addEventListener('input',e=>{const el=e.target;if(el.id==='m3d-tilt'){UI.m3dTilt=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-fit'){UI.m3dFit=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-cw'||el.id==='m3d-ch'){const v=Math.max(el.id==='m3d-cw'?300:200,Math.min(4000,parseInt(el.value)||0));if(!v)return;if(el.id==='m3d-cw')UI.m3dCW=v;else UI.m3dCH=v;clearTimeout(window.__cwT);window.__cwT=setTimeout(render,400);return;}if(el.id==='m3d-scale'){UI.m3dScale=+el.value;redraw3D();return;}if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='wk-q'){UI.wkQ=el.value;schedule();return;}if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
 const dropT=e=>e.target.closest&&e.target.closest('[data-drop],[data-dropnew]');
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-card][draggable="true"]');if(!c)return;const id=c.dataset.card;const ids=UI.picked.includes(id)?UI.picked.slice():[id];try{e.dataTransfer.setData('text/plain',JSON.stringify(ids));e.dataTransfer.effectAllowed='copy';}catch(_){}});
 document.addEventListener('dragover',e=>{const t=dropT(e);if(!t)return;e.preventDefault();t.classList.add('drop-on');});
