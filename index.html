@@ -210,6 +210,171 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .wlb-more{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}.wlb-more .btn:disabled{opacity:.5}
 .wlb-help{margin-top:6px;font-size:11px;color:var(--muted)}.wlb-help summary{cursor:pointer}.wlb-help p{margin:4px 0 0}.wkfound{font-size:12px;margin:-2px 0 6px}
 .chipbtn{border:1px solid var(--line);background:var(--sheet);border-radius:99px;padding:2px 10px;font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}.chipbtn.on{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.gstage-wrap{margin-top:8px}
+.wbar{align-items:center}.wstat{font-size:12px;color:var(--muted)}.wstat b{color:var(--ink)}
+.wgrid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px;margin-top:8px;align-items:start}@media (max-width:900px){.wgrid{grid-template-columns:1fr}}
+.whead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.whead h3{margin:0;font-size:20px}.wnav{margin-left:auto;display:flex;gap:6px}
+.wrole{margin:4px 0 8px;color:var(--muted);font-size:13px}
+.wprev{border-left:3px solid var(--line);padding:4px 10px;margin:0 0 8px;font-size:12.5px;color:var(--muted);background:var(--paper);border-radius:0 6px 6px 0}.wprev small{display:block;font-weight:700}
+.wtools{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:6px;font-size:12px}
+.wtext{width:100%;min-height:58vh;resize:vertical;border:1px solid var(--line);border-radius:6px;padding:16px 18px;font:inherit;font-size:16px;line-height:2;background:var(--sheet);color:var(--ink);box-sizing:border-box}
+.wtext.mincho,.wread.mincho,.wread.mincho .linkbtn{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif CJK JP",serif}
+.wread .wk{text-decoration-color:color-mix(in srgb,var(--c-world) 45%,transparent)}
+.wtext.vert{writing-mode:vertical-rl;height:62vh;min-height:0;overflow-x:auto;resize:none;line-height:1.9;padding:18px}
+.wfoot{display:flex;align-items:center;gap:10px;margin-top:6px;font-size:13px}.wgoal{flex:0 0 160px;height:8px;background:var(--paper);border-radius:99px;overflow:hidden;border:1px solid var(--line)}.wgoal i{display:block;height:100%;background:var(--c-episode)}
+.wside{display:flex;flex-direction:column;gap:8px}.wbox{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;background:var(--sheet)}.wbox>b{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.wchips{display:flex;flex-wrap:wrap;gap:6px}.wnote{white-space:pre-wrap;font-size:12px}
+.wlist{max-height:40vh;overflow:auto}.wli{display:flex;gap:6px;width:100%;text-align:left;border:0;background:none;padding:4px 6px;border-radius:4px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--ink);align-items:baseline}.wli small{margin-left:auto;color:var(--muted)}.wli.on{background:color-mix(in srgb,var(--c-episode) 14%,transparent);font-weight:700}.wli:hover{background:var(--paper)}
+.linkbtn{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}.linkbtn:hover{text-decoration:underline}
+.wread{max-width:760px;margin:12px auto;padding:28px 34px;background:var(--sheet);border:1px solid var(--line);border-radius:8px;font-size:17px;line-height:2.05}
+.wr-title{font-size:26px;text-align:center;margin:0 0 20px}.wr-h{font-size:15px;margin:28px 0 10px;color:var(--muted)}.wr-t{white-space:pre-wrap;text-align:justify}.wr-empty{font-size:13px}
+.wread.vert{writing-mode:vertical-rl;max-width:none;height:76vh;overflow-x:auto;padding:30px 24px}.wread.vert .wr-h{margin:0 0 0 24px}.wread.vert .wr-title{margin:0 0 0 30px}
+
+.ctier{display:inline-block;font-size:11px;font-weight:900;border-radius:4px;padding:0 6px;margin-right:4px;color:#fff;vertical-align:middle}.ctier.t-weak{background:#5f8fb8}.ctier.t-normal{background:#c98a1e}.ctier.t-strong{background:#c2412d}
+.chand-c i{font-style:normal;font-weight:900;margin-right:2px}.chand-c.t-weak i{color:#9cc8ee}.chand-c.t-normal i{color:#ffd37a}.chand-c.t-strong i{color:#ff9a8a}
+.ccard.t-strong{border-color:rgba(255,122,107,.75)}.ccard.t-normal{border-color:rgba(255,211,122,.7)}.ccard.t-weak{border-color:rgba(156,200,238,.7)}
+.atk-tiers{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;margin:2px 0 8px;padding:6px 8px;border:1px dashed var(--line);border-radius:6px}.ctier-row small{color:var(--muted)}
+
+.chand{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;margin-top:4px}.chand-c{font-size:10.5px;border-radius:4px;padding:0 5px;background:rgba(255,255,255,.12);white-space:nowrap}.chand-c b{margin-left:3px;color:#ffd88a}.chand-c.out{opacity:.35;text-decoration:line-through}
+.chand-c.k-eva{background:rgba(143,227,255,.18)}.chand-c.k-def{background:rgba(200,206,214,.2)}
+.gbt-f{width:150px}
+.cclash{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+.cplay{border-radius:12px;padding:8px 10px;text-align:center;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.07)}.cplay.k-atk{border-color:#ffb35c}.cplay.k-eva{border-color:#8fe3ff}.cplay.k-def{border-color:#c8ced6}
+.cplay.crit{border-color:#ffe066;background:rgba(255,224,102,.16)}.cplay.fum{opacity:.7}
+.cplay.flip{animation:cflip .5s ease-out}@keyframes cflip{0%{transform:rotateY(90deg)}100%{transform:none}}
+.cplay-h{font-size:15px;font-weight:900}.cplay-h small{display:block;font-size:11px;font-weight:400;opacity:.8}
+.cplay .gdice{justify-content:center;margin:4px 0;flex-wrap:wrap}.cplay-v{font-size:36px;font-weight:900;line-height:1.1;color:#ffd88a}.cplay.k-eva .cplay-v{color:#8fe3ff}.cplay.k-def .cplay-v{color:#e6eaee}.cplay-s{font-size:11.5px;opacity:.85}
+.cvs{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:120px}.cvs>span{font-weight:900;font-size:22px;color:#ffb35c}.cres{font-size:16px;text-align:center;line-height:1.4}.cres .good{color:#8ff0b0}.cres .bad{color:#ffb3a8}
+.ccard{position:relative}.ccard.k-eva{border-color:rgba(143,227,255,.6)}.ccard.k-def{border-color:rgba(200,206,214,.6);border-style:solid}.ccard:disabled{opacity:.35;cursor:not-allowed}
+.cleft{margin-left:auto;font-size:12px;font-weight:700;background:rgba(0,0,0,.35);border-radius:99px;padding:1px 8px}
+.cmx-wrap{overflow:auto}.cmx{border-collapse:collapse;font-size:12px;margin-top:6px}.cmx th,.cmx td{border:1px solid var(--line);padding:4px 8px;text-align:center}.cmx th{background:var(--paper);font-weight:700}.cmx th small{display:block;font-weight:400;color:var(--muted)}
+.cm b{display:block;font-size:16px}.cm small{color:var(--muted);font-size:10px}.cm.hi{background:#e9f7ef;color:#2f8f5b}.cm.mid{background:#fbf0db;color:#a96600}.cm.lo{background:#fbe9e6;color:#bf3a27}.cm.all{border-left:3px solid var(--ink)}
+@media (max-width:640px){.cclash{grid-template-columns:1fr}.cvs{flex-direction:row}}
+
+.gwin{display:inline-flex;align-items:baseline;gap:6px;border-radius:99px;padding:2px 12px;background:rgba(0,0,0,.35);border:2px solid currentColor;margin-left:8px}.gwin small{font-size:11px;font-weight:700}.gwin b{font-size:20px;font-weight:900}.gwin em{font-style:normal;font-size:12px;font-weight:700}
+.gwin.hi{color:#8ff0b0}.gwin.mid{color:#ffe08a}.gwin.lo{color:#ffb3a8}
+.gwin.sm{margin:4px 0 0;background:var(--paper);align-self:flex-start}.gwin.sm.hi{color:#2f8f5b}.gwin.sm.mid{color:#a96600}.gwin.sm.lo{color:#bf3a27}.gwin.sm b{font-size:16px}
+.simsel{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:6px 0}
+.simres{display:flex;gap:14px;flex-wrap:wrap;align-items:stretch;margin-top:6px}.simwin{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:130px;border-radius:12px;padding:8px 14px;border:3px solid currentColor}.simwin small{font-size:12px;font-weight:700}.simwin b{font-size:38px;font-weight:900;line-height:1.1}.simwin span{font-size:13px;font-weight:700}
+.simwin.hi{color:#2f8f5b;background:#e9f7ef}.simwin.mid{color:#a96600;background:#fbf0db}.simwin.lo{color:#bf3a27;background:#fbe9e6}
+.simdet{flex:1;min-width:260px;font-size:13px}.simcols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}.simcols ul{margin:4px 0 0;padding-left:18px;font-size:12px}
+@media (max-width:640px){.simcols{grid-template-columns:1fr}}
+
+.gbt{gap:10px}.gstage.battle{aspect-ratio:auto;height:auto;min-height:min(86vh,760px);max-height:none}.gstage.battle .gsvg{position:absolute;inset:0}.gstage.battle .gscene{position:relative;inset:auto;min-height:min(86vh,760px);padding:12px 0}.gstage.battle .gbt{max-height:none;margin:0 2%}.gbt-top{font-size:16px}
+.gbt-f{width:136px}.gbt-img{position:relative}.gbt-turn{position:absolute;left:4px;top:4px;background:#ffd88a;color:#222;font-weight:900;font-size:12px;border-radius:4px;padding:0 6px}.gbt-g{position:absolute;right:4px;top:2px;font-size:20px}
+.gbt-f>b{font-size:15px}.gbt-hp{font-size:13px}.gbt-hp b{font-size:18px}.gbt-bar{height:12px}.gbt-bar.mid i{background:linear-gradient(90deg,#ffd36b,#e0a000)}.gbt-bar.lo i{background:linear-gradient(90deg,#ff7a6b,#d8402e)}.gbt-f.foe .gbt-bar.hi i{background:linear-gradient(90deg,#ff9a6b,#e0602e)}
+.gsteps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.gstep{flex:1 1 170px;max-width:260px;border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.15);text-align:center}
+.gstep-h{font-size:13px;font-weight:700;text-align:left}.gstep-h small{font-weight:400;opacity:.8}.gstep-k{display:inline-block;margin-right:4px}
+.gstep-d{display:flex;justify-content:center;margin:4px 0}.gstep-d .gdice .die{width:44px;height:44px}
+.gstep-big{font-size:28px;font-weight:900;line-height:1.15}.gstep-big small{font-size:15px;font-weight:700;opacity:.8}.gstep-sub{font-size:12px;opacity:.75}
+.gstep.ok{border-color:#5cd18a;background:rgba(92,209,138,.12)}.gstep.ok .gstep-big{color:#8ff0b0}.gstep.ng{border-color:#ff8a7a;background:rgba(255,122,107,.1)}.gstep.ng .gstep-big{color:#ffb3a8}
+.gstep.crit{border-color:#ffd24a;background:rgba(255,210,74,.16)}.gstep.crit .gstep-big{color:#ffe066}.gstep.dmg{border-color:#ffb35c}.gstep.dmg .gstep-big{color:#ffd88a;font-size:34px}.gstep.wait{border-style:dashed}.gstep.skip{opacity:.6}.gstep-x{font-size:30px;opacity:.5}
+.gstep-hint{font-size:14px;opacity:.85;padding:10px}
+.gwhy{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}.gwhy span{font-size:12px;border-radius:99px;padding:1px 10px}.gwhy .up{background:rgba(92,209,138,.2);color:#b8f5cf}.gwhy .down{background:rgba(255,122,107,.18);color:#ffc4bb}
+.gbt-log{font-size:14px;min-height:0}
+.gturn{font-size:15px;text-align:center}.gturn b{color:#ffd88a}
+.gacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.gact{display:flex;flex-direction:column;gap:6px;text-align:left;background:rgba(255,255,255,.1);color:#fff;border:2px solid rgba(255,255,255,.35);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer}.gact:hover,.gact:focus{background:rgba(255,255,255,.2);border-color:#ffd88a;outline:none}
+.gact-n{font-size:17px;font-weight:900;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.gact.guard{border-style:dashed}
+.gtag{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;background:rgba(255,255,255,.18)}.gtag.good{background:#2f8f5b;color:#fff}.gtag.bad{background:#a33a2c;color:#fff}
+.gact-st{display:flex;flex-wrap:wrap;gap:6px}.gst-b{display:flex;flex-direction:column;align-items:center;min-width:64px;border-radius:8px;padding:2px 8px;background:rgba(0,0,0,.3);font-size:18px;font-weight:900;line-height:1.2}.gst-b small{font-size:10px;font-weight:700;opacity:.8}
+.gst-b.hi{color:#8ff0b0}.gst-b.mid{color:#ffe08a}.gst-b.lo{color:#ffb3a8}.gst-b.dmg{color:#ffd88a}.gst-b.crit{color:#ffe066}.gst-b.fum{color:#c8ced6}
+@media (max-width:640px){.gbt-f{width:96px}.gstep-big{font-size:22px}}
+
+.ab-row2{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 6px 8px;font-size:11px;align-items:center}.ab-row2 label{display:flex;gap:4px;align-items:center;color:var(--muted)}.ab-row2 input{width:72px}.ab-row2 input,.ab-row2 select{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:2px 4px;font:inherit;font-size:12px;color:var(--ink)}
+.gdrow{display:flex;align-items:center;gap:12px}.gdice-box{flex-direction:column;align-items:stretch;gap:6px}
+.gdice.ok .die rect{fill:#e3fff0;stroke:#5cd18a;stroke-width:3}.gdice.dmg{gap:4px}.die-n{display:inline-flex;align-items:baseline;justify-content:center;min-width:34px;height:34px;padding:0 4px;border-radius:7px;background:#fff;color:#222;font-weight:900;font-size:17px;line-height:34px;box-sizing:border-box}.die-n small{font-size:8px;color:#888;margin-left:1px}
+.gdmg{font-size:18px;color:#ffd88a}
+.gstage.shake{animation:gshake .35s}.gstage.shake.big{animation:gshake .55s}@keyframes gshake{10%,50%,90%{transform:translateX(-5px)}30%,70%{transform:translateX(5px)}100%{transform:none}}
+.gfx{position:fixed;pointer-events:none;z-index:200;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px}
+.gfx span{font-weight:900;font-size:clamp(30px,6vw,64px);letter-spacing:.06em;animation:gfxpop 1.3s ease-out forwards;text-shadow:0 3px 12px rgba(0,0,0,.6)}
+.gfx-crit{animation:gflash .6s ease-out}.gfx-crit span{color:#ffe066;-webkit-text-stroke:2px #b8460e}
+.gfx-crit .burst{position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:radial-gradient(circle,#fff 0,#ffe066 30%,rgba(255,140,0,.6) 55%,transparent 70%);animation:gburst .8s ease-out forwards}
+.gfx-fumble span{color:#b9c0c8;animation:gfxdrop 1.4s ease-in forwards}.gfx-evade span{color:#8fe3ff;animation:gfxswoosh 1s ease-out forwards}.gfx-miss span{color:#ddd;font-size:clamp(22px,4vw,40px)}
+.gfx-win span{color:#8ff0b0}.gfx-lose span{color:#ff9a8a;animation:gfxdrop 1.6s ease-in forwards}.gfx-guard span{font-size:48px}
+@keyframes gfxpop{0%{transform:scale(.3);opacity:0}15%{transform:scale(1.25);opacity:1}30%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1.05)}}
+@keyframes gfxdrop{0%{transform:translateY(-30px);opacity:0}20%{transform:none;opacity:1}75%{opacity:1}100%{transform:translateY(20px) rotate(-6deg);opacity:0}}
+@keyframes gfxswoosh{0%{transform:translateX(-120px) skewX(-20deg);opacity:0}25%{transform:none;opacity:1}75%{opacity:1}100%{transform:translateX(120px) skewX(20deg);opacity:0}}
+@keyframes gburst{0%{transform:scale(0);opacity:1}100%{transform:scale(40);opacity:0}}
+@keyframes gflash{0%{background:rgba(255,240,180,.55)}100%{background:transparent}}
+.gsnd{margin-left:auto;background:none;border:0;font-size:16px;cursor:pointer;color:#fff}.gbt-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.gsfx-list{display:flex;flex-direction:column;gap:4px}.gsfx-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px}.gsfx-row>span:first-child{width:110px}
+.gfx{display:flex;align-items:center;justify-content:center}
+@media (prefers-reduced-motion:reduce){.gstage.shake,.gfx span,.gfx .burst,.gfx-crit{animation:none!important}}
+
+.gdice-box{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.06);border-radius:8px;padding:8px 12px;min-height:76px}
+.gdice{display:flex;gap:8px;align-items:center;flex:none}.gdice .die{width:52px;height:52px}.gdice .die.small{width:36px;height:36px}
+.die rect{fill:#fff;stroke:#c8ced6;stroke-width:1.5}.die circle{fill:#222}.die circle.one{fill:#d8402e}
+.gdice.rolling .die{animation:groll .18s linear infinite}@keyframes groll{0%{transform:rotate(-14deg) translateY(-3px)}50%{transform:rotate(12deg) translateY(2px)}100%{transform:rotate(-14deg) translateY(-3px)}}
+.gdice.crit .die rect{fill:#fff6d6;stroke:#e0b25a;stroke-width:3}.gdice.fum .die rect{fill:#eee;stroke:#999}.gdice.idle{opacity:.5}
+.gdice-t{font-size:13px;line-height:1.7}.gdice-t em{font-style:normal;font-weight:700}.gdice-t em.good{color:#8ff0b0}.gdice-t em.bad{color:#ffb3a8}.gplus{opacity:.6}
+.gbt-odds{display:block;font-size:11px;opacity:.75;margin-top:2px}
+
+.tl-list{list-style:none;margin:8px 0;padding:0;border-left:2px solid var(--line)}.tl-year{font-weight:700;font-size:14px;margin:12px 0 4px -2px;padding-left:10px;border-left:4px solid var(--c-episode)}
+.tl-row{display:grid;grid-template-columns:140px minmax(0,1fr);gap:10px;padding:8px 10px;border-bottom:1px dashed var(--line);position:relative}.tl-row::before{content:"";position:absolute;left:-6px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--c-episode)}.tl-row.ep::before{background:var(--sheet);border:2px solid var(--c-episode)}
+.tl-when{font-size:13px;font-weight:700}.tl-when small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.tl-title{font-size:14px}.tl-no{color:var(--muted);font-size:12px}.tl-flash{font-size:11px;background:#fff3de;border:1px solid #e0b25a;border-radius:99px;padding:0 8px;color:#8a5a00}
+.tl-ppl{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}.tl-p{font-size:11px;border:1px solid var(--line);border-left:3px solid var(--c-person);border-radius:4px;padding:0 6px}.tl-p.st-dead{opacity:.5;text-decoration:line-through}.tl-age{font-size:11px;color:var(--c-person);font-weight:700}
+.tl-edit{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.tl-in{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:2px 6px;font:inherit;font-size:12px;color:var(--ink)}
+.tl-und-h{font-size:14px;margin:16px 0 4px}
+.tl-fig{border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin:8px 0}.tl-fig-h{display:flex;justify-content:space-between;max-width:560px;font-size:12px;font-weight:700;color:var(--muted);padding:0 120px 0 90px}
+.tl-link{fill:none;stroke:var(--c-episode);stroke-width:2;opacity:.55}.tl-link.x{opacity:.9}.tl-link.fl{stroke:#e08a00;stroke-width:2.5;opacity:1}.tl-ft{font-size:12px;fill:var(--ink)}
+@media (max-width:640px){.tl-row{grid-template-columns:1fr}}
+.gbt{position:relative;margin:auto 3% 3%;background:rgba(18,22,28,.9);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:8px;max-height:94%;overflow:auto}
+.gbt-top{font-weight:700}.gbt-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}.gbt-side{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.gbt-vs{font-weight:900;font-size:20px;color:#ffb35c}
+.gbt-f{width:120px;text-align:center;font-size:12px;border:2px solid transparent;border-radius:8px;padding:4px}.gbt-f.on{border-color:#ffd88a;background:rgba(255,216,138,.08)}.gbt-f.ko{opacity:.4;filter:grayscale(1)}
+.gbt-f img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:#fff;display:block}.gbt-f b{display:block;margin-top:2px}.gbt-f small{display:block}
+.gbt-bar{height:8px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden;margin-top:3px}.gbt-bar i{display:block;height:100%;background:linear-gradient(90deg,#5cd18a,#3aa86b);transition:width .3s}.foe .gbt-bar i{background:linear-gradient(90deg,#ff7a6b,#d8402e)}
+.gbt-log{font-size:12.5px;line-height:1.7;background:rgba(255,255,255,.06);border-radius:6px;padding:6px 10px;min-height:4.5em}.gbt-log div:last-child{color:#ffd88a}
+.gbt-res{font-size:20px;font-weight:900;text-align:center}.gbt-res.win{color:#8ff0b0}.gbt-res.lose{color:#ff9a8a}
+.gchoice em{font-style:normal;font-size:11px;margin-left:6px}.gchoice em.good{color:#8ff0b0}.gchoice em.bad{color:#ffb3a8}
+.ptl{width:100%;border-collapse:collapse;font-size:9pt}.ptl th,.ptl td{border:1px solid #d2e1eb;padding:1mm 2mm;text-align:left}
+
+.gmark.lock .gm-b{fill:#7a7f86}.gmark.lock .gm-ring{stroke:#7a7f86;animation:none}.gmark.lock text{font-size:inherit}
+.gsys{color:#ffd88a;font-weight:700}
+.gchoice.locked{opacity:.55;cursor:not-allowed}
+.gbag{position:absolute;right:8px;top:44px;bottom:8px;width:min(360px,80%);background:rgba(18,22,28,.94);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:12px;overflow:auto;font-size:13px;z-index:2}
+.gbag-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.gbag .btn{background:#2a3038;color:#fff;border-color:#555}
+.gbag-items{display:flex;flex-direction:column;gap:8px}.gbag-it{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:start}.gbag-it img{width:64px;height:48px;object-fit:cover;border-radius:4px;background:#fff}.gbag-it p{margin:2px 0 0;font-size:12px;opacity:.85}
+.gbag-sec{margin-top:10px}.gbag-sec ul{margin:4px 0 0;padding-left:18px}
+.gitems{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:700px){.gitems{grid-template-columns:1fr}}.gitems .chips{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 4px}
+.gm-tag.lock{background:#eceef0;border-color:#9aa5b1}
+
+.player{max-width:1100px;margin:0 auto;padding:16px}.pl-head{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:6px}.pl-head h1{font-size:20px;margin:0}
+.gstage-wrap.gfs{position:fixed;inset:0;z-index:90;background:#0e1114;display:flex;flex-direction:column;padding:8px;margin:0}.gstage-wrap.gfs .gstage{flex:1;max-height:none;aspect-ratio:auto;border-radius:6px}.gstage-wrap.gfs .gfoot{color:#cfd6dd}
+.gstage-wrap.gfs .gfoot .btn{background:#2a3038;color:#fff;border-color:#444}
+
+.gstage{position:relative;width:100%;aspect-ratio:16/10;max-height:72vh;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#1d2228;user-select:none;-webkit-user-select:none}
+.gsvg{display:block;width:100%;height:100%;cursor:pointer;touch-action:none}
+.gnomap{position:absolute;inset:0;background:linear-gradient(160deg,#2a3340,#151a20)}
+.gh-b{fill:#fff;stroke:var(--c-person);stroke-width:2.5}.gh-sh{fill:rgba(0,0,0,.25)}
+#g-hero.bump{animation:gbump .18s}@keyframes gbump{50%{opacity:.55}}
+.gmark .gm-ring{fill:none;stroke:#e08a00;stroke-width:2.5;stroke-dasharray:4 3;animation:gpulse 1.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.gmark .gm-b{fill:#e08a00;stroke:#fff;stroke-width:2}.gmark text{fill:#fff;font-weight:900}
+.gmark.goal .gm-b{fill:#d8402e}.garrow path{fill:#e08a00;stroke:#fff;stroke-width:2}.garrow.goal path{fill:#d8402e}.gmark.goal .gm-ring{stroke:#d8402e}
+@keyframes gpulse{50%{transform:scale(1.25);opacity:.5}}
+.ghud{position:absolute;left:8px;right:8px;top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;pointer-events:none}.ghud>*{pointer-events:auto}
+.gh-map,.gh-msg{background:rgba(20,24,30,.78);color:#fff;border-radius:99px;padding:3px 10px;font-size:12px}.gh-msg{background:rgba(224,138,0,.92)}
+.gscene{position:absolute;inset:0;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end}.gscene.gch{cursor:default}
+.gbg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.62) saturate(.9)}
+.gbg.t-place,.gbg.t-episode{background-color:rgba(18,24,32,.62)}.gbg[style*="url"]{background-color:#222}
+.gtop{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap}.gtop span{background:rgba(20,24,30,.75);color:#fff;border-radius:99px;padding:3px 10px;font-size:12px}
+.gport{position:absolute;right:6%;bottom:30%;width:30%;max-width:260px;aspect-ratio:4/3;border-radius:10px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.45);border:3px solid rgba(255,255,255,.85)}.gport img{width:100%;height:100%;object-fit:cover;display:block}
+.gbox{position:relative;margin:0 3% 3%;background:rgba(18,22,28,.86);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:14px 18px 12px;min-height:26%;font-size:clamp(14px,1.6vw,18px);line-height:1.8}
+.gname{position:absolute;top:-14px;left:14px;background:var(--c-person);color:#fff;font-weight:700;border-radius:6px;padding:1px 12px;font-size:13px}
+.gtext{white-space:pre-wrap}.gtext .wk{text-decoration-color:#bfb4ff}
+.gmore{text-align:right;font-size:11px;opacity:.7;margin-top:4px;animation:gblink 1.2s infinite}@keyframes gblink{50%{opacity:.3}}
+.gchoices{display:flex;flex-direction:column;gap:6px;margin-top:8px}.gchoice{text-align:left;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer}.gchoice:hover,.gchoice:focus{background:rgba(255,255,255,.22)}.gchoice small{opacity:.7;margin-left:6px;font-size:11px}
+.gtitle{border:1px solid var(--line);border-radius:8px;min-height:300px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,color-mix(in srgb,var(--c-world) 18%,var(--sheet)),var(--sheet));margin-top:8px}
+.gt-in{text-align:center;padding:24px}.gt-in img{width:120px;height:90px;object-fit:cover;border-radius:8px;border:2px solid var(--line)}.gt-in h3{font-size:24px;margin:10px 0 4px}.gend .gt-in h3{font-size:30px;letter-spacing:.2em}
+.gfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;margin-top:6px}.gf-msg{flex:1 1 320px;min-width:0}
+.gset{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;align-items:end}.gset>b{grid-column:1/-1}.gent{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}.gent>.pf-l{grid-column:1/-1}
+.gmk{border:1px solid var(--line);border-radius:6px;margin-bottom:6px;background:var(--sheet)}.gmk>summary{padding:8px 10px;cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
+.gm-tag{font-size:11px;border-radius:99px;padding:0 8px;background:var(--paper);border:1px solid var(--line)}.gm-tag.map{background:#fff3de;border-color:#e0b25a}.gm-warn{font-size:11px;color:var(--warn)}
+.gmk-b{padding:0 12px 12px;display:flex;flex-direction:column;gap:8px}.gmk-b textarea{width:100%;min-height:110px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--paper);color:var(--ink)}
+.gch-row{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:6px;align-items:center;font-size:12px}.gch-row input{border:1px solid var(--line);border-radius:4px;padding:4px 6px;background:var(--paper);color:var(--ink);font:inherit;font-size:13px}
 .cimg,.edimg{position:relative;container-type:inline-size}.edimg{display:block;width:200px;max-width:100%}.edimg img{display:block;width:100%}.edimg.cst::after{border-radius:4px}
 .cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.cst.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}
 .cst::after{content:"";position:absolute;inset:0;background:rgba(30,32,36,.28);pointer-events:none}
@@ -720,7 +885,10 @@ function builtinTemplates(){return [
  {id:'yomi',name:'読み切り型（例）',beats:[B('y1','掴み',0,'最初の数ページで主人公と作品の面白さを示す。'),B('y2','問題提示',10,'主人公が向き合う問題がはっきりする。'),B('y3','葛藤',30,'問題に挑み、壁にぶつかる。'),B('y4','転機',55,'価値観が揺らぐ出来事。'),B('y5','山場',72,'見開きや大ゴマを使う最大の見せ場。'),B('y6','決着',88,'問題に答えを出す。'),B('y7','余韻',96,'最後の1〜2ページで変化を見せる。')]}
 ];}
 function P(...a){return {panels:a.map(([s,t])=>({s,t}))};}
-function sample(){
+/* サンプル作品（地図・建物・用語集・ゲームの文章入り） */
+const SAMPLE_JSON="{\"v\": 4, \"story\": {\"title\": \"灯台守の娘（サンプル）\", \"ending\": \"ナギは父が灯台に遺した手紙を灯の光で読み、島に残って灯を守ると決める。\", \"totalPages\": 32, \"templateId\": \"kishou\", \"firstSingle\": true, \"endingSceneId\": \"a7\"}, \"templates\": [{\"id\": \"kishou\", \"name\": \"起承転結\", \"beats\": [{\"id\": \"k1\", \"name\": \"起\", \"pos\": 0, \"desc\": \"主人公と世界、日常を見せる。\"}, {\"id\": \"k2\", \"name\": \"承\", \"pos\": 20, \"desc\": \"事件が動き出し、状況が広がる。\"}, {\"id\": \"k3\", \"name\": \"転\", \"pos\": 55, \"desc\": \"予想外の出来事で局面が大きく変わる。\"}, {\"id\": \"k4\", \"name\": \"結\", \"pos\": 82, \"desc\": \"決着と、その後の主人公の変化。\"}]}, {\"id\": \"three\", \"name\": \"三幕構成\", \"beats\": [{\"id\": \"t1\", \"name\": \"オープニング\", \"pos\": 0, \"desc\": \"日常と、主人公に欠けているもの。\"}, {\"id\": \"t2\", \"name\": \"きっかけ\", \"pos\": 10, \"desc\": \"日常を壊す出来事が起きる。\"}, {\"id\": \"t3\", \"name\": \"第一転換点\", \"pos\": 25, \"desc\": \"主人公が目的を持って動き出す。\"}, {\"id\": \"t4\", \"name\": \"ミッドポイント\", \"pos\": 50, \"desc\": \"目的の意味が変わる。偽りの勝利か敗北。\"}, {\"id\": \"t5\", \"name\": \"第二転換点\", \"pos\": 75, \"desc\": \"最大の危機。すべてを失ったように見える。\"}, {\"id\": \"t6\", \"name\": \"クライマックス\", \"pos\": 85, \"desc\": \"変化した主人公が決着をつける。\"}, {\"id\": \"t7\", \"name\": \"エンディング\", \"pos\": 95, \"desc\": \"新しい日常。冒頭との対比。\"}]}, {\"id\": \"stc\", \"name\": \"Save the Cat（15ビート）\", \"beats\": [{\"id\": \"s1\", \"name\": \"オープニング・イメージ\", \"pos\": 0, \"desc\": \"主人公の現状を象徴する一枚。\"}, {\"id\": \"s2\", \"name\": \"テーマの提示\", \"pos\": 5, \"desc\": \"誰かが物語のテーマを口にする。\"}, {\"id\": \"s3\", \"name\": \"セットアップ\", \"pos\": 3, \"desc\": \"日常と主人公の問題点を見せる。\"}, {\"id\": \"s4\", \"name\": \"きっかけ\", \"pos\": 10, \"desc\": \"日常を変える出来事。\"}, {\"id\": \"s5\", \"name\": \"悩みのとき\", \"pos\": 12, \"desc\": \"進むべきか迷う。\"}, {\"id\": \"s6\", \"name\": \"第一ターニングポイント\", \"pos\": 20, \"desc\": \"新しい世界へ踏み出す。\"}, {\"id\": \"s7\", \"name\": \"サブプロット\", \"pos\": 22, \"desc\": \"関係性の物語が始まる。\"}, {\"id\": \"s8\", \"name\": \"お楽しみ\", \"pos\": 25, \"desc\": \"設定の面白さを存分に見せる。\"}, {\"id\": \"s9\", \"name\": \"ミッドポイント\", \"pos\": 50, \"desc\": \"偽りの勝利か敗北。賭け金が上がる。\"}, {\"id\": \"s10\", \"name\": \"迫り来る悪い奴ら\", \"pos\": 55, \"desc\": \"外と内からの圧力が強まる。\"}, {\"id\": \"s11\", \"name\": \"すべてを失って\", \"pos\": 75, \"desc\": \"最悪の状態。\"}, {\"id\": \"s12\", \"name\": \"心の暗闇\", \"pos\": 78, \"desc\": \"絶望の中で答えを探す。\"}, {\"id\": \"s13\", \"name\": \"第二ターニングポイント\", \"pos\": 80, \"desc\": \"答えを見つけ、再起する。\"}, {\"id\": \"s14\", \"name\": \"フィナーレ\", \"pos\": 85, \"desc\": \"学んだことで問題を解決する。\"}, {\"id\": \"s15\", \"name\": \"ファイナル・イメージ\", \"pos\": 99, \"desc\": \"冒頭と対になる一枚。\"}]}, {\"id\": \"jhk\", \"name\": \"序破急\", \"beats\": [{\"id\": \"j1\", \"name\": \"序\", \"pos\": 0, \"desc\": \"静かに始め、状況を示す。\"}, {\"id\": \"j2\", \"name\": \"破\", \"pos\": 25, \"desc\": \"流れを崩し、変化と加速を起こす。\"}, {\"id\": \"j3\", \"name\": \"急\", \"pos\": 75, \"desc\": \"一気に畳みかけて終わる。\"}]}, {\"id\": \"yomi\", \"name\": \"読み切り型（例）\", \"beats\": [{\"id\": \"y1\", \"name\": \"掴み\", \"pos\": 0, \"desc\": \"最初の数ページで主人公と作品の面白さを示す。\"}, {\"id\": \"y2\", \"name\": \"問題提示\", \"pos\": 10, \"desc\": \"主人公が向き合う問題がはっきりする。\"}, {\"id\": \"y3\", \"name\": \"葛藤\", \"pos\": 30, \"desc\": \"問題に挑み、壁にぶつかる。\"}, {\"id\": \"y4\", \"name\": \"転機\", \"pos\": 55, \"desc\": \"価値観が揺らぐ出来事。\"}, {\"id\": \"y5\", \"name\": \"山場\", \"pos\": 72, \"desc\": \"見開きや大ゴマを使う最大の見せ場。\"}, {\"id\": \"y6\", \"name\": \"決着\", \"pos\": 88, \"desc\": \"問題に答えを出す。\"}, {\"id\": \"y7\", \"name\": \"余韻\", \"pos\": 96, \"desc\": \"最後の1〜2ページで変化を見せる。\"}]}], \"foreshadows\": [{\"id\": \"f1\", \"name\": \"鍵のかかった父の机\"}, {\"id\": \"f2\", \"name\": \"湊の古いカメラ\"}, {\"id\": \"f3\", \"name\": \"光で浮かぶインク\"}], \"scenes\": [{\"id\": \"a1\", \"title\": \"灯台の島で暮らすナギ\", \"role\": \"主人公と島の日常。父の不在を見せる\", \"beatId\": \"k1\", \"pages\": 4, \"causes\": [], \"plants\": [\"f1\"], \"pays\": [], \"chars\": \"ナギ\", \"note\": \"\", \"cards\": [\"c1\", \"c4\"], \"pageData\": [{\"panels\": [{\"s\": \"L\", \"t\": \"灯台と海の全景。島の小ささを見せる\"}, {\"s\": \"M\", \"t\": \"螺旋階段を駆け上がるナギ\"}, {\"s\": \"S\", \"t\": \"灯室の扉に手をかける\"}]}, {\"panels\": [{\"s\": \"M\", \"t\": \"レンズを磨くナギ。手慣れた動き\"}, {\"s\": \"S\", \"t\": \"壁の父の写真\"}, {\"s\": \"S\", \"t\": \"「今日も異常なし」\"}, {\"s\": \"M\", \"t\": \"水平線に船影\"}]}, {\"panels\": [{\"s\": \"S\", \"t\": \"父の机。引き出しの鍵穴アップ\"}, {\"s\": \"S\", \"t\": \"「……まだ開かない」\"}, {\"s\": \"L\", \"t\": \"夕暮れ、灯台に灯がともる\"}]}, {\"panels\": [{\"s\": \"M\", \"t\": \"港で島の人と話すナギ\"}, {\"s\": \"M\", \"t\": \"「灯台、なくなるって噂だよ」\"}, {\"s\": \"S\", \"t\": \"曇るナギの表情\"}]}], \"gtext\": \"灯台の灯が、今夜も海を照らしている。\\nナギ：父さん、今日も灯はちゃんと点いたよ。\\nナギ：……でも、父さんの机の鍵は、まだ見つからない。\", \"ty\": \"2024\", \"tm\": \"7\", \"td\": \"1\", \"tt\": \"\", \"tl\": \"夏のはじまり\", \"text\": \"灯台の灯が、今夜も海を照らしている。\\n螺旋階段を駆け上がると、灯室のレンズが青白く息をしていた。ナギは手のひらで硝子の曇りをぬぐい、窓の向こうの暗い海に目をやる。\\nナギ「父さん、今日も灯はちゃんと点いたよ」\\n返事はない。十年前の嵐の夜から、この灯台にいるのはナギひとりだ。\\n階段を下りるとき、父の書斎の前で足が止まる。鍵のかかった机。その鍵は、まだ見つからない。\"}, {\"id\": \"a2\", \"title\": \"定期船で記者・湊が来る\", \"role\": \"外の視点を持ち込む人物の登場\", \"beatId\": \"k2\", \"pages\": 4, \"causes\": [\"a1\"], \"plants\": [\"f2\"], \"pays\": [], \"chars\": \"ナギ、湊\", \"note\": \"\", \"cards\": [\"c2\", \"c5\", \"c7\"], \"pageData\": [], \"gtext\": \"週に2回の定期船が、港に着いた。\\n湊：ここが灯島か。思ったより小さいな。\\nナギ：記者さん？　灯台のことを調べに来たの？\\n湊：まあね。古いカメラで、最後の灯を撮りに来たんだ。\", \"gchoice\": {}, \"ty\": \"2024\", \"tm\": \"7\", \"td\": \"3\", \"tt\": \"10:00\", \"tl\": \"\", \"text\": \"週に二回の定期船が、汽笛を鳴らして港に着いた。\\n降りてきたのは、首から古いカメラを下げた若い男だった。\\n湊「ここが灯島か。思ったより小さいな」\\nナギ「記者さん？　灯台のことを調べに来たの？」\\n湊「まあね。最後の灯を撮りに来たんだ」\\n男は笑ったが、その目は少しも笑っていなかった。\"}, {\"id\": \"a3\", \"title\": \"灯台の廃止が決まる\", \"role\": \"主人公の居場所が脅かされる。父の日誌に謎のインクの記述\", \"beatId\": \"k2\", \"pages\": 6, \"causes\": [\"a2\"], \"plants\": [\"f3\"], \"pays\": [], \"chars\": \"ナギ、湊、村長\", \"note\": \"\", \"cards\": [\"c2\", \"c3\"], \"pageData\": [], \"ty\": \"2024\", \"tm\": \"7\", \"td\": \"5\", \"tt\": \"\", \"tl\": \"\", \"wGoal\": \"1200\"}, {\"id\": \"a8\", \"title\": \"湊の過去の回想\", \"role\": \"湊がなぜ島に来たのか\", \"beatId\": \"\", \"pages\": 2, \"causes\": [\"a2\"], \"plants\": [], \"pays\": [], \"chars\": \"湊\", \"note\": \"\", \"cards\": [], \"pageData\": [], \"ty\": \"2014\", \"tm\": \"8\", \"td\": \"\", \"tt\": \"\", \"tl\": \"10年前\"}, {\"id\": \"a4\", \"title\": \"嵐の夜、灯台の灯が消える\", \"role\": \"最大の危機。灯台を守れないと思い知る\", \"beatId\": \"k3\", \"pages\": 6, \"causes\": [\"a3\"], \"plants\": [], \"pays\": [], \"chars\": \"ナギ、湊\", \"note\": \"\", \"cards\": [\"c2\", \"c10\"], \"pageData\": [], \"ty\": \"2024\", \"tm\": \"7\", \"td\": \"20\", \"tt\": \"21:30\", \"tl\": \"嵐の夜\", \"gbattle\": {\"foe\": \"c15\", \"lose\": \"\"}, \"gplace\": \"c17\", \"gtext\": \"嵐が灯台を叩いている。突然、灯室の灯がふっと消えた。\\n湊：ナギ、誰かいる！\\n影の男：灯は、もう要らないんだよ。\"}, {\"id\": \"a5\", \"title\": \"父の机から手紙を見つける\", \"role\": \"真実の発見。嵐で机が倒れ、引き出しが開く\", \"beatId\": \"k3\", \"pages\": 5, \"causes\": [\"a4\", \"a1\"], \"plants\": [], \"pays\": [\"f1\"], \"chars\": \"ナギ\", \"note\": \"\", \"cards\": [\"c1\", \"c6\"], \"pageData\": [], \"gplace\": \"c18\", \"ty\": \"2024\", \"tm\": \"7\", \"td\": \"21\", \"tt\": \"\", \"tl\": \"\"}, {\"id\": \"a6\", \"title\": \"灯の下で手紙を読む\", \"role\": \"見開きの山場。灯の光で文字が浮かぶ\", \"beatId\": \"k4\", \"pages\": 4, \"causes\": [\"a5\", \"a3\"], \"plants\": [], \"pays\": [\"f3\"], \"chars\": \"ナギ、湊\", \"note\": \"\", \"cards\": [\"c1\", \"c2\", \"c4\", \"c6\"], \"pageData\": [{\"panels\": [{\"s\": \"M\", \"t\": \"白紙に見える便箋\"}, {\"s\": \"S\", \"t\": \"湊「……何も書いてない？」\"}, {\"s\": \"S\", \"t\": \"ナギ、日誌の一文を思い出す\"}]}, {\"panels\": [{\"s\": \"L\", \"t\": \"灯室に駆け上がり、レンズの光に便箋をかざす\"}]}, {\"panels\": [{\"s\": \"L\", \"t\": \"見開き：光の中に父の文字が浮かぶ\"}]}, {\"panels\": [{\"s\": \"M\", \"t\": \"読み進めるナギの横顔\"}, {\"s\": \"S\", \"t\": \"涙が便箋に落ちる\"}]}], \"gtext\": \"灯室のレンズに、父の手紙をかざす。\\n光の中に、見えなかった文字が浮かび上がった。\\nナギ：「灯は、守る人がいる限り消えない」……父さん。\", \"gneed\": {\"items\": [\"c6\"], \"fs\": []}, \"ty\": \"2024\", \"tm\": \"7\", \"td\": \"21\", \"tt\": \"22:00\", \"tl\": \"\"}, {\"id\": \"a7\", \"title\": \"島に残ると決める\", \"role\": \"結末。主人公の変化を見せる\", \"beatId\": \"k4\", \"pages\": 4, \"causes\": [\"a6\", \"a3\"], \"plants\": [], \"pays\": [], \"chars\": \"ナギ、湊、村長\", \"note\": \"\", \"cards\": [\"c1\", \"c3\"], \"pageData\": [], \"ty\": \"2024\", \"tm\": \"8\", \"td\": \"15\", \"tt\": \"\", \"tl\": \"灯の祭りの夜\"}], \"cards\": [{\"id\": \"c1\", \"type\": \"person\", \"title\": \"ナギ\", \"body\": \"灯台守の娘、15歳。父の跡を継いで灯台を守っている。人前では強がるが、父の不在を受け入れきれていない。\", \"tags\": \"主人公、灯台、島、15歳\", \"addr\": {\"place\": \"c4\", \"text\": \"岬の灯台守の家\"}, \"family\": [{\"card\": \"c16\", \"name\": \"\", \"role\": \"父（行方不明）\"}, {\"card\": \"\", \"name\": \"汐\", \"role\": \"母（故人）\"}], \"orgs\": [{\"card\": \"c13\", \"name\": \"\", \"role\": \"最年少\"}], \"gender\": \"female\", \"abilities\": [{\"name\": \"灯の手招き\", \"attr\": \"光\", \"power\": 3, \"tier\": \"weak\"}, {\"name\": \"灯の守り\", \"attr\": \"光\", \"power\": 3, \"tier\": \"normal\", \"crit\": 11}, {\"name\": \"灯台の大光\", \"attr\": \"光\", \"power\": 3, \"tier\": \"strong\", \"fum\": 4}], \"weakAttr\": \"闇\", \"envGood\": \"夜\", \"birthY\": \"2009\", \"evade\": \"1\", \"defense\": \"0\"}, {\"id\": \"c2\", \"type\": \"person\", \"title\": \"湊\", \"body\": \"東京から来た記者、24歳。古いフィルムカメラを持ち歩く。廃止される灯台の記事を書きに来た。\", \"tags\": \"東京、記者、カメラ、24歳\", \"work\": {\"place\": \"\", \"text\": \"東京の出版社\"}, \"gender\": \"male\", \"abilities\": [{\"name\": \"フラッシュ\", \"attr\": \"光\", \"power\": 2, \"tier\": \"weak\"}, {\"name\": \"閃光のシャッター\", \"attr\": \"光\", \"power\": 2, \"tier\": \"normal\", \"crit\": 10}, {\"name\": \"最後の一枚\", \"attr\": \"光\", \"power\": 3, \"tier\": \"strong\"}], \"envGood\": \"水辺\", \"birthY\": \"2000\", \"evade\": \"2\", \"defense\": \"-1\"}, {\"id\": \"c3\", \"type\": \"person\", \"title\": \"村長\", \"body\": \"灯台の廃止を島に伝える役。本当は残したいと思っている。\", \"tags\": \"島、灯台廃止\", \"addr\": {\"place\": \"c5\", \"text\": \"\"}, \"friends\": [{\"card\": \"c1\", \"name\": \"\", \"role\": \"見守っている\"}], \"orgs\": [{\"card\": \"c13\", \"name\": \"\", \"role\": \"顧問\"}], \"gender\": \"male\", \"status\": \"dead\", \"statusScene\": \"a4\", \"statusNote\": \"嵐の夜に灯台を守って倒れた\", \"abilities\": [{\"name\": \"説得\", \"attr\": \"言葉\", \"power\": 3}], \"birthY\": \"1956\"}, {\"id\": \"c4\", \"type\": \"place\", \"title\": \"灯室\", \"body\": \"灯台の最上部。レンズ越しの光が部屋中を回る。ナギの居場所。\", \"tags\": \"灯台、ナギ\", \"facility\": true, \"loc\": {\"place\": \"c17\", \"text\": \"灯台のいちばん上\"}}, {\"id\": \"c5\", \"type\": \"place\", \"title\": \"港\", \"body\": \"定期船が週に2回だけ着く。島の噂はここで広がる。\", \"tags\": \"島、噂\", \"facility\": true, \"loc\": {\"place\": \"c12\", \"text\": \"\"}, \"env\": \"水辺、夜\"}, {\"id\": \"c6\", \"type\": \"item\", \"title\": \"父の手紙\", \"body\": \"光にかざすと文字が浮かぶインクで書かれている。\", \"tags\": \"灯台、ナギ、伏線\"}, {\"id\": \"c7\", \"type\": \"item\", \"title\": \"湊のフィルムカメラ\", \"body\": \"亡き師匠の形見。最後の1枚だけ撮らずに残している。\", \"tags\": \"湊、カメラ、伏線候補\"}, {\"id\": \"c8\", \"type\": \"world\", \"title\": \"灯の祭り\", \"body\": \"年に一度、島中の家が窓に灯をともす。灯台がなくなると祭りも終わる。\", \"tags\": \"島、灯台、行事\"}, {\"id\": \"c9\", \"type\": \"episode\", \"title\": \"子供たちの写真\", \"body\": \"湊が島の子供たちを撮ってあげ、ナギが初めて笑う。\", \"tags\": \"湊、ナギ、カメラ、島\"}, {\"id\": \"c10\", \"type\": \"episode\", \"title\": \"嵐の夜\", \"body\": \"停電で灯台の灯が消える。ナギと湊が手動でレンズを回そうとする。\", \"tags\": \"灯台、ナギ、湊、嵐\"}, {\"id\": \"c11\", \"type\": \"memo\", \"title\": \"ラストの一枚\", \"body\": \"湊が最後の1枚で、灯をともすナギを撮る案。カメラの伏線の回収になる。\", \"tags\": \"湊、カメラ、ナギ、結末案\"}, {\"id\": \"c12\", \"type\": \"place\", \"title\": \"灯島\", \"body\": \"本土から定期船で3時間の小さな島。人口は200人ほど。\", \"tags\": \"島\", \"country\": \"日本\", \"pref\": \"長崎県\", \"town\": \"灯島町\"}, {\"id\": \"c13\", \"type\": \"org\", \"title\": \"島の青年団\", \"body\": \"灯台を残したい若者たちの集まり。\", \"tags\": \"島、灯台\", \"base\": {\"place\": \"c12\", \"text\": \"\"}, \"orgRels\": [{\"org\": \"c14\", \"kind\": \"enemy\", \"note\": \"灯台の廃止をめぐって\"}]}, {\"id\": \"c14\", \"type\": \"org\", \"title\": \"灯台管理局\", \"body\": \"全国の灯台を管理する役所。島の灯台の廃止を決めた。\", \"tags\": \"灯台廃止\", \"base\": {\"place\": \"\", \"text\": \"東京\"}, \"orgRels\": []}, {\"id\": \"c15\", \"type\": \"person\", \"title\": \"影の男\", \"body\": \"灯台管理局から来た調査員。夜の闇にまぎれて動く。\", \"tags\": \"灯台廃止、夜\", \"gender\": \"male\", \"abilities\": [{\"name\": \"影の爪\", \"attr\": \"闇\", \"power\": 4, \"tier\": \"weak\"}, {\"name\": \"影縫い\", \"attr\": \"闇\", \"power\": 4, \"tier\": \"normal\"}, {\"name\": \"闇の大波\", \"attr\": \"闇\", \"power\": 4, \"tier\": \"strong\", \"fum\": 3}], \"weakAttr\": \"光\", \"envGood\": \"夜\", \"envBad\": \"雨\", \"orgs\": [{\"card\": \"c14\", \"name\": \"\", \"role\": \"調査員\"}], \"evade\": \"2\", \"defense\": \"1\"}, {\"id\": \"c16\", \"type\": \"person\", \"title\": \"灯也\", \"body\": \"ナギの父。10年前の嵐の夜に姿を消した灯台守。\", \"tags\": \"灯台、行方不明\", \"gender\": \"male\", \"status\": \"gone\", \"family\": [{\"card\": \"c1\", \"role\": \"娘\"}], \"birthY\": \"1980\"}, {\"id\": \"c17\", \"type\": \"place\", \"title\": \"灯台\", \"body\": \"岬の先に立つ白い灯台。1階に事務室と機械室、2階にナギの部屋と父の書斎があり、いちばん上が灯室。\", \"tags\": \"灯台、島\", \"facility\": true, \"loc\": {\"place\": \"c12\", \"text\": \"岬の先\"}}, {\"id\": \"c18\", \"type\": \"place\", \"title\": \"父の書斎\", \"body\": \"灯台の2階。父が使っていた机が、鍵のかかったまま残っている。\", \"tags\": \"灯台、ナギ、伏線\", \"facility\": true, \"loc\": {\"place\": \"c17\", \"text\": \"2階\"}}], \"links\": [{\"id\": \"l1\", \"a\": \"c2\", \"b\": \"c1\", \"label\": \"島の案内役を頼む\"}, {\"id\": \"l2\", \"a\": \"c15\", \"b\": \"c1\", \"label\": \"監視している\"}], \"gpos\": {}, \"maps\": [{\"id\": \"m1\", \"name\": \"灯島の地図\", \"w\": 1000, \"h\": 700, \"bg\": \"sea\", \"grid\": true, \"img\": \"\", \"imgOp\": 0.6, \"items\": [{\"id\": \"mi1\", \"kind\": \"area\", \"x\": 230, \"y\": 130, \"w\": 560, \"h\": 420, \"shape\": \"ellipse\", \"terrain\": \"land\", \"place\": \"c12\", \"label\": \"\"}, {\"id\": \"mi2\", \"kind\": \"area\", \"x\": 300, \"y\": 200, \"w\": 190, \"h\": 130, \"shape\": \"ellipse\", \"terrain\": \"forest\", \"place\": \"\", \"label\": \"北の森\"}, {\"id\": \"mi3\", \"kind\": \"area\", \"x\": 560, \"y\": 330, \"w\": 150, \"h\": 110, \"shape\": \"ellipse\", \"terrain\": \"mountain\", \"place\": \"\", \"label\": \"灯見山\"}, {\"id\": \"mi4\", \"kind\": \"line\", \"pts\": [[340, 470], [430, 420], [540, 320], [640, 250], [720, 210]], \"style\": \"road\", \"label\": \"岬への道\"}, {\"id\": \"mi5\", \"kind\": \"line\", \"pts\": [[420, 250], [450, 330], [430, 420], [380, 520]], \"style\": \"river\", \"label\": \"\"}, {\"id\": \"mi6\", \"kind\": \"pin\", \"x\": 735, \"y\": 200, \"place\": \"c17\", \"label\": \"\"}, {\"id\": \"mi7\", \"kind\": \"pin\", \"x\": 330, \"y\": 480, \"place\": \"c5\", \"label\": \"\"}], \"notes\": [{\"id\": \"n1\", \"t\": \"arrow\", \"pts\": [[340, 470], [700, 215]], \"color\": \"#d8402e\", \"w\": 4, \"both\": false, \"dash\": true}, {\"id\": \"n2\", \"t\": \"icon\", \"x\": 610, \"y\": 390, \"icon\": \"warn\", \"color\": \"#e08a00\", \"size\": 26, \"text\": \"崖\"}, {\"id\": \"n3\", \"t\": \"text\", \"x\": 520, \"y\": 560, \"text\": \"嵐の夜のルート\", \"color\": \"#d8402e\", \"size\": 18, \"box\": true}]}, {\"id\": \"m2\", \"kind\": \"indoor\", \"name\": \"灯台の中\", \"cols\": 16, \"rows\": 12, \"cs\": 32, \"unit\": \"1m\", \"w\": 512, \"h\": 384, \"bg\": \"plain\", \"grid\": true, \"img\": \"\", \"imgOp\": 0.5, \"cells\": {\"2,2\": {\"t\": \"floor\", \"r\": 0}, \"2,3\": {\"t\": \"floor\", \"r\": 0}, \"2,4\": {\"t\": \"floor\", \"r\": 0}, \"2,5\": {\"t\": \"floor\", \"r\": 0}, \"2,6\": {\"t\": \"floor\", \"r\": 0}, \"2,7\": {\"t\": \"floor\", \"r\": 0}, \"2,8\": {\"t\": \"floor\", \"r\": 0}, \"2,9\": {\"t\": \"floor\", \"r\": 0}, \"3,2\": {\"t\": \"floor\", \"r\": 0}, \"3,3\": {\"t\": \"floor\", \"r\": 0}, \"3,4\": {\"t\": \"floor\", \"r\": 0}, \"3,5\": {\"t\": \"floor\", \"r\": 0}, \"3,6\": {\"t\": \"floor\", \"r\": 0}, \"3,7\": {\"t\": \"floor\", \"r\": 0}, \"3,8\": {\"t\": \"floor\", \"r\": 0}, \"3,9\": {\"t\": \"floor\", \"r\": 0}, \"4,2\": {\"t\": \"floor\", \"r\": 0}, \"4,3\": {\"t\": \"floor\", \"r\": 0}, \"4,4\": {\"t\": \"table\", \"r\": 0}, \"4,5\": {\"t\": \"floor\", \"r\": 0}, \"4,6\": {\"t\": \"floor\", \"r\": 0}, \"4,7\": {\"t\": \"floor\", \"r\": 0}, \"4,8\": {\"t\": \"floor\", \"r\": 0}, \"4,9\": {\"t\": \"floor\", \"r\": 0}, \"5,2\": {\"t\": \"floor\", \"r\": 0}, \"5,3\": {\"t\": \"floor\", \"r\": 0}, \"5,4\": {\"t\": \"table\", \"r\": 0}, \"5,5\": {\"t\": \"floor\", \"r\": 0}, \"5,6\": {\"t\": \"floor\", \"r\": 0}, \"5,7\": {\"t\": \"floor\", \"r\": 0}, \"5,8\": {\"t\": \"floor\", \"r\": 0}, \"5,9\": {\"t\": \"floor\", \"r\": 0}, \"6,2\": {\"t\": \"floor\", \"r\": 0}, \"6,3\": {\"t\": \"floor\", \"r\": 0}, \"6,4\": {\"t\": \"floor\", \"r\": 0}, \"6,5\": {\"t\": \"floor\", \"r\": 0}, \"6,6\": {\"t\": \"floor\", \"r\": 0}, \"6,7\": {\"t\": \"floor\", \"r\": 0}, \"6,8\": {\"t\": \"floor\", \"r\": 0}, \"6,9\": {\"t\": \"floor\", \"r\": 0}, \"7,2\": {\"t\": \"floor\", \"r\": 0}, \"7,3\": {\"t\": \"floor\", \"r\": 0}, \"7,4\": {\"t\": \"floor\", \"r\": 0}, \"7,5\": {\"t\": \"floor\", \"r\": 0}, \"7,6\": {\"t\": \"floor\", \"r\": 0}, \"7,7\": {\"t\": \"floor\", \"r\": 0}, \"7,8\": {\"t\": \"floor\", \"r\": 0}, \"7,9\": {\"t\": \"door\", \"r\": 0}, \"8,2\": {\"t\": \"floor\", \"r\": 0}, \"8,3\": {\"t\": \"floor\", \"r\": 0}, \"8,4\": {\"t\": \"floor\", \"r\": 0}, \"8,5\": {\"t\": \"floor\", \"r\": 0}, \"8,6\": {\"t\": \"pillar\", \"r\": 0}, \"8,7\": {\"t\": \"floor\", \"r\": 0}, \"8,8\": {\"t\": \"floor\", \"r\": 0}, \"8,9\": {\"t\": \"floor\", \"r\": 0}, \"9,2\": {\"t\": \"floor\", \"r\": 0}, \"9,3\": {\"t\": \"floor\", \"r\": 0}, \"9,4\": {\"t\": \"floor\", \"r\": 0}, \"9,5\": {\"t\": \"floor\", \"r\": 0}, \"9,6\": {\"t\": \"floor\", \"r\": 0}, \"9,7\": {\"t\": \"floor\", \"r\": 0}, \"9,8\": {\"t\": \"floor\", \"r\": 0}, \"9,9\": {\"t\": \"floor\", \"r\": 0}, \"10,2\": {\"t\": \"floor\", \"r\": 0}, \"10,3\": {\"t\": \"floor\", \"r\": 0}, \"10,4\": {\"t\": \"floor\", \"r\": 0}, \"10,5\": {\"t\": \"floor\", \"r\": 0}, \"10,6\": {\"t\": \"floor\", \"r\": 0}, \"10,7\": {\"t\": \"floor\", \"r\": 0}, \"10,8\": {\"t\": \"floor\", \"r\": 0}, \"10,9\": {\"t\": \"floor\", \"r\": 0}, \"11,2\": {\"t\": \"floor\", \"r\": 0}, \"11,3\": {\"t\": \"stairs\", \"r\": 0}, \"11,4\": {\"t\": \"floor\", \"r\": 0}, \"11,5\": {\"t\": \"floor\", \"r\": 0}, \"11,6\": {\"t\": \"floor\", \"r\": 0}, \"11,7\": {\"t\": \"floor\", \"r\": 0}, \"11,8\": {\"t\": \"floor\", \"r\": 0}, \"11,9\": {\"t\": \"floor\", \"r\": 0}, \"12,2\": {\"t\": \"floor\", \"r\": 0}, \"12,3\": {\"t\": \"floor\", \"r\": 0}, \"12,4\": {\"t\": \"floor\", \"r\": 0}, \"12,5\": {\"t\": \"floor\", \"r\": 0}, \"12,6\": {\"t\": \"floor\", \"r\": 0}, \"12,7\": {\"t\": \"floor\", \"r\": 0}, \"12,8\": {\"t\": \"floor\", \"r\": 0}, \"12,9\": {\"t\": \"floor\", \"r\": 0}, \"13,2\": {\"t\": \"floor\", \"r\": 0}, \"13,3\": {\"t\": \"floor\", \"r\": 0}, \"13,4\": {\"t\": \"floor\", \"r\": 0}, \"13,5\": {\"t\": \"floor\", \"r\": 0}, \"13,6\": {\"t\": \"floor\", \"r\": 0}, \"13,7\": {\"t\": \"floor\", \"r\": 0}, \"13,8\": {\"t\": \"floor\", \"r\": 0}, \"13,9\": {\"t\": \"floor\", \"r\": 0}}, \"walls\": [[2, 2, 14, 2], [14, 2, 14, 10], [14, 10, 2, 10], [2, 10, 2, 2], [9, 2, 9, 6]], \"items\": [{\"id\": \"il1\", \"kind\": \"label\", \"x\": 180, \"y\": 140, \"label\": \"事務室\", \"size\": 16}, {\"id\": \"il2\", \"kind\": \"label\", \"x\": 360, \"y\": 240, \"label\": \"機械室\", \"size\": 16}], \"notes\": [], \"fcur\": 0, \"floors\": [{\"id\": \"f1\", \"name\": \"1F\", \"cells\": {\"2,2\": {\"t\": \"floor\", \"r\": 0}, \"2,3\": {\"t\": \"floor\", \"r\": 0}, \"2,4\": {\"t\": \"floor\", \"r\": 0}, \"2,5\": {\"t\": \"floor\", \"r\": 0}, \"2,6\": {\"t\": \"floor\", \"r\": 0}, \"2,7\": {\"t\": \"floor\", \"r\": 0}, \"2,8\": {\"t\": \"floor\", \"r\": 0}, \"2,9\": {\"t\": \"floor\", \"r\": 0}, \"3,2\": {\"t\": \"floor\", \"r\": 0}, \"3,3\": {\"t\": \"floor\", \"r\": 0}, \"3,4\": {\"t\": \"floor\", \"r\": 0}, \"3,5\": {\"t\": \"floor\", \"r\": 0}, \"3,6\": {\"t\": \"floor\", \"r\": 0}, \"3,7\": {\"t\": \"floor\", \"r\": 0}, \"3,8\": {\"t\": \"floor\", \"r\": 0}, \"3,9\": {\"t\": \"floor\", \"r\": 0}, \"4,2\": {\"t\": \"floor\", \"r\": 0}, \"4,3\": {\"t\": \"floor\", \"r\": 0}, \"4,4\": {\"t\": \"table\", \"r\": 0}, \"4,5\": {\"t\": \"floor\", \"r\": 0}, \"4,6\": {\"t\": \"floor\", \"r\": 0}, \"4,7\": {\"t\": \"floor\", \"r\": 0}, \"4,8\": {\"t\": \"floor\", \"r\": 0}, \"4,9\": {\"t\": \"floor\", \"r\": 0}, \"5,2\": {\"t\": \"floor\", \"r\": 0}, \"5,3\": {\"t\": \"floor\", \"r\": 0}, \"5,4\": {\"t\": \"table\", \"r\": 0}, \"5,5\": {\"t\": \"floor\", \"r\": 0}, \"5,6\": {\"t\": \"floor\", \"r\": 0}, \"5,7\": {\"t\": \"floor\", \"r\": 0}, \"5,8\": {\"t\": \"floor\", \"r\": 0}, \"5,9\": {\"t\": \"floor\", \"r\": 0}, \"6,2\": {\"t\": \"floor\", \"r\": 0}, \"6,3\": {\"t\": \"floor\", \"r\": 0}, \"6,4\": {\"t\": \"floor\", \"r\": 0}, \"6,5\": {\"t\": \"floor\", \"r\": 0}, \"6,6\": {\"t\": \"floor\", \"r\": 0}, \"6,7\": {\"t\": \"floor\", \"r\": 0}, \"6,8\": {\"t\": \"floor\", \"r\": 0}, \"6,9\": {\"t\": \"floor\", \"r\": 0}, \"7,2\": {\"t\": \"floor\", \"r\": 0}, \"7,3\": {\"t\": \"floor\", \"r\": 0}, \"7,4\": {\"t\": \"floor\", \"r\": 0}, \"7,5\": {\"t\": \"floor\", \"r\": 0}, \"7,6\": {\"t\": \"floor\", \"r\": 0}, \"7,7\": {\"t\": \"floor\", \"r\": 0}, \"7,8\": {\"t\": \"floor\", \"r\": 0}, \"7,9\": {\"t\": \"door\", \"r\": 0}, \"8,2\": {\"t\": \"floor\", \"r\": 0}, \"8,3\": {\"t\": \"floor\", \"r\": 0}, \"8,4\": {\"t\": \"floor\", \"r\": 0}, \"8,5\": {\"t\": \"floor\", \"r\": 0}, \"8,6\": {\"t\": \"pillar\", \"r\": 0}, \"8,7\": {\"t\": \"floor\", \"r\": 0}, \"8,8\": {\"t\": \"floor\", \"r\": 0}, \"8,9\": {\"t\": \"floor\", \"r\": 0}, \"9,2\": {\"t\": \"floor\", \"r\": 0}, \"9,3\": {\"t\": \"floor\", \"r\": 0}, \"9,4\": {\"t\": \"floor\", \"r\": 0}, \"9,5\": {\"t\": \"floor\", \"r\": 0}, \"9,6\": {\"t\": \"floor\", \"r\": 0}, \"9,7\": {\"t\": \"floor\", \"r\": 0}, \"9,8\": {\"t\": \"floor\", \"r\": 0}, \"9,9\": {\"t\": \"floor\", \"r\": 0}, \"10,2\": {\"t\": \"floor\", \"r\": 0}, \"10,3\": {\"t\": \"floor\", \"r\": 0}, \"10,4\": {\"t\": \"floor\", \"r\": 0}, \"10,5\": {\"t\": \"floor\", \"r\": 0}, \"10,6\": {\"t\": \"floor\", \"r\": 0}, \"10,7\": {\"t\": \"floor\", \"r\": 0}, \"10,8\": {\"t\": \"floor\", \"r\": 0}, \"10,9\": {\"t\": \"floor\", \"r\": 0}, \"11,2\": {\"t\": \"floor\", \"r\": 0}, \"11,3\": {\"t\": \"stairs\", \"r\": 0}, \"11,4\": {\"t\": \"floor\", \"r\": 0}, \"11,5\": {\"t\": \"floor\", \"r\": 0}, \"11,6\": {\"t\": \"floor\", \"r\": 0}, \"11,7\": {\"t\": \"floor\", \"r\": 0}, \"11,8\": {\"t\": \"floor\", \"r\": 0}, \"11,9\": {\"t\": \"floor\", \"r\": 0}, \"12,2\": {\"t\": \"floor\", \"r\": 0}, \"12,3\": {\"t\": \"floor\", \"r\": 0}, \"12,4\": {\"t\": \"floor\", \"r\": 0}, \"12,5\": {\"t\": \"floor\", \"r\": 0}, \"12,6\": {\"t\": \"floor\", \"r\": 0}, \"12,7\": {\"t\": \"floor\", \"r\": 0}, \"12,8\": {\"t\": \"floor\", \"r\": 0}, \"12,9\": {\"t\": \"floor\", \"r\": 0}, \"13,2\": {\"t\": \"floor\", \"r\": 0}, \"13,3\": {\"t\": \"floor\", \"r\": 0}, \"13,4\": {\"t\": \"floor\", \"r\": 0}, \"13,5\": {\"t\": \"floor\", \"r\": 0}, \"13,6\": {\"t\": \"floor\", \"r\": 0}, \"13,7\": {\"t\": \"floor\", \"r\": 0}, \"13,8\": {\"t\": \"floor\", \"r\": 0}, \"13,9\": {\"t\": \"floor\", \"r\": 0}}, \"walls\": [[2, 2, 14, 2], [14, 2, 14, 10], [14, 10, 2, 10], [2, 10, 2, 2], [9, 2, 9, 6]], \"items\": [{\"id\": \"il1\", \"kind\": \"label\", \"x\": 180, \"y\": 140, \"label\": \"事務室\", \"size\": 16}, {\"id\": \"il2\", \"kind\": \"label\", \"x\": 360, \"y\": 240, \"label\": \"機械室\", \"size\": 16}], \"notes\": []}, {\"id\": \"f2\", \"name\": \"2F\", \"cells\": {\"2,2\": {\"t\": \"tatami\", \"r\": 0}, \"2,3\": {\"t\": \"tatami\", \"r\": 0}, \"2,4\": {\"t\": \"tatami\", \"r\": 0}, \"2,5\": {\"t\": \"tatami\", \"r\": 0}, \"2,6\": {\"t\": \"tatami\", \"r\": 0}, \"2,7\": {\"t\": \"tatami\", \"r\": 0}, \"2,8\": {\"t\": \"tatami\", \"r\": 0}, \"2,9\": {\"t\": \"tatami\", \"r\": 0}, \"3,2\": {\"t\": \"tatami\", \"r\": 0}, \"3,3\": {\"t\": \"tatami\", \"r\": 0}, \"3,4\": {\"t\": \"tatami\", \"r\": 0}, \"3,5\": {\"t\": \"tatami\", \"r\": 0}, \"3,6\": {\"t\": \"tatami\", \"r\": 0}, \"3,7\": {\"t\": \"tatami\", \"r\": 0}, \"3,8\": {\"t\": \"tatami\", \"r\": 0}, \"3,9\": {\"t\": \"tatami\", \"r\": 0}, \"4,2\": {\"t\": \"tatami\", \"r\": 0}, \"4,3\": {\"t\": \"tatami\", \"r\": 0}, \"4,4\": {\"t\": \"tatami\", \"r\": 0}, \"4,5\": {\"t\": \"tatami\", \"r\": 0}, \"4,6\": {\"t\": \"tatami\", \"r\": 0}, \"4,7\": {\"t\": \"tatami\", \"r\": 0}, \"4,8\": {\"t\": \"tatami\", \"r\": 0}, \"4,9\": {\"t\": \"tatami\", \"r\": 0}, \"5,2\": {\"t\": \"tatami\", \"r\": 0}, \"5,3\": {\"t\": \"tatami\", \"r\": 0}, \"5,4\": {\"t\": \"tatami\", \"r\": 0}, \"5,5\": {\"t\": \"tatami\", \"r\": 0}, \"5,6\": {\"t\": \"tatami\", \"r\": 0}, \"5,7\": {\"t\": \"tatami\", \"r\": 0}, \"5,8\": {\"t\": \"tatami\", \"r\": 0}, \"5,9\": {\"t\": \"tatami\", \"r\": 0}, \"6,2\": {\"t\": \"tatami\", \"r\": 0}, \"6,3\": {\"t\": \"tatami\", \"r\": 0}, \"6,4\": {\"t\": \"tatami\", \"r\": 0}, \"6,5\": {\"t\": \"tatami\", \"r\": 0}, \"6,6\": {\"t\": \"tatami\", \"r\": 0}, \"6,7\": {\"t\": \"tatami\", \"r\": 0}, \"6,8\": {\"t\": \"tatami\", \"r\": 0}, \"6,9\": {\"t\": \"tatami\", \"r\": 0}, \"7,2\": {\"t\": \"floor\", \"r\": 0}, \"7,3\": {\"t\": \"floor\", \"r\": 0}, \"7,4\": {\"t\": \"floor\", \"r\": 0}, \"7,5\": {\"t\": \"floor\", \"r\": 0}, \"7,6\": {\"t\": \"floor\", \"r\": 0}, \"7,7\": {\"t\": \"floor\", \"r\": 0}, \"7,8\": {\"t\": \"floor\", \"r\": 0}, \"7,9\": {\"t\": \"floor\", \"r\": 0}, \"8,2\": {\"t\": \"floor\", \"r\": 0}, \"8,3\": {\"t\": \"floor\", \"r\": 0}, \"8,4\": {\"t\": \"floor\", \"r\": 0}, \"8,5\": {\"t\": \"floor\", \"r\": 0}, \"8,6\": {\"t\": \"floor\", \"r\": 0}, \"8,7\": {\"t\": \"floor\", \"r\": 0}, \"8,8\": {\"t\": \"floor\", \"r\": 0}, \"8,9\": {\"t\": \"floor\", \"r\": 0}, \"9,2\": {\"t\": \"floor\", \"r\": 0}, \"9,3\": {\"t\": \"floor\", \"r\": 0}, \"9,4\": {\"t\": \"floor\", \"r\": 0}, \"9,5\": {\"t\": \"floor\", \"r\": 0}, \"9,6\": {\"t\": \"floor\", \"r\": 0}, \"9,7\": {\"t\": \"floor\", \"r\": 0}, \"9,8\": {\"t\": \"floor\", \"r\": 0}, \"9,9\": {\"t\": \"floor\", \"r\": 0}, \"10,2\": {\"t\": \"floor\", \"r\": 0}, \"10,3\": {\"t\": \"floor\", \"r\": 0}, \"10,4\": {\"t\": \"floor\", \"r\": 0}, \"10,5\": {\"t\": \"floor\", \"r\": 0}, \"10,6\": {\"t\": \"floor\", \"r\": 0}, \"10,7\": {\"t\": \"floor\", \"r\": 0}, \"10,8\": {\"t\": \"floor\", \"r\": 0}, \"10,9\": {\"t\": \"floor\", \"r\": 0}, \"11,2\": {\"t\": \"floor\", \"r\": 0}, \"11,3\": {\"t\": \"stairs\", \"r\": 0}, \"11,4\": {\"t\": \"floor\", \"r\": 0}, \"11,5\": {\"t\": \"floor\", \"r\": 0}, \"11,6\": {\"t\": \"floor\", \"r\": 0}, \"11,7\": {\"t\": \"floor\", \"r\": 0}, \"11,8\": {\"t\": \"floor\", \"r\": 0}, \"11,9\": {\"t\": \"floor\", \"r\": 0}, \"12,2\": {\"t\": \"floor\", \"r\": 0}, \"12,3\": {\"t\": \"floor\", \"r\": 0}, \"12,4\": {\"t\": \"floor\", \"r\": 0}, \"12,5\": {\"t\": \"floor\", \"r\": 0}, \"12,6\": {\"t\": \"floor\", \"r\": 0}, \"12,7\": {\"t\": \"floor\", \"r\": 0}, \"12,8\": {\"t\": \"floor\", \"r\": 0}, \"12,9\": {\"t\": \"floor\", \"r\": 0}, \"13,2\": {\"t\": \"floor\", \"r\": 0}, \"13,3\": {\"t\": \"floor\", \"r\": 0}, \"13,4\": {\"t\": \"floor\", \"r\": 0}, \"13,5\": {\"t\": \"floor\", \"r\": 0}, \"13,6\": {\"t\": \"floor\", \"r\": 0}, \"13,7\": {\"t\": \"floor\", \"r\": 0}, \"13,8\": {\"t\": \"floor\", \"r\": 0}, \"13,9\": {\"t\": \"floor\", \"r\": 0}}, \"walls\": [[2, 2, 14, 2], [14, 2, 14, 10], [14, 10, 2, 10], [2, 10, 2, 2], [7, 2, 7, 10]], \"items\": [{\"id\": \"il3\", \"kind\": \"label\", \"x\": 140, \"y\": 200, \"label\": \"ナギの部屋\", \"size\": 16}, {\"id\": \"il4\", \"kind\": \"label\", \"x\": 330, \"y\": 200, \"label\": \"父の書斎\", \"size\": 16}, {\"id\": \"mi20\", \"kind\": \"pin\", \"x\": 400, \"y\": 290, \"place\": \"c4\", \"label\": \"灯室へ\"}, {\"id\": \"mi21\", \"kind\": \"pin\", \"x\": 330, \"y\": 240, \"place\": \"c18\", \"label\": \"\"}], \"notes\": []}], \"entry\": \"c17\"}], \"affinity\": [{\"atk\": \"光\", \"def\": \"闇\", \"v\": 1}, {\"atk\": \"闇\", \"def\": \"光\", \"v\": 1}, {\"atk\": \"光\", \"def\": \"夜\", \"v\": -1}, {\"atk\": \"闇\", \"def\": \"夜\", \"v\": 1}], \"cuts\": [], \"wiki\": [{\"id\": \"w1\", \"title\": \"灯の祭り\", \"aliases\": \"灯祭、ともしび祭\", \"cat\": \"行事\", \"body\": \"年に一度、島中の家が窓に灯をともす祭り。灯台の灯が島を守ってきたことへの感謝を表す。\\n[[灯台の廃止|灯台廃止]]が決まった年は、祭りを続けるかどうかで島の青年団の意見が割れている。\", \"cards\": [\"c10\"]}, {\"id\": \"w2\", \"title\": \"定期船\", \"aliases\": \"船便\", \"cat\": \"暮らし\", \"body\": \"本土と灯島を結ぶ唯一の船。週に2回、港に着く。嵐の夜には欠航する。\", \"cards\": []}, {\"id\": \"w3\", \"title\": \"灯台廃止\", \"aliases\": \"廃止の決定\", \"cat\": \"出来事\", \"body\": \"灯台管理局が決めた、灯台の運用をやめる計画。自動の灯標に置き換える予定。灯の祭りの存続にも関わる。\", \"cards\": []}], \"game\": {\"hero\": \"c1\"}}";
+function sample(){return JSON.parse(SAMPLE_JSON);}
+function sampleOld(){
  const sc=(id,title,role,beatId,pages,causes,plants,pays,chars,pageData)=>({id,title,role,beatId,pages,causes,plants,pays,chars,note:'',cards:[],pageData:pageData||[]});
  const d={v:1,
   story:{title:'灯台守の娘（サンプル）',ending:'ナギは父が灯台に遺した手紙を灯の光で読み、島に残って灯を守ると決める。',totalPages:32,templateId:'kishou',firstSingle:true,endingSceneId:'a7'},
@@ -801,13 +969,15 @@ function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r
 const HIST={past:[],future:[],last:null,timer:null};
 function snapshotNow(){clearTimeout(HIST.timer);HIST.timer=null;const s=JSON.stringify(S);if(s===HIST.last)return;if(HIST.last!==null){HIST.past.push(HIST.last);if(HIST.past.length>80)HIST.past.shift();HIST.future=[];}HIST.last=s;updUndo();}
 function updUndo(){const u=document.getElementById('btn-undo'),r=document.getElementById('btn-redo');if(u)u.disabled=!HIST.past.length;if(r)r.disabled=!HIST.future.length;}
-function save(){try{syncAllFloors();localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!save.warned){save.warned=true;setTimeout(()=>toast('ブラウザへの保存容量を超えました。地図の下絵を外すか、小さい画像にしてください'),50);}}clearTimeout(HIST.timer);HIST.timer=setTimeout(snapshotNow,450);}
+function save(){if(PLAYER)return;try{syncAllFloors();localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!save.warned){save.warned=true;setTimeout(()=>toast('ブラウザへの保存容量を超えました。地図の下絵を外すか、小さい画像にしてください'),50);}}clearTimeout(HIST.timer);HIST.timer=setTimeout(snapshotNow,450);}
 function restoreSnap(js){S=migrate(JSON.parse(js));try{localStorage.setItem(KEY,js);}catch(e){}if(UI.sel&&!S.scenes.some(x=>x.id===UI.sel))UI.sel=(S.scenes[0]||{}).id;if(UI.card&&!S.cards.some(c=>c.id===UI.card))UI.card=null;UI.edEdge=null;UI.glinkFrom=null;}
 function undo(){if(HIST.timer)snapshotNow();if(!HIST.past.length)return;HIST.future.push(HIST.last);HIST.last=HIST.past.pop();restoreSnap(HIST.last);toast('元に戻しました');render();}
 function redo(){if(HIST.timer)snapshotNow();if(!HIST.future.length)return;HIST.past.push(HIST.last);HIST.last=HIST.future.pop();restoreSnap(HIST.last);toast('やり直しました');render();}
 
 function blankData(){return {v:6,affinity:[],wiki:[],story:{title:'',ending:'',totalPages:32,templateId:'kishou',firstSingle:true,endingSceneId:''},templates:builtinTemplates(),foreshadows:[],cards:[],scenes:[],links:[],cuts:[],gpos:{},maps:[]};}
-let S=load()||blankData();
+/* 遊ぶだけのファイル（ゲームの書き出し）として開いたとき */
+const PLAYER=(typeof window!=='undefined'&&window.SC_PLAYER&&typeof window.SC_PLAYER==='object')?window.SC_PLAYER:null;
+let S=PLAYER?migrate(JSON.parse(JSON.stringify(PLAYER))):(load()||blankData());
 let UI={tab:'cards',treeDir:'back',sel:(S.scenes[S.scenes.length-1]||{}).id,tplSel:S.story.templateId,confirm:null,dataOpen:false,filter:'all',toast:'',ctype:'all',q:'',unused:false,picked:[],card:null,qtype:'person',tagQ:'',ftags:[],tagDraft:'',cgroup:'none',ghull:true,gab:false,lines:{},views:{},famPerson:'',famSel:null,famMutual:true,famMode:'new',famRel:'父',mapId:null,mtool:'select',mplace:'',msel:null,mdraw:null,mset:false,mtile:'floor',mrot:0,gmode:'select',glinkFrom:null,lastCut:null,gsel:null,gtag:'',gmin:1,gauto:true,rand:null};
 const norm=s=>String(s||'').normalize('NFKC').trim().toLowerCase();
 const tagList=s=>String(s||'').split(/[、,，:：;；\/／\s]+/).map(x=>x.trim()).filter(Boolean);
@@ -1093,6 +1263,7 @@ function checks(){
  S.cards.filter(c=>c.type==='episode'&&!usedIn(c.id).length).forEach(c=>out.push({lvl:'info',cat:'カード',msg:`エピソード「${c.title||'無題'}」はまだ物語に使われていません。`,cid:c.id}));
  const unusedSet=S.cards.filter(c=>c.type!=='episode'&&c.type!=='memo'&&!usedIn(c.id).length);
  if(unusedSet.length)add('info','カード',`どのシーンにも付いていない設定カードが${unusedSet.length}枚あります（${unusedSet.map(c=>c.title).join('、')}）。`);
+  S.scenes.forEach(s=>{const k=tlKey(s);if(k==null)return;(s.causes||[]).forEach(cid=>{const c=sc(cid);const kc=c&&tlKey(c);if(kc!=null&&kc>k)add('warn','因果',`#${num(c.id)}「${c.title}」は「${s.title}」の原因なのに、年表では後に起きています（${tlText(c)} ＞ ${tlText(s)}）`,s.id);});});
  return out;
 }
 
@@ -1117,9 +1288,9 @@ function header(iss){
 }
 function tabs(iss){
  const n=iss.filter(i=>i.lvl!=='info').length;
- const T=[['cards','カード置き場'],['graph','つながり'],['family','家系図'],['orgchart','組織図'],['ability','能力・相性'],['map','地図'],['reverse','ツリー'],['wiki','用語集'],['check','破綻チェック']];
+ const T=[['cards','カード置き場'],['graph','つながり'],['family','家系図'],['orgchart','組織図'],['ability','能力・相性'],['map','地図'],['reverse','ツリー'],['write','本文'],['timeline','年表'],['wiki','用語集'],['game','ゲーム'],['check','破綻チェック']];
  const b=([k,l],sub)=>`<button role="tab" class="${sub?'subtab':''}" aria-selected="${UI.tab===k}" data-act="tab" data-tab="${k}">${l}${k==='check'&&n?`<span class="cnt">${n}</span>`:''}</button>`;
- return `<nav class="tabs" role="tablist">${T.map(t=>b(t)).join('')}</nav>`;
+ return `<nav class="tabs" role="tablist">${T.filter(t=>GAME_ON||t[0]!=='game').map(t=>b(t)).join('')}</nav>`;
 }
 function sidebar(iss){
  const L=layout(),T=tpl();
@@ -1227,7 +1398,7 @@ let relN=null;
 function personFields(c){
  const places=S.cards.filter(x=>x.type==='place'),people=S.cards.filter(x=>x.type==='person'&&x.id!==c.id);
  const ssel=`<div class="pf-row"><span class="pf-l">状態</span><select id="pf-${c.id}-status" data-f="cdv" data-cid="${c.id}" data-k="status" aria-label="状態">${Object.entries(STATUS).map(([k,l])=>`<option value="${k}" ${(c.status||'')===k?'selected':''}>${l}</option>`).join('')}</select>${c.status?`<select id="pf-${c.id}-stscene" data-f="cdv" data-cid="${c.id}" data-k="statusScene" aria-label="どのシーンから"><option value="">どのシーンから？（未設定）</option>${S.scenes.map((x,i)=>`<option value="${x.id}" ${c.statusScene===x.id?'selected':''}>${String(i+1).padStart(2,'0')} ${esc(x.title)}で${STATUS[c.status]}</option>`).join('')}</select>`:'<span></span>'}</div>${c.status?`<div class="pf-row"><span class="pf-l"></span><input type="text" id="pf-${c.id}-stnote" data-f="cdv" data-cid="${c.id}" data-k="statusNote" data-live="1" value="${esc(c.statusNote)}" placeholder="理由・メモ（例：嵐の夜に海へ落ちた）" style="grid-column:2 / -1" aria-label="状態のメモ"></div>`:''}`;
- const gsel=ssel+`<div class="pf-row"><span class="pf-l">性別</span><select id="pf-${c.id}-gender" data-f="cdv" data-cid="${c.id}" data-k="gender" style="grid-column:2 / -1" aria-label="性別">${Object.entries(GENDER).map(([k,l])=>`<option value="${k}" ${(c.gender||'')===k?'selected':''}>${l}</option>`).join('')}</select></div>`;
+ const gsel=ssel+`<div class="pf-row"><span class="pf-l">性別</span><select id="pf-${c.id}-gender" data-f="cdv" data-cid="${c.id}" data-k="gender" style="grid-column:2 / -1" aria-label="性別">${Object.entries(GENDER).map(([k,l])=>`<option value="${k}" ${(c.gender||'')===k?'selected':''}>${l}</option>`).join('')}</select></div><div class="pf-row"><span class="pf-l">生まれた年</span><input type="number" id="pf-${c.id}-birthY" data-f="cdv" data-cid="${c.id}" data-k="birthY" data-live="1" value="${esc(c.birthY??'')}" placeholder="作中の年（年表で年齢が出ます）" style="grid-column:2 / -1" aria-label="生まれた年"></div>`;
  const pf=gsel+PF.map(([k,l])=>{const v=c[k]||{place:'',text:''};return `<div class="pf-row"><span class="pf-l">${l}</span>
   <select id="pf-${c.id}-${k}-place" data-f="cdp" data-cid="${c.id}" data-k="${k}" data-p="place" aria-label="${l}の場所カード"><option value="">場所カードを選ぶ…</option>${places.map(p=>`<option value="${p.id}" ${v.place===p.id?'selected':''}>${esc(p.title)||'無題'}</option>`).join('')}<option value="__new">＋右の内容で場所カードを作る</option></select>
   <input type="text" id="pf-${c.id}-${k}-text" data-f="cdp" data-cid="${c.id}" data-k="${k}" data-p="text" data-live="1" value="${esc(v.text)}" placeholder="${k==='addr'?'地名・番地など':'会社名・学校名・部署など'}" aria-label="${l}の詳細"></div>`;}).join('');
@@ -1830,10 +2001,19 @@ function abilityFields(c){
    <input type="text" id="rl-${c.id}-abilities-${i}-name" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="name" data-live="1" value="${esc(a.name)}" placeholder="例：火炎弾" aria-label="能力の名前">
    <input type="text" id="rl-${c.id}-abilities-${i}-attr" list="dl-attr" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="attr" data-live="1" value="${esc(a.attr)}" placeholder="例：火" aria-label="属性">
    <select id="rl-${c.id}-abilities-${i}-power" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="power" aria-label="強さ">${[1,2,3,4,5].map(n=>`<option value="${n}" ${(Number(a.power)||3)===n?'selected':''}>${'★'.repeat(n)}</option>`).join('')}</select>
-   <button class="ibtn" aria-label="削除" data-act="rmRel" data-cid="${c.id}" data-k="abilities" data-i="${i}">×</button></div>`).join('')}
+   <button class="ibtn" aria-label="削除" data-act="rmRel" data-cid="${c.id}" data-k="abilities" data-i="${i}">×</button></div>
+${GAME_ON?`   <div class="ab-row2"><label><span>ダメージ</span><input type="text" id="rl-${c.id}-abilities-${i}-dice" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="dice" data-live="1" value="${esc(a.dice||'')}" placeholder="1d6" aria-label="ダメージのサイコロ"></label>
+    <label><span>クリティカル</span><select id="rl-${c.id}-abilities-${i}-crit" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="crit" aria-label="クリティカルになる出目">${[12,11,10,9].map(n=>`<option value="${n}" ${abCrit(a)===n?'selected':''}>${n}${n<12?'以上':''}</option>`).join('')}</select></label>
+    ${(()=>{const at=gAttacks(c).find(x=>x.i===i);const t=at?at.tier:'';return `<label><span>強さの段</span><select id="rl-${c.id}-abilities-${i}-tier" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="tier" aria-label="攻撃の段"><option value="" ${!a.tier?'selected':''}>自動${t&&!a.tier?`（${TIER[t].l}）`:at?'':'（使わない）'}</option>${TIERS.map(([k,l])=>`<option value="${k}" ${a.tier===k?'selected':''}>${l}</option>`).join('')}</select></label>
+    <label><span>枚数</span><select id="rl-${c.id}-abilities-${i}-count" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="count" aria-label="カードの枚数"><option value="" ${a.count==null||a.count===''?'selected':''}>段に合わせる${t?`（${TIER[t].count}枚）`:''}</option>${[1,2,3,4,5].map(n=>`<option value="${n}" ${String(a.count)===String(n)?'selected':''}>${n}枚</option>`).join('')}</select></label>`;})()}
+    <label><span>ファンブル</span><select id="rl-${c.id}-abilities-${i}-fum" data-f="cdl" data-cid="${c.id}" data-k="abilities" data-i="${i}" data-p="fum" aria-label="ファンブルになる出目">${[2,3,4,5].map(n=>`<option value="${n}" ${abFum(a)===n?'selected':''}>${n}${n>2?'以下':''}</option>`).join('')}</select></label></div>`:''}`).join('')}
+${GAME_ON?`  <div class="pf-row"><span class="pf-l">対決のカード</span><span style="grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:8px;font-size:12px;align-items:center">
+   <label>防御の強さ <select id="pf-${c.id}-defense" data-f="cdv" data-cid="${c.id}" data-k="defense" aria-label="防御の修正">${[-3,-2,-1,0,1,2,3].map(n=>`<option value="${n}" ${defOf(c)===n?'selected':''}>${n>0?'+':''}${n}</option>`).join('')}</select></label></span></div>
+  <div class="pf-row"><span class="pf-l">回避</span><select id="pf-${c.id}-evade" data-f="cdv" data-cid="${c.id}" data-k="evade" style="grid-column:2 / -1" aria-label="回避の修正">${[-3,-2,-1,0,1,2,3].map(n=>`<option value="${n}" ${evOf(c)===n?'selected':''}>${n>0?'+':''}${n}${n===0?'（ふつう）':n>0?'（よける）':'（よけにくい）'}</option>`).join('')}</select></div>`:''}
   <div><button class="btn sm" data-act="addRel" data-cid="${c.id}" data-k="abilities">＋能力を追加</button></div>
+  ${GAME_ON&&(c.abilities||[]).some(a=>a.name||a.attr)?`<div class="atk-tiers"><span class="pf-l">対決の攻撃カード</span>${gAttacks(c).map(x=>`<span class="ctier-row"><span class="ctier t-${x.tier}">${TIER[x.tier].l}</span>${esc(x.name)}${x.gen?'<small>（自動）</small>':''} ×${x.n}</span>`).join('')}<small class="muted">弱・普通・強の3つを必ず持ちます。足りない段は、持っている技から自動で作ります。回避・防御はいつでも出せます。</small></div>`:''}
   ${[['weakAttr','弱点の属性','例：水、雷（この属性に弱い）','dl-attr'],['resistAttr','効きにくい属性','例：火（この属性に強い）','dl-attr'],['envGood','得意な環境','例：夜、森、水辺','dl-env'],['envBad','苦手な環境','例：雨、狭い所','dl-env']].map(([k,l,ph,dl])=>`<div class="pf-row"><span class="pf-l">${l}</span><input type="text" id="pf-${c.id}-${k}" list="${dl}" data-f="cdv" data-cid="${c.id}" data-k="${k}" data-live="1" value="${esc(c[k])}" placeholder="${ph}" style="grid-column:2 / -1" aria-label="${l}"></div>`).join('')}
-  <details class="pf-help"><summary><span class="help-ico" aria-hidden="true">?</span>入力のしかた</summary><p>能力ごとに「属性・系統」（火・水・剣・幻術・科学など自由）と強さを入れます。弱点の属性・効きにくい属性・得意な環境・苦手な環境は、読点で区切って複数書けます。属性同士の相性（火は草に有利、など）は「能力・相性」タブの相性表で決めます。入力すると「能力・相性」タブで、誰に強くて誰に弱いか、どの場所で戦うと有利かが分かります。</p></details>`;
+  <details class="pf-help"><summary><span class="help-ico" aria-hidden="true">?</span>入力のしかた</summary><p>能力ごとに「属性・系統」（火・水・剣・幻術・科学など自由）と強さを入れます。${GAME_ON?'ゲームの対決では、「ダメージ」に技のサイコロ（例：1d6、2d6、1d10、3d4+2）、「クリティカル」「ファンブル」になる出目、人物の「回避」の修正も使います。':''}弱点の属性・効きにくい属性・得意な環境・苦手な環境は、読点で区切って複数書けます。属性同士の相性（火は草に有利、など）は「能力・相性」タブの相性表で決めます。入力すると「能力・相性」タブで、誰に強くて誰に弱いか、どの場所で戦うと有利かが分かります。</p></details>`;
 }
 function abilityTab(){
  S.affinity=S.affinity||[];
@@ -1877,6 +2057,7 @@ function abilityTab(){
  <h3 class="abh">対戦の有利・不利</h3>${rows?`<ul class="mlist">${rows}</ul>`:'<p class="muted">比べる相手がいません。ほかの人物カードにも能力や弱点を入れてください。</p>'}
  <h3 class="abh">戦う場所との相性</h3>${prow?`<ul class="mlist">${prow}</ul>`:'<p class="muted" style="font-size:13px">場所カードの「環境」（水辺・夜・森など）を入れると、ここに表示されます。</p>'}
  ${mx?`<h3 class="abh">全員の相性表</h3>${mx}`:''}
+ ${simBox()}
  ${affBox}
  </div>`;
 }
@@ -2098,18 +2279,38 @@ function render3D(m){
  }
  const order=[...areas].sort((a,b)=>(a.bld-b.bld)||(a.depth-b.depth)||(a.base-b.base)||(Math.max(...a.pts.map(p=>ry(p[0],p[1])))-Math.max(...b.pts.map(p=>ry(p[0],p[1])))));
  const nb=order.filter(a=>!a.bld),bl=order.filter(a=>a.bld);
- const drawArea=a=>{const c=a.pts.reduce((t,p)=>[t[0]+p[0]/a.pts.length,t[1]+p[1]/a.pts.length],[0,0]);const nm=nameOf(a.it);return prism(a.pts,a.base,a.top,'ter-'+(a.it.terrain||'land'),nm?lab(c[0],c[1],a.top,nm+(a.top>a.base?` ▲${a.top-a.base}`:'')):'');};
- const lineOn=new Map();let groundLines='';
- m.items.filter(it=>it.kind==='line').forEach(it=>{const w=it.width||LW0[it.style||'road'];const vis=offsetPts(it.pts,lineOffset(it,m));
-  const samp=[];for(let i=0;i<vis.length;i++){samp.push(vis[i]);if(i<vis.length-1)samp.push([(vis[i][0]+vis[i+1][0])/2,(vis[i][1]+vis[i+1][1])/2]);}
-  const cnt=new Map();samp.forEach(p=>{let best=null,bt=-1;nb.forEach(a=>{if(a.top>bt&&pointInArea(a.it,p[0],p[1])){bt=a.top;best=a;}});const k=best?best.it.id:'';cnt.set(k,(cnt.get(k)||0)+1);});
-  let host='',hc=-1;cnt.forEach((c,k)=>{if(c>hc){hc=c;host=k;}});
-  const hz=host?(nb.find(a=>a.it.id===host)||{}).top||0:0;
-  const d=vis.map((p,i)=>(i?'L':'M')+PJ(p[0],p[1],hz)).join(' ');const svgL=lineDraw(d,it.style||'road',w*Math.max(0.6,K));
-  let at=-1;nb.forEach((a,i)=>{if(a.top<=hz+1e-6)at=i;});
-  if(at<0)groundLines+=svgL;else lineOn.set(at,(lineOn.get(at)||'')+svgL);});
- blocks+=groundLines;
- nb.forEach((a,i)=>{blocks+=drawArea(a);if(lineOn.has(i))blocks+=lineOn.get(i);});
+ const areaLab=a=>{const c=a.pts.reduce((t,p)=>[t[0]+p[0]/a.pts.length,t[1]+p[1]/a.pts.length],[0,0]);const nm=nameOf(a.it);return nm?lab(c[0],c[1],a.top,nm+(a.top>a.base?` ▲${a.top-a.base}`:'')):'';};
+ const drawArea=(a,noLab)=>prism(a.pts,a.base,a.top,'ter-'+(a.it.terrain||'land'),noLab?'':areaLab(a));
+ const lineOn=new Map();const LG={c:'',f:'',n:'',o:''};
+ const layerSvg=L=>L?L.c+L.f+L.n+L.o:'';
+ /* 道・川などは、通る場所ごとに高さを決める（1本の線でも、地面の上・島の上などで分けて描く） */
+ /* 道の幅の半分まで範囲の縁にかかっていれば、その範囲の上に乗っているとみなす（縁に沿った道と、範囲の上の道の高さをそろえる） */
+ const nearEdge=(a,x,y,tol)=>{const P=a.pts;for(let i=0;i<P.length;i++){const p=P[i],q=P[(i+1)%P.length];if(segDist(x,y,p[0],p[1],q[0],q[1])<=tol)return true;}return false;};
+ const hostAt=(x,y,tol)=>{let bi=-1,bt=-1;nb.forEach((a,i)=>{if(a.top>=bt&&(pointInArea(a.it,x,y)||(tol&&a.top>0&&nearEdge(a,x,y,tol)))){bt=a.top;bi=i;}});return bi;};
+ /* 道路は「縁取り→中身→中央線」の順に、同じ高さの道路をまとめて描く（交差点で縁取りが重ならない） */
+ const putLine=(hi,d,st,sw)=>{let L=LG;if(hi>=0){L=lineOn.get(hi);if(!L){L={c:'',f:'',n:'',o:''};lineOn.set(hi,L);}}
+  if(st==='road'){L.c+=`<path d="${d}" class="m-road-case" stroke-width="${sw+3}"/>`;L.f+=`<path d="${d}" class="m-road-fill" stroke-width="${sw}"/>`;if(sw>=10)L.n+=`<path d="${d}" class="m-road-center"/>`;}
+  else L.o+=lineDraw(d,st,sw);};
+ const topH=h=>h>=0?nb[h].top:0;
+ const LD=[];m.items.filter(it=>it.kind==='line').forEach(it=>{const w=it.width||LW0[it.style||'road'];const vis=offsetPts(it.pts,lineOffset(it,m));if(vis.length<2)return;
+  const sp=resample(vis,4).map(p=>[p[0],p[1]]);LD.push({it,w,sp,hs:sp.map(p=>hostAt(p[0],p[1],w/2+1.5)),st:it.style||'road'});});
+ /* つながっている道路の高さをそろえる：ほかの道路の上（幅の中）にある部分は、その道路と同じ高さにする（高い方に合わせる） */
+ const roadsL=LD.filter(L=>L.st==='road');
+ roadsL.forEach(L=>{const xs=L.sp.map(p=>p[0]),ys=L.sp.map(p=>p[1]);L.bb=[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];});
+ for(let pass=0;pass<2;pass++)roadsL.forEach(L=>{roadsL.forEach(O=>{if(O===L)return;const tol=(O.w+L.w)/2;const ob=O.bb,lb=L.bb;
+  if(lb[0]>ob[2]+tol||lb[2]<ob[0]-tol||lb[1]>ob[3]+tol||lb[3]<ob[1]-tol)return;const oMax=Math.max(...O.hs.map(topH));
+  L.sp.forEach((p,i)=>{const mine=topH(L.hs[i]);if(mine>=oMax)return;if(p[0]<ob[0]-tol||p[0]>ob[2]+tol||p[1]<ob[1]-tol||p[1]>ob[3]+tol)return;let bd=Infinity,bj=-1;for(let j=0;j<O.sp.length;j++){const d=Math.hypot(O.sp[j][0]-p[0],O.sp[j][1]-p[1]);if(d<bd){bd=d;bj=j;}}
+   if(bd<=tol&&topH(O.hs[bj])>mine)L.hs[i]=O.hs[bj];});});});
+ LD.forEach(({w,sp,hs,st})=>{
+  // 境目のちらつき（縁に沿った道など）をならす：短すぎる区間は前後の区間に合わせる
+  const minRun=Math.max(10,w*1.5)/4;let runs=[];for(let i=0;i<sp.length;){let j=i;while(j<sp.length&&hs[j]===hs[i])j++;runs.push({h:hs[i],a:i,b:j-1});i=j;}
+  for(let pass=0;pass<3&&runs.length>1;pass++){runs.forEach((r,k)=>{if(r.b-r.a+1<minRun){const pv=runs[k-1],nx=runs[k+1];const pick=pv&&nx?(topH(pv.h)>=topH(nx.h)?pv:nx):(pv||nx);if(pick)r.h=pick.h;}});
+   const m2=[];runs.forEach(r=>{const l=m2[m2.length-1];if(l&&l.h===r.h)l.b=r.b;else m2.push({...r});});runs=m2;}
+  const sw=w*Math.max(0.6,K);
+  runs.forEach((r,k)=>{const z=topH(r.h);const end=Math.min(sp.length-1,r.b+(k<runs.length-1?1:0));const pts=simplifyPts(sp.slice(r.a,end+1),0.5);if(pts.length<2)return;
+   const d=pts.map((p,i)=>(i?'L':'M')+PJ(p[0],p[1],z).map(v=>v.toFixed(1)).join(' ')).join(' ');putLine(r.h,d,st,sw);});});
+ blocks+=layerSvg(LG);
+ nb.forEach((a,i)=>{blocks+=drawArea(a,true);if(lineOn.has(i))blocks+=layerSvg(lineOn.get(i));blocks+=areaLab(a);});
  // indoor wall blocks (cells + wall lines) mixed with buildings by depth
  const solids=[];
  if(indoor){Object.entries(m.cells||{}).forEach(([k,v])=>{const [cx,cy]=k.split(',').map(Number);if(cx>=m.cols||cy>=m.rows)return;const x=cx*s,y=cy*s;
@@ -2511,7 +2712,7 @@ let DL=null,DLready=false;
 try{const u=window.claude&&window.claude.use;if(u)window.claude.use('downloads').then(n=>{DL=n;DLready=true;if(UI.dataOpen)render();}).catch(()=>{DLready=true;});else DLready=true;}catch(e){DLready=true;}
 function saveFileName(){const t=(S.story.title||'').trim()||'ストーリーカード';const d=new Date(),z=n=>String(n).padStart(2,'0');return `${t.replace(/[\\/:*?"<>|]/g,'_')}_${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}.json`;}
 /* ===== PDF export (print view) ===== */
-const PDF_SECS=[['cover','表紙・あらすじ'],['story','ストーリー（シーン一覧・ツリー）'],['fs','伏線の一覧'],['cards','カード一覧'],['graph','つながり図'],['family','家系図'],['org','組織図'],['ability','能力・相性'],['maps','地図'],['wiki','用語集'],['check','破綻チェック']];
+const PDF_SECS=[['cover','表紙・あらすじ'],['story','ストーリー（シーン一覧・ツリー）'],['fs','伏線の一覧'],['cards','カード一覧'],['graph','つながり図'],['family','家系図'],['org','組織図'],['ability','能力・相性'],['body','本文'],['maps','地図'],['tl','年表'],['wiki','用語集'],['check','破綻チェック']];
 function pdfDialog(){if(!UI.pdfOpen)return '';const o=UI.pdfOpt||{};const on=k=>o[k]!==false;
  return `<div class="overlay" data-act="pdfClose"><div class="dialog" role="dialog" aria-modal="true" aria-label="PDFに出力">
   <h3>PDFに出力</h3>
@@ -2608,6 +2809,8 @@ function buildPdfHtml(fname,di){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;c
    if(m.floors&&m.fcur!==cur)switchFloor(m,cur);});UI.mapId=keepMap;parts.push(`<section class="ps ps-maps"><h2>地図</h2>${b}</section>`);}
  // check
  const dataSec=di?`<section class="ps ps-data"><h2>読み込み用データ</h2><p>このページの模様には、この作品のデータ（カード・シーン・地図など）がすべて入っています。ストーリーカードの「保存・読み込み」→「ファイルを開く」でこのPDFを選ぶと、作品を開き直せます。</p><p class="muted">模様を切り取ったり、PDFを画像として保存し直したりすると読み込めなくなります。</p><div class="pdata"><img src="${di.url}" alt="作品データ" width="${di.w}" height="${di.h}"></div><p class="muted" style="font-size:9pt">データの大きさ：${Math.ceil(di.bytes/1024)} KB（${di.w}×${di.h} 画素）</p></section>`:'';
+ if(on('body')&&S.scenes.some(x=>wCount(x.text))){sec('body','本文',S.scenes.map(x=>`<div class="pbody"><h4>${esc(x.title)||'（無題）'}</h4>${x.text?`<p>${esc(wPlain(x.text)).replace(/\n/g,'<br>')}</p>`:'<p class="pc-use">（未記入）</p>'}</div>`).join(''));}
+ if(on('tl')){const it=tlItems().filter(x=>x.key!=null).sort((a,b)=>a.key-b.key);if(it.length)sec('tl','年表',`<table class="ptl"><tr><th>いつ</th><th>出来事</th><th>話の順</th></tr>${it.map(x=>`<tr><td>${esc(tlText(x.o))}${x.o.tl?`<br><small>${esc(x.o.tl)}</small>`:''}</td><td>${esc(x.title)}</td><td>${x.k==='s'?'#'+num(x.id):'エピソード'}</td></tr>`).join('')}</table>`);}
  if(on('wiki')&&(S.wiki||[]).length){const W=[...S.wiki].sort((a,b)=>((a.cat||'~')+a.title).localeCompare((b.cat||'~')+b.title,'ja'));let cur=null,h='';W.forEach(e=>{const g=(e.cat||'').trim()||'分類なし';if(g!==cur){h+=`<h3 class="pwk-g">${esc(g)}</h3>`;cur=g;}h+=`<div class="pwk"><h4>${esc(e.title)||'（無題）'}${aliasList(e.aliases).length?`<small>（${esc(aliasList(e.aliases).join('、'))}）</small>`:''}</h4>${e.body?`<p>${esc(wkPlain(e.body)).replace(/\n/g,'<br>')}</p>`:''}${(e.cards||[]).filter(card).length?`<div class="pc-use">関連カード：${e.cards.filter(card).map(id=>esc(card(id).title)).join('、')}</div>`:''}</div>`;});sec('wiki','用語集',h);}
  if(on('check')){const iss=checks();const LV={err:'破綻',warn:'要確認',info:'メモ'};sec('check','破綻チェック',iss.length?`<ul class="pchk">${iss.sort((a,b)=>({err:0,warn:1,info:2}[a.lvl]-{err:0,warn:1,info:2}[b.lvl])).map(i=>`<li class="${i.lvl}"><b>${LV[i.lvl]}</b><span class="muted">［${i.cat}］</span>${esc(i.msg)}</li>`).join('')}</ul>`:'<p>見つかった問題はありません。</p>');}
  const css=[...document.querySelectorAll('style')].map(s2=>s2.textContent).join('\n');
@@ -2628,7 +2831,8 @@ function buildPdfHtml(fname,di){const o=UI.pdfOpt||{};const on=k=>o[k]!==false;c
  .pmeta{font-size:9pt;line-height:1.6}.pmeta span{color:#5d6874}
  .ptree .node-acts,.ptree select,.ptree button.btn{display:none!important}.ptree .node{max-width:none;break-inside:avoid}.ptree{font-size:9.5pt}
  .pcards{display:grid;grid-template-columns:repeat(${orient==='landscape'?4:3},1fr);gap:3mm}
- .pc{border:1px solid #d2e1eb;border-top:3mm solid var(--ct);border-radius:1.5mm;padding:2.5mm 3mm;break-inside:avoid;font-size:9pt;background:#fff}.pc h4{margin:1mm 0;font-size:11pt}.pc p{margin:0 0 1.5mm;color:#3b434c}.pc-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:1mm;margin:1mm 0;display:block}.pc-imgw{position:relative;container-type:inline-size}.pc-imgw.cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.pc-imgw.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}.pc-imgw .cst-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16cqw;letter-spacing:.06em;color:rgba(255,255,255,.85);text-shadow:0 .3mm 1mm rgba(0,0,0,.6);line-height:1}.pc-imgw.cst-down .cst-txt{color:rgba(255,226,170,.92)}.pc-use{margin-top:1.5mm;color:#5d6874;font-size:8pt;border-top:1px dashed #d2e1eb;padding-top:1mm}.pwk-g{font-size:11pt;margin:4mm 0 1.5mm;padding-left:2mm;border-left:1mm solid #6555b0}.pwk{border:1px solid #d2e1eb;border-radius:1.5mm;padding:2mm 3mm;margin:0 0 2mm;break-inside:avoid;font-size:9pt}.pwk h4{margin:0 0 1mm;font-size:10.5pt}.pwk h4 small{font-weight:400;color:#5d6874;font-size:8.5pt;margin-left:1mm}.pwk p{margin:0;color:#3b434c}
+ .pc{border:1px solid #d2e1eb;border-top:3mm solid var(--ct);border-radius:1.5mm;padding:2.5mm 3mm;break-inside:avoid;font-size:9pt;background:#fff}.pc h4{margin:1mm 0;font-size:11pt}.pc p{margin:0 0 1.5mm;color:#3b434c}.pc-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:1mm;margin:1mm 0;display:block}.pc-imgw{position:relative;container-type:inline-size}.pc-imgw.cst img{filter:grayscale(.6) brightness(.55);opacity:.65}.pc-imgw.cst-down img{filter:grayscale(.3) brightness(.7);opacity:.8}.pc-imgw .cst-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16cqw;letter-spacing:.06em;color:rgba(255,255,255,.85);text-shadow:0 .3mm 1mm rgba(0,0,0,.6);line-height:1}.pc-imgw.cst-down .cst-txt{color:rgba(255,226,170,.92)}.pc-use{margin-top:1.5mm;color:#5d6874;font-size:8pt;border-top:1px dashed #d2e1eb;padding-top:1mm}.pbody{break-inside:auto;margin-bottom:5mm}.pbody h4{font-size:11pt;margin:0 0 2mm;padding-left:2mm;border-left:1mm solid #1b6595;break-after:avoid}.pbody p{font-family:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho',serif;font-size:10pt;line-height:1.9;margin:0;text-align:justify}
+.pwk-g{font-size:11pt;margin:4mm 0 1.5mm;padding-left:2mm;border-left:1mm solid #6555b0}.pwk{border:1px solid #d2e1eb;border-radius:1.5mm;padding:2mm 3mm;margin:0 0 2mm;break-inside:avoid;font-size:9pt}.pwk h4{margin:0 0 1mm;font-size:10.5pt}.pwk h4 small{font-weight:400;color:#5d6874;font-size:8.5pt;margin-left:1mm}.pwk p{margin:0;color:#3b434c}
  .pc.st-dead,.pc.st-gone{filter:grayscale(.8);opacity:.75}.pc-h{display:flex;align-items:center;gap:1mm}
  .pfig{break-inside:avoid;border:1px solid #d2e1eb;border-radius:1.5mm;padding:2mm}.pfig svg{width:100%!important;min-width:0!important;height:auto;max-height:${orient==='landscape'?165:240}mm;display:block}
  .pmap{break-inside:avoid;margin-bottom:6mm}
@@ -2676,7 +2880,428 @@ function applyLoaded(txt){let d2;try{d2=JSON.parse(txt);}catch(e){return 'ファ
 /* ---------- main render ---------- */
 let pending=false;
 function schedule(){if(pending)return;pending=true;setTimeout(()=>{pending=false;render();},0);}
-const TABS_OK=['cards','graph','family','orgchart','ability','map','reverse','wiki','check'];
+/* ===== 本文（実際のストーリーを書く） ===== */
+const wCount=t=>String(t||'').replace(/\s/g,'').length;
+const wSheets=n=>n?Math.max(1,Math.ceil(n/400)):0;
+function wChars(s){const ids=[];const add=c=>{if(c&&c.type==='person'&&!ids.includes(c.id))ids.push(c.id);};(s.cards||[]).forEach(id=>add(card(id)));tagList(s.chars).forEach(n=>add(S.cards.find(c=>c.type==='person'&&norm(c.title)===norm(n))));return ids.map(card);}
+function wPlace(s){return (s.cards||[]).map(card).find(c=>c&&c.type==='place')||null;}
+function wTail(t,n){const L=String(t||'').split(/\n/).map(x=>x.trim()).filter(Boolean);return L.slice(-n);}
+function wDownload(name,text){const blob=new Blob([text],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}
+function wExportText(){const t=(S.story.title||'').trim()||'無題';let out=`${t}\n\n`;S.scenes.forEach((s,i)=>{if(UI.wHead!==false)out+=`\n■ ${s.title||'（無題）'}\n\n`;out+=(wPlain(s.text)||'')+'\n';});return out.replace(/\n{4,}/g,'\n\n\n');}
+const wPlain=t=>wkPlain(String(t||''));
+function wCountUpd(ta){const c=document.getElementById('w-count');if(!c)return;const s0=sc(ta.id.slice(7));const g=s0&&parseInt(s0.wGoal)||0;const n=wCount(ta.value);c.innerHTML=`<b>${n.toLocaleString()}</b>字${g?` / 目標 ${g}字`:''}`;const gb=document.querySelector('.wgoal i');if(gb&&g)gb.style.width=Math.min(100,n/g*100)+'%';}
+function writeTab(){const ss=S.scenes;if(!ss.length)return `<div class="sec"><h2>本文</h2><div class="empty-note">シーンがまだありません。ツリーやカード置き場でシーンを作ると、ここで本文を書けます。</div></div>`;
+ if(!UI.sel||!sc(UI.sel))UI.sel=ss[0].id;const mode=UI.wMode||'write';const vert=!!UI.wVert;const tot=ss.reduce((a,s)=>a+wCount(s.text),0),done=ss.filter(s=>wCount(s.text)).length;
+ const bar=`<div class="ctrls wbar"><button class="chipbtn ${mode==='write'?'on':''}" data-act="wMode" data-m="write">✎ 1シーンずつ書く</button><button class="chipbtn ${mode==='read'?'on':''}" data-act="wMode" data-m="read">📖 通して読む</button>
+  <label><input type="checkbox" id="w-vert" data-act="wVert" ${vert?'checked':''}> 縦書き</label><label><input type="checkbox" id="w-mincho" data-act="wMincho" ${UI.wMincho!==false?'checked':''}> 明朝体</label>
+  <span class="wstat">全体 <b>${tot.toLocaleString()}</b>字（原稿用紙 約${wSheets(tot)}枚）・書いたシーン ${done}/${ss.length}</span>
+  <button class="btn sm" data-act="wTxt" style="margin-left:auto">⬇ テキストで書き出す</button></div>`;
+ const fontCls=`${vert?'vert':''} ${UI.wMincho!==false?'mincho':''}`;
+ if(mode==='read'){const body=ss.map((s,i)=>`<section class="wr-sc"><h3 class="wr-h"><button class="linkbtn" data-act="wEdit" data-id="${s.id}" title="このシーンを書く">${UI.wHead!==false?`${esc(s.title)||'（無題）'}`:'◇'}</button></h3>${s.text?`<div class="wr-t">${wkLink(esc(s.text))}</div>`:`<p class="muted wr-empty">（まだ書いていません：${esc(s.role||'')}）</p>`}</section>`).join('');
+  return `<div class="sec"><h2>本文</h2>${bar}<div class="ctrls"><label><input type="checkbox" id="w-head" data-act="wHead" ${UI.wHead!==false?'checked':''}> シーンの見出しを出す</label></div>
+   <article class="wread ${fontCls}"><h1 class="wr-title">${esc(S.story.title)||'（無題の作品）'}</h1>${body}</article></div>`;}
+ const s=sc(UI.sel),i=ss.indexOf(s),prev=ss[i-1],next=ss[i+1];const ppl=wChars(s),pl=wPlace(s);const cards=(s.cards||[]).map(card).filter(Boolean);
+ const fsP=S.foreshadows.filter(f=>(s.plants||[]).includes(f.id)),fsY=S.foreshadows.filter(f=>(s.pays||[]).includes(f.id));const causes=(s.causes||[]).map(sc).filter(Boolean);
+ const n=wCount(s.text);const goal=parseInt(s.wGoal)||0;
+ const ins=(t,c,l)=>`<button class="btn sm" data-keepsel="1" data-act="wIns" data-t="${esc(t)}" data-c="${c}">${esc(l||t)}</button>`;
+ const tail=prev?wTail(prev.text,2):[];
+ return `<div class="sec"><h2>本文</h2>${bar}
+  <div class="wgrid"><div class="wmain">
+   <div class="whead"><span class="mono muted">#${num(s.id)}</span><h3>${esc(s.title)||'（無題）'}</h3>${S.story.endingSceneId===s.id?'<span class="badge">結末</span>':''}
+    <span class="wnav"><button class="btn sm" data-act="wGo" data-id="${prev?prev.id:''}" ${prev?'':'disabled'}>← 前のシーン</button><button class="btn sm" data-act="wGo" data-id="${next?next.id:''}" ${next?'':'disabled'}>次のシーン →</button></span></div>
+   ${s.role?`<p class="wrole">このシーンの役割：${esc(s.role)}</p>`:''}
+   ${tail.length?`<div class="wprev"><small>前のシーン「${esc(prev.title)}」の終わり</small>${tail.map(l=>`<div>${esc(l)}</div>`).join('')}</div>`:''}
+   <div class="wtools"><span class="muted">入れる：</span>${ppl.map(c=>ins(`${c.title}「」`,c.title.length+1,`${c.title}「」`)).join('')}${ins('「」',1)}${ins('……',2)}${ins('――',2)}${ins('\n\n◇\n\n',5,'◇ 場面転換')}</div>
+   <textarea id="w-text-${s.id}" class="wtext ${fontCls}" data-f="sc" data-id="${s.id}" data-k="text" data-live="1" placeholder="ここにこのシーンの本文を書きます。&#10;セリフは「」で、ボタンで人物の名前つきで入れられます。用語集の言葉やカードの名前は、通して読むときにリンクになります。">${esc(s.text||'')}</textarea>
+   <div class="wfoot"><span id="w-count"><b>${n.toLocaleString()}</b>字${goal?` / 目標 ${goal}字`:''}</span>${goal?`<span class="wgoal"><i style="width:${Math.min(100,n/goal*100)}%"></i></span>`:''}
+    <label style="margin-left:auto;font-size:12px">目標の字数 <input type="number" id="w-goal-${s.id}" min="0" step="100" data-f="sc" data-id="${s.id}" data-k="wGoal" value="${esc(s.wGoal||'')}" style="width:80px"></label></div>
+  </div>
+  <aside class="wside">
+   ${pl?`<div class="wbox"><b>📍 場所</b><div>${wkLink(esc(pl.title),{cards:true,force:true})}${tagList(pl.env).length?`<small class="muted">（${esc(tagList(pl.env).join('・'))}）</small>`:''}</div></div>`:''}
+   ${ppl.length?`<div class="wbox"><b>👤 登場人物</b><div class="wchips">${ppl.map(c=>`<span class="wkc" data-act="gotoCard" data-cid="${c.id}" tabindex="0">${esc(c.title)}</span>`).join('')}</div></div>`:''}
+   ${cards.filter(c=>c.type!=='person'&&c.type!=='place').length?`<div class="wbox"><b>🃏 使うカード</b><div class="wchips">${cards.filter(c=>c.type!=='person'&&c.type!=='place').map(c=>`<span class="wkc" data-act="gotoCard" data-cid="${c.id}" tabindex="0">${esc(c.title)}</span>`).join('')}</div></div>`:''}
+   ${fsP.length||fsY.length?`<div class="wbox"><b>🧵 伏線</b>${fsP.map(f=>`<div>張る：${esc(f.name)}</div>`).join('')}${fsY.map(f=>`<div>回収：${esc(f.name)}</div>`).join('')}</div>`:''}
+   ${causes.length?`<div class="wbox"><b>↩ 原因になるシーン</b>${causes.map(c=>`<div><button class="linkbtn" data-act="wGo" data-id="${c.id}">#${num(c.id)} ${esc(c.title)}</button>${wCount(c.text)?'':' <small class="muted">（未記入）</small>'}</div>`).join('')}</div>`:''}
+   ${s.note?`<div class="wbox"><b>📝 メモ</b><div class="wnote">${esc(s.note)}</div></div>`:''}
+   <div class="wbox wlist"><b>シーン一覧</b>${ss.map(x=>`<button class="wli ${x.id===s.id?'on':''}" data-act="wGo" data-id="${x.id}"><span class="mono">#${num(x.id)}</span> ${esc(x.title)||'（無題）'}<small>${wCount(x.text)?wCount(x.text)+'字':'—'}</small></button>`).join('')}</div>
+  </aside></div></div>`;}
+/* ゲームの機能は一旦凍結（true にすると戻る） */
+const GAME_ON=false;
+const TABS_OK=['cards','graph','family','orgchart','ability','map','reverse','write','timeline','wiki','game','check'];
+/* ===== 年表（作中の時間で並べる） ===== */
+function tlKey(o){const y=parseInt(o.ty);if(isNaN(y))return null;const m=parseInt(o.tm)||0,d=parseInt(o.td)||0;let hm=0;const t=String(o.tt||'').match(/(\d{1,2})\s*[:：時]\s*(\d{0,2})/);if(t)hm=(+t[1])*60+(+t[2]||0);return ((y*13+m)*32+d)*1440+hm;}
+function tlText(o){const y=o.ty!=null&&String(o.ty).trim()!==''?`${o.ty}年`:'';return y+(o.tm?`${o.tm}月`:'')+(o.td?`${o.td}日`:'')+(o.tt?` ${o.tt}`:'');}
+function tlItems(){const it=[];S.scenes.forEach((s,i)=>it.push({k:'s',id:s.id,o:s,title:s.title||'（無題）',ord:i,key:tlKey(s)}));
+ S.cards.filter(c=>c.type==='episode').forEach(c=>{const used=S.scenes.some(s=>(s.cards||[]).includes(c.id));if(used&&tlKey(c)==null)return;it.push({k:'c',id:c.id,o:c,title:c.title||'（無題）',ord:null,key:tlKey(c)});});return it;}
+function tlPeople(o){const ids=new Set();(o.cards||[]).forEach(id=>{const c=card(id);if(c&&c.type==='person')ids.add(id);});tagList(o.chars).forEach(n=>{const c=S.cards.find(c=>c.type==='person'&&norm(c.title)===norm(n));if(c)ids.add(c.id);});return [...ids].map(card).filter(Boolean);}
+function tlFlash(){const out={};let mx=null;S.scenes.forEach(s=>{const k=tlKey(s);if(k==null)return;if(mx!=null&&k<mx)out[s.id]=true;if(mx==null||k>mx)mx=k;});return out;}
+function tlRowEdit(x){const kd=x.k==='s'?'s':'c';const f=(k,w,ph)=>`<input type="${k==='tt'||k==='tl'?'text':'number'}" class="tl-in" style="width:${w}" id="tl-${kd}-${x.id}-${k}" data-f="tl" data-kind="${kd}" data-id="${x.id}" data-k="${k}" data-live="1" value="${esc(x.o[k]??'')}" placeholder="${ph}" aria-label="${ph}">`;
+ return `<span class="tl-edit">${f('ty','64px','年')}${f('tm','44px','月')}${f('td','44px','日')}${f('tt','64px','時刻')}${f('tl','130px','呼び方（例：10年前）')}</span>`;}
+function timelineTab(){const items=tlItems();const fl=tlFlash();const dated=items.filter(x=>x.key!=null).sort((a,b)=>a.key-b.key||(a.ord??999)-(b.ord??999)),und=items.filter(x=>x.key==null);
+ const view=UI.tlView||'time';const birth=S.cards.filter(c=>c.type==='person'&&c.birthY!=null&&String(c.birthY).trim()!=='');
+ const row=x=>{const sc0=x.k==='s'?x.o:null;const ppl=tlPeople(x.o);const y=parseInt(x.o.ty);
+  const ages=!isNaN(y)?ppl.filter(c=>c.birthY!=null&&String(c.birthY).trim()!=='').map(c=>`<span class="tl-age">${esc(c.title)} ${y-parseInt(c.birthY)}歳</span>`).join(''):'';
+  return `<li class="tl-row ${x.k==='c'?'ep':''}"><div class="tl-when">${tlText(x.o)?esc(tlText(x.o)):'<span class="muted">時期なし</span>'}${x.o.tl?`<small>${esc(x.o.tl)}</small>`:''}</div>
+   <div class="tl-body"><div class="tl-title">${x.k==='s'?`<span class="mono tl-no">#${num(x.id)}</span>`:'<span class="chip">エピソード</span>'} <b>${esc(x.title)}</b>${sc0&&fl[sc0.id]?' <span class="tl-flash">回想・過去</span>':''}${sc0&&S.story.endingSceneId===sc0.id?' <span class="badge">結末</span>':''}</div>
+    ${ppl.length?`<div class="tl-ppl">${ppl.map(c=>{const ss=c.statusScene&&sc(c.statusScene);const gone=c.status&&(!ss||(x.ord!=null&&S.scenes.indexOf(ss)<=x.ord));return `<span class="tl-p ${gone?'st-'+c.status:''}" ${gone?`title="${STATUS[c.status]}"`:''}>${esc(c.title)}</span>`;}).join('')}${ages}</div>`:''}${tlRowEdit(x)}</div></li>`;};
+ let list='';if(view==='time'){let cy=null;dated.forEach(x=>{const y=parseInt(x.o.ty);if(y!==cy){list+=`<li class="tl-year">${y}年</li>`;cy=y;}list+=row(x);});}
+ else list=items.filter(x=>x.k==='s').map(row).join('');
+ // 話の順と起きた順の図
+ const ds=dated.filter(x=>x.k==='s');let fig='';
+ if(ds.length>=2){const so=[...ds].sort((a,b)=>a.ord-b.ord);const H=28,W=560,pad=10,h=ds.length*H+pad*2;const yS=new Map(so.map((x,i)=>[x.id,pad+i*H+H/2])),yT=new Map(ds.map((x,i)=>[x.id,pad+i*H+H/2]));const tr=t=>{const a=[...t];return a.length>11?a.slice(0,10).join('')+'…':t;};
+  fig=`<div class="tl-fig"><div class="tl-fig-h"><span>話の順</span><span>起きた順</span></div><svg viewBox="0 0 ${W} ${h}" width="100%" style="max-width:${W}px" role="img" aria-label="話の順と起きた順">
+   ${so.map(x=>{const y1=yS.get(x.id),y2=yT.get(x.id);const cross=y1!==y2;return `<path d="M190 ${y1} C280 ${y1},280 ${y2},370 ${y2}" class="tl-link ${fl[x.id]?'fl':''} ${cross?'x':''}"/>`;}).join('')}
+   ${so.map(x=>`<text x="184" y="${yS.get(x.id)+4}" text-anchor="end" class="tl-ft">#${num(x.id)} ${esc(tr(x.title))}</text>`).join('')}
+   ${ds.map(x=>`<text x="376" y="${yT.get(x.id)+4}" class="tl-ft">${esc(tlText(x.o))} #${num(x.id)}</text>`).join('')}</svg>
+   <p class="muted" style="font-size:11px;margin:2px 0 0">線が交差しているところは、話の順と起きた順が入れ替わっています（回想・前日談など）。オレンジの線は「回想・過去」のシーンです。</p></div>`;}
+ return `<div class="sec"><h2>年表</h2><p class="lead">シーンやエピソードに作中の日付を入れると、起きた順に並びます。話の順とのずれ（回想・前日談）や、人物の年齢も分かります。年だけでも並びます。</p>
+  <div class="ctrls"><button class="chipbtn ${view==='time'?'on':''}" data-act="tlView" data-v="time">起きた順</button><button class="chipbtn ${view==='story'?'on':''}" data-act="tlView" data-v="story">話の順（日付を入れる）</button>
+   <span class="muted" style="font-size:12px">${dated.length}件に日付あり・${und.length}件はまだ</span></div>
+  ${birth.length?'':'<p class="muted" style="font-size:12px">人物カードの「生まれた年」を入れると、年表に年齢が出ます。</p>'}
+  ${fig}
+  <ol class="tl-list">${list||'<li class="muted" style="padding:10px">まだ日付の入ったシーンがありません。「話の順（日付を入れる）」で年や月を入れてください。</li>'}</ol>
+  ${view==='time'&&und.length?`<h3 class="tl-und-h">時期を決めていないもの</h3><ol class="tl-list">${und.map(row).join('')}</ol>`:''}
+  <details class="pf-help" style="margin-top:12px"><summary><span class="help-ico" aria-hidden="true">?</span>入力のしかた</summary><p>「年」は作中の年を数字で入れます（西暦でも、架空の暦の数字でも構いません）。月・日・時刻（例：21:30）は分かる所だけで大丈夫です。「呼び方」には「10年前」「嵐の三日後」など、画面に出したい言い方を書けます。原因になるシーンが、起きた順で後になっているときは、破綻チェックに出ます。</p></details></div>`;}
+/* ===== 対決（TRPG風：2d6で命中・回避判定、技ごとのダメージダイス） ===== */
+const G_TN=7,G_HP=20;
+const d6=()=>1+Math.floor(Math.random()*6);
+function parseDice(t){const m=String(t||'').trim().replace(/[ＤD]/g,'d').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/＋/g,'+').replace(/[－ー]/g,'-').match(/^(\d*)d(\d+)\s*([+-]\s*\d+)?$/i);
+ if(!m)return {n:1,s:6,b:0,txt:'1d6'};const n=Math.max(1,Math.min(10,parseInt(m[1]||'1'))),s=Math.max(2,Math.min(100,parseInt(m[2]))),b=m[3]?parseInt(m[3].replace(/\s/g,'')):0;return {n,s,b,txt:`${n}d${s}${b?(b>0?'+':'')+b:''}`};}
+function rollDice(D){const r=[];for(let i=0;i<D.n;i++)r.push(1+Math.floor(Math.random()*D.s));return r;}
+const abCrit=ab=>Math.max(7,Math.min(12,parseInt(ab.crit)||12)),abFum=ab=>Math.max(2,Math.min(7,parseInt(ab.fum)||2));
+const evOf=c=>Math.max(-3,Math.min(3,parseInt(c.evade)||0));
+/* 2d6の当たる確率（クリティカル・ファンブル・相手の回避込み） */
+function pHit(mod,tn,crit,fum,ev){let ok=0;for(let a=1;a<=6;a++)for(let b=1;b<=6;b++){const s=a+b;if(s<=fum)continue;if(s>=crit){ok+=36;continue;}const tot=s+mod;if(tot<tn)continue;
+  for(let x=1;x<=6;x++)for(let y=1;y<=6;y++){const e=x+y;const evd=e===12||(e!==2&&e+ev>=tot);if(!evd)ok++;}}return Math.round(ok/1296*100);}
+function gMods(A,ab,B,env){const at=tagList(ab.attr).map(norm);const bw=tagList(B.weakAttr).map(norm),br=tagList(B.resistAttr).map(norm);const en=env.map(norm);
+ let hit=0,dmg=0;const why=[];const weak=at.some(x=>bw.includes(x)),res=at.some(x=>br.includes(x));
+ if(weak){hit+=2;dmg+=3;why.push('弱点 命中+2・ダメージ+3');}if(res){hit-=2;dmg-=2;why.push('効きにくい 命中-2・ダメージ-2');}
+ let af=0;at.forEach(x=>(B.abilities||[]).forEach(b=>tagList(b.attr).forEach(y=>{af+=affV(x,y);})));af=Math.max(-2,Math.min(2,af));if(af)why.push(`相性 ${af>0?'+':''}${af}`);hit+=af;
+ let ev=0;at.forEach(x=>env.forEach(e=>{ev+=affV(x,e);}));ev=Math.max(-2,Math.min(2,ev));if(ev)why.push(`場所（${env.join('・')}） ${ev>0?'+':''}${ev}`);hit+=ev;
+ if(tagList(A.envGood).some(e=>en.includes(norm(e)))){hit+=1;why.push('得意な場所 +1');}if(tagList(A.envBad).some(e=>en.includes(norm(e)))){hit-=1;why.push('苦手な場所 -1');}
+ return {hit,dmg,why,tn:G_TN,pw:Number(ab.power)||3,D:parseDice(ab.dice),crit:abCrit(ab),fum:abFum(ab)};}
+function gFighters(s){const foe=s.gbattle&&s.gbattle.foe;const ids=[];const add=id=>{if(id&&id!==foe&&!ids.includes(id))ids.push(id);};const h=gHero();if(h)add(h.id);
+ (s.cards||[]).forEach(id=>{const c=card(id);if(c&&c.type==='person')add(id);});tagList(s.chars).forEach(n=>{const c=S.cards.find(c=>c.type==='person'&&norm(c.title)===norm(n));if(c)add(c.id);});
+ return ids.map(card).filter(c=>c&&c.status!=='dead'&&c.status!=='gone').slice(0,3);}
+function gAbils(c){const a=(c.abilities||[]).filter(x=>x.name||x.attr);return a.length?a:[{name:'体当たり',attr:'',power:2}];}
+function gEnvs(s){const p=card(gPlace(s));return p?tagList(p.env):[];}
+/* ===== カード対決：お互いに1枚ずつ同時に出して、威力をぶつける ===== */
+const C_HP=30;
+const cntOf=(v,def)=>v===''||v==null?def:Math.max(0,Math.min(9,parseInt(v)||0));
+const defOf=c=>Math.max(-3,Math.min(3,parseInt(c.defense)||0));
+/* 攻撃スキルは「弱・普通・強」の3つ。足りない分は、持っている技から自動で作る */
+const TIERS=[['weak','弱',{dice:'1d6',bonus:0,count:3,crit:12,fum:2}],['normal','普通',{dice:'2d6',bonus:1,count:2,crit:12,fum:2}],['strong','強',{dice:'3d6',bonus:2,count:1,crit:12,fum:3}]];
+const TIER=Object.fromEntries(TIERS.map(([k,l,d])=>[k,{k,l,...d}]));
+function gAttacks(c){const abs=(c.abilities||[]).map((ab,i)=>({ab,i})).filter(o=>o.ab.name||o.ab.attr);const slot={};
+ abs.forEach(o=>{if(TIER[o.ab.tier]&&!slot[o.ab.tier])slot[o.ab.tier]=o;});
+ const rest=abs.filter(o=>!Object.values(slot).includes(o)).sort((x,y)=>(Number(x.ab.power)||3)-(Number(y.ab.power)||3));
+ const free=['weak','normal','strong'].filter(t=>!slot[t]);const want=rest.length>=3?['weak','normal','strong']:rest.length===2?['normal','strong']:['normal'];
+ const tgt=want.filter(t=>free.includes(t)).concat(free.filter(t=>!want.includes(t)));rest.slice(0,tgt.length).forEach((o,j)=>{slot[tgt[j]]=o;});
+ const base=(slot.normal||slot.strong||slot.weak||{ab:{name:'体当たり',attr:'',power:3}}).ab;
+ return ['weak','normal','strong'].map(t=>{const o=slot[t];const T=TIER[t];if(o)return {k:'atk',tier:t,ab:o.ab,i:o.i,name:o.ab.name||o.ab.attr||'攻撃',n:Math.max(1,cntOf(o.ab.count,T.count))};
+  const nm=(base.name||'攻撃')+(t==='weak'?'（弱）':t==='strong'?'（強）':'');return {k:'atk',tier:t,gen:true,ab:{name:nm,attr:base.attr,power:base.power},name:nm,n:T.count};});}
+function gDeck(c){return [...gAttacks(c),{k:'eva',name:'回避',n:Infinity},{k:'def',name:'防御',n:Infinity}];}
+/* 一方的にならないよう、修正は小さくまとめる（強さ★は±2まで、弱点・相性・場所は合わせて±3まで） */
+const cMod=M=>Math.max(-2,Math.min(2,M.pw-3))+Math.max(-3,Math.min(3,Math.round((M.hit+M.dmg)*0.6)));
+const cW=(cd,h)=>cd.k==='atk'?h:(h>0?1.5:0);
+const tierD=cd=>{const T=TIER[cd.tier]||TIER.normal;const ab=cd.ab||{};return {D:String(ab.dice||'').trim()?parseDice(ab.dice):parseDice(T.dice),bonus:T.bonus,crit:parseInt(ab.crit)||T.crit,fum:parseInt(ab.fum)||T.fum};};
+const CK_ICON={atk:'⚔',eva:'🌀',def:'🛡'};
+function cRoll(A,cd,B,env){if(cd.k==='atk'){const M=gMods(A,cd.ab,B,env);const t=tierD(cd);M.D=t.D;M.crit=t.crit;M.fum=t.fum;const j=[d6(),d6()],js=j[0]+j[1];const crit=js>=t.crit,fum=!crit&&js<=t.fum;const dd=rollDice(t.D);
+  const add=t.D.b+t.bonus+cMod(M);let base=Math.max(1,dd.reduce((a,b)=>a+b,0)+add);const v=fum?0:crit?Math.ceil(base*1.5):base;return {k:'atk',j,dd,D:t.D,base,add,v,crit,fum,M,who:A.title,name:cd.name,tier:cd.tier};}
+ if(cd.k==='eva'){const j=[d6(),d6()],js=j[0]+j[1];return {k:'eva',j,v:js+evOf(A),six:js===12,one:js===2,who:A.title,name:'回避',mod:evOf(A)};}
+ const x=d6();return {k:'def',dd:[x],v:x+3+defOf(A),who:A.title,name:'防御',mod:3+defOf(A)};}
+function cHit(at,df){if(at.v<=0)return 0;if(df.k==='def')return Math.max(0,at.v-df.v);if(at.crit)return at.v;if(df.six)return 0;if(df.one)return at.v;return df.v>=at.v?0:at.v;}
+/* 戻り値：[Aが受けるダメージ, Bが受けるダメージ] */
+function cClash(ra,rb){if(ra.k==='atk'&&rb.k==='atk'){const d=ra.v-rb.v;return d>0?[0,d]:d<0?[-d,0]:[0,0];}if(ra.k==='atk')return [0,cHit(ra,rb)];if(rb.k==='atk')return [cHit(rb,ra),0];return [0,0];}
+function cRange(A,cd,B,env){if(cd.k==='atk'){const M=gMods(A,cd.ab,B,env);const t=tierD(cd);const b=t.D.b+t.bonus+cMod(M);return [Math.max(1,t.D.n+b),t.D.n*t.D.s+b];}if(cd.k==='eva')return [2+evOf(A),12+evOf(A)];return [4+defOf(A),9+defOf(A)];}
+/* このカードを出したとき、この1回のぶつかり合いの結果（相手は残っているカードから出す） */
+function cOdds(A,cd,B,deckB,handB,env,N){N=N||1200;const W=deckB.map((c,i)=>cW(c,handB[i]));const tot=W.reduce((a,b)=>a+b,0);if(!tot)return {win:0,safe:100,lose:0};let w=0,l=0;
+ for(let n=0;n<N;n++){let r=Math.random()*tot,k=0;while(r>=W[k]){r-=W[k];k++;}const ra=cRoll(A,cd,B,env),rb=cRoll(B,deckB[k],A,env);const [ta,tb]=cClash(ra,rb);if(tb>ta)w++;else if(ta>tb)l++;}
+ return {win:Math.round(w/N*100),lose:Math.round(l/N*100),safe:Math.round((N-l)/N*100)};}
+function gBtStart(s){const foe=card(s.gbattle.foe);const team=gFighters(s);if(!foe||!team.length){GS.btWon.push(s.id);return false;}
+ const fmax=C_HP+25*(team.length-1);const fdeck=gDeck(foe);
+ GS.bt={sid:s.id,fid:foe.id,team:team.map(c=>{const dk=gDeck(c);return {id:c.id,hp:C_HP,deck:dk,hand:dk.map(x=>x.n)};}),fhp:fmax,fmax,fdeck,fhand:fdeck.map(x=>x.n),turn:0,log:[`⚔ ${foe.title}が立ちはだかった！`],over:null,last:null,rolling:false,busy:false,odds:null};sfx('start');return true;}
+function gBtAlive(){return GS.bt.team.filter(t=>t.hp>0);}
+function gBtCur(){const B=GS.bt;for(let k=0;k<B.team.length;k++){const t=B.team[(B.turn+k)%B.team.length];if(t.hp>0){B.turn=(B.turn+k)%B.team.length;return t;}}return null;}
+const atkLeft=(deck,h)=>deck.reduce((a,c,i)=>a+(c.k==='atk'?h[i]:0),0);
+function gFoePick(B,me,env){const F=card(B.fid),P=card(me.id);const opts=B.fdeck.map((cd,i)=>({cd,i})).filter(o=>B.fhand[o.i]>0);
+ if(Math.random()<0.35){let tot=opts.reduce((a,o)=>a+cW(o.cd,B.fhand[o.i]),0),r=Math.random()*tot;for(const o of opts){r-=cW(o.cd,B.fhand[o.i]);if(r<0)return o.i;}return opts[0].i;}
+ let best=null;opts.forEach(o=>{const od=cOdds(F,o.cd,P,me.deck,me.hand,env,250);const sc0=od.win-od.lose;if(!best||sc0>best.s)best={i:o.i,s:sc0};});return best.i;}
+function gBtPlay(ci){const B=GS.bt;if(!B||B.over||B.busy)return;const s=sc(B.sid),env=gEnvs(s),F=card(B.fid);const me=gBtCur();if(!me||!(me.hand[ci]>0))return;const P=card(me.id);
+ const fi=gFoePick(B,me,env);me.hand[ci]--;B.fhand[fi]--;B.busy=true;B.rolling=true;B.show={pc:me.deck[ci],fc:B.fdeck[fi],pid:me.id};sfx('dice');
+ setTimeout(()=>{if(GS.bt!==B)return;const ra=cRoll(P,me.deck[ci],F,env),rb=cRoll(F,B.fdeck[fi],P,env);const [tp,tf]=cClash(ra,rb);me.hp=Math.max(0,me.hp-tp);B.fhp=Math.max(0,B.fhp-tf);
+  B.rolling=false;B.last={ra,rb,tp,tf,pid:me.id};
+  const t=tf>0&&tp===0?`${ra.crit?'✨':'💥'} ${F.title}に ${tf} ダメージ`:tp>0&&tf===0?`${rb.crit?'✨':'💥'} ${P.title}が ${tp} ダメージを受けた`:ra.k==='atk'&&rb.k==='atk'?'⚔ 相打ち！':(ra.k==='atk'||rb.k==='atk')?(ra.k==='eva'||rb.k==='eva'?'🌀 よけた！':'🛡 防ぎきった！'):'… にらみ合い';
+  const tn=r=>r.tier?`［${TIER[r.tier].l}］`:CK_ICON[r.k];B.log.push(`${tn(ra)}${P.title}「${ra.name}」${ra.v} 対 ${tn(rb)}${F.title}「${rb.name}」${rb.v} → ${t}`);
+  const fx=[ra,rb].some(r=>r.crit)?'crit':[ra,rb].some(r=>r.k==='atk'&&r.fum)?'fumble':(tf||tp)?'hit':((ra.k==='eva'&&rb.k==='atk')||(rb.k==='eva'&&ra.k==='atk'))?'evade':((ra.k==='def'&&rb.k==='atk')||(rb.k==='def'&&ra.k==='atk'))?'guard':'miss';gFx(fx);sfx(fx);
+  if(me.hp<=0)B.log.push(`${P.title}は倒れた…`);
+  // 手札を使い切ったら元に戻す
+  if(!atkLeft(me.deck,me.hand)){me.hand=me.deck.map(x=>x.n);B.log.push(`🔄 ${P.title}の攻撃カードが元に戻った`);}
+  if(!atkLeft(B.fdeck,B.fhand)){B.fhand=B.fdeck.map(x=>x.n);B.log.push(`🔄 ${F.title}の攻撃カードが元に戻った`);}
+  B.busy=false;
+  if(B.fhp<=0){B.over='win';B.log.push(`${F.title}をたおした！`);setTimeout(()=>{if(GS.bt===B){gFx('win');sfx('win');render();}},1300);}
+  else if(!gBtAlive().length){B.over='lose';B.log.push('全員倒れてしまった……');setTimeout(()=>{if(GS.bt===B){gFx('lose');sfx('lose');render();}},1300);}
+  else{const idx=B.team.indexOf(me);B.turn=(idx+1)%B.team.length;gBtCur();}
+  render();},900);}
+setInterval(()=>{const g=document.querySelector('.gdice.rolling');if(g)g.innerHTML=dieSvg(d6())+dieSvg(d6());},90);
+function dieSvg(n,cls,sides){if(sides&&sides!==6)return `<span class="die-n ${cls||''}">${n}<small>d${sides}</small></span>`;const P={1:[[2,2]],2:[[1,1],[3,3]],3:[[1,1],[2,2],[3,3]],4:[[1,1],[3,1],[1,3],[3,3]],5:[[1,1],[3,1],[2,2],[1,3],[3,3]],6:[[1,1],[3,1],[1,2],[3,2],[1,3],[3,3]]}[n]||[];
+ return `<svg class="die ${cls||''}" viewBox="0 0 40 40" aria-label="${n}"><rect x="2" y="2" width="36" height="36" rx="8"/>${P.map(([x,y])=>`<circle cx="${x*10}" cy="${y*10}" r="${n===1?5:3.6}" class="${n===1?'one':''}"/>`).join('')}</svg>`;}
+/* 演出は画面の書き直しに消されないよう、いちばん上の層に重ねて出す */
+function gFx(type){requestAnimationFrame(()=>requestAnimationFrame(()=>{const host=document.querySelector('.gbt')||document.getElementById('gstage');if(!host)return;const r=host.getBoundingClientRect();
+ const el=document.createElement('div');el.className='gfx gfx-'+type;el.setAttribute('aria-hidden','true');el.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+ el.innerHTML=(type==='crit'?'<i class="burst"></i>':'')+(FX_TXT[type]?`<span>${FX_TXT[type]}</span>`:'');document.body.appendChild(el);
+ if(type==='hit'||type==='crit'){const st=document.getElementById('gstage');if(st){st.classList.remove('shake','big');void st.offsetWidth;st.classList.add('shake');if(type==='crit')st.classList.add('big');setTimeout(()=>st.classList.remove('shake','big'),600);}}
+ setTimeout(()=>el.remove(),type==='lose'||type==='win'?1800:1400);}));}
+const FX_TXT={crit:'CRITICAL!',fumble:'FUMBLE…',evade:'回避！',hit:'',miss:'MISS',win:'VICTORY!',lose:'DEFEAT…',guard:'🛡'};
+function gBtHtml(){const B=GS.bt,s=sc(B.sid),F=card(B.fid),env=gEnvs(s);const me=B.over?null:gBtCur();const P=me&&card(me.id);
+ const hpc=(hp,max)=>hp/max>0.5?'hi':hp/max>0.25?'mid':'lo';
+ const handChips=(deck,hand)=>`<div class="chand">${deck.filter(cd=>cd.k==='atk').map((cd,i)=>`<span class="chand-c t-${cd.tier} ${hand[i]?'':'out'}"><i>${TIER[cd.tier].l}</i>${esc(cd.name)}<b>${hand[i]}</b></span>`).join('')}</div>`;
+ const mk=(c,hp,max,on,foe,deck,hand)=>`<div class="gbt-f ${on?'on':''} ${hp<=0?'ko':''} ${foe?'foe':''}"><div class="gbt-img"><img src="${cardImg(c)}" alt="">${on?'<span class="gbt-turn">▶ 番</span>':''}</div><b>${esc(c.title)}</b><div class="gbt-bar ${hpc(hp,max)}"><i style="width:${Math.max(0,hp/max*100)}%"></i></div><div class="gbt-hp"><b>${hp}</b> / ${max}</div>${handChips(deck,hand)}</div>`;
+ // ぶつかり合いの表示
+ const face=(r,cd,who,side)=>{if(B.rolling)return `<div class="cplay ${side} k-${cd.k} flip"><div class="cplay-h">${cd.tier?`<span class="ctier t-${cd.tier}">${TIER[cd.tier].l}</span>`:CK_ICON[cd.k]} ${esc(cd.name)}<small>${esc(who)}</small></div><div class="gdice rolling">${dieSvg(d6())}${dieSvg(d6())}</div><div class="cplay-v">？</div></div>`;
+  const dice=r.k==='def'?dieSvg(r.dd[0],'small'):r.k==='eva'?dieSvg(r.j[0])+dieSvg(r.j[1]):`${dieSvg(r.j[0],'small')}${dieSvg(r.j[1],'small')}<span class="gplus">＋</span>${r.dd.map(x=>dieSvg(x,'small',r.D.s)).join('')}`;
+  const sub=r.k==='atk'?(r.crit?'<em class="good">クリティカル！ 威力1.5倍・よけられない</em>':r.fum?'<em class="bad">ファンブル… 威力0</em>':`${r.D.txt}${r.add-r.D.b?(r.add-r.D.b>0?'＋':'－')+Math.abs(r.add-r.D.b):''}`):r.k==='eva'?(r.six?'<em class="good">6ゾロ！ 必ずよける</em>':r.one?'<em class="bad">1ゾロ… 必ず失敗</em>':`2d6${r.mod?(r.mod>0?'＋':'－')+Math.abs(r.mod):''}`):`1d6＋${r.mod}`;
+  return `<div class="cplay ${side} k-${r.k} ${r.crit?'crit':''} ${r.fum?'fum':''}"><div class="cplay-h">${r.tier?`<span class="ctier t-${r.tier}">${TIER[r.tier].l}</span>`:CK_ICON[r.k]} ${esc(r.name)}<small>${esc(who)}</small></div><div class="gdice">${dice}</div><div class="cplay-v">${r.v}</div><div class="cplay-s">${sub}</div></div>`;};
+ let clash='';const L=B.last;
+ if(B.rolling&&B.show)clash=`<div class="cclash">${face(null,B.show.pc,card(B.show.pid).title,'me')}<div class="cvs">VS</div>${face(null,B.show.fc,F.title,'foe')}</div>`;
+ else if(L){const res=L.tf>0&&!L.tp?`<b class="good">${esc(F.title)}に ${L.tf} ダメージ！</b>`:L.tp>0&&!L.tf?`<b class="bad">${esc(card(L.pid).title)}が ${L.tp} ダメージ</b>`:L.ra.k==='atk'&&L.rb.k==='atk'?'<b>相打ち！</b>':(L.ra.k==='atk'||L.rb.k==='atk')?`<b class="good">${L.ra.k==='atk'?esc(F.title):esc(card(L.pid).title)}が${(L.ra.k==='eva'||L.rb.k==='eva')?'よけた':'防ぎきった'}</b>`:'<b>にらみ合い</b>';
+  clash=`<div class="cclash">${face(L.ra,null,card(L.pid).title,'me')}<div class="cvs"><span>VS</span><div class="cres">${res}</div></div>${face(L.rb,null,F.title,'foe')}</div>`;}
+ else clash=`<div class="gstep-hint">お互いに<b>カードを1枚ずつ同時に</b>出して、威力をぶつけます。<br>⚔ 攻撃どうし＝威力の差がダメージ　🛡 防御＝攻撃の威力を減らす　🌀 回避＝攻撃の威力以上ならよける（足りなければ全部受ける）<br>攻撃は<b>弱・普通・強</b>の3種類で、使うと減ります（3種類とも使い切ると元に戻る）。🌀回避・🛡防御は<b>いつでも</b>出せます。相手の攻撃の残り枚数を見て、出す順番を考えましょう。</div>`;
+ // 自分の手札（このカードを出したときの勝てる確率つき）
+ const fdeckLeft=B.fdeck.map((cd,i)=>B.fhand[i]);
+ const hand=P&&!B.busy?`<div class="gacts">${me.deck.map((cd,i)=>{const left=me.hand[i];const rg=cRange(P,cd,F,env);const od=left?cOdds(P,cd,F,B.fdeck,fdeckLeft,env,900):null;
+   const M=cd.k==='atk'?gMods(P,cd.ab,F,env):null;const eff=M&&M.why.some(w=>w.startsWith('弱点'))?'<span class="gtag good">弱点！</span>':M&&M.why.some(w=>w.startsWith('効きにくい'))?'<span class="gtag bad">効きにくい</span>':'';
+   return `<button class="gact ccard k-${cd.k} ${cd.tier?'t-'+cd.tier:''}" data-act="gBtCard" data-i="${i}" ${left?'':'disabled'}><span class="gact-n">${cd.tier?`<span class="ctier t-${cd.tier}">${TIER[cd.tier].l}</span>`:CK_ICON[cd.k]} ${esc(cd.name)}${cd.k==='atk'&&cd.ab.attr?`<span class="gtag">${esc(cd.ab.attr)}</span>`:''}${eff}<span class="cleft">${cd.k==='atk'?`残り ${left}枚`:'いつでも'}</span></span>
+    <span class="gact-st">${od?`<span class="gst-b ${od.win>=55?'hi':od.win>=30?'mid':'lo'}" title="この1回で、相手より多くダメージを与える確率"><small>勝てる</small>${od.win}%</span><span class="gst-b ${od.safe>=70?'hi':od.safe>=45?'mid':'lo'}" title="ダメージを受けない確率（引き分けも含む）"><small>負けない</small>${od.safe}%</span>`:'<span class="gst-b lo"><small>もうない</small>—</span>'}<span class="gst-b dmg"><small>${cd.k==='atk'?'威力':cd.k==='eva'?'回避':'防御'}</small>${rg[0]}〜${rg[1]}</span></span></button>`;}).join('')}</div>`:'';
+ const end=B.over==='win'?`<button class="gchoice" data-act="gBtEnd">▶ 先へ進む</button>`:B.over==='lose'?`<button class="gchoice" data-act="gBtRetry">↻ もう一度挑む</button>${s.gbattle.lose&&sc(s.gbattle.lose)?`<button class="gchoice" data-act="gBtLose">▶ 負けたまま先へ（#${num(s.gbattle.lose)} ${esc(sc(s.gbattle.lose).title)}）</button>`:''}`:'';
+ const turn=B.over?`<div class="gbt-res ${B.over}">${B.over==='win'?'勝った！':'負けた……'}</div>`+end:B.busy?`<div class="gturn">カードをめくって、サイコロを振っています…</div>`:`<div class="gturn"><b>${esc(P.title)}</b>の番　出すカードを選んでください</div>`+hand;
+ return `<div class="gbt"><div class="gbt-top">🃏 カード対決${env.length?`<span class="gtag">📍 ${esc(env.join('・'))}</span>`:''}<button class="ibtn gsnd" data-act="gSnd" title="効果音のオン・オフ">${UI.gsnd===false?'🔇':'🔊'}</button></div>
+  <div class="gbt-row"><div class="gbt-side">${B.team.map(t=>mk(card(t.id),t.hp,C_HP,me&&me.id===t.id&&!B.busy,false,t.deck,t.hand)).join('')}</div><div class="gbt-vs">VS</div><div class="gbt-side">${mk(F,B.fhp,B.fmax,false,true,B.fdeck,B.fhand)}</div></div>
+  ${clash}
+  <div class="gbt-log">${B.log.slice(-2).map(l=>`<div>${esc(l)}</div>`).join('')}</div>
+  <div class="gchoices">${turn}</div></div>`;}
+/* 能力・相性タブ：カードどうしの勝てる確率の表 */
+const winCls=p=>p>=70?'hi':p>=40?'mid':'lo';
+function simBox(){if(!GAME_ON)return '';const ppl=S.cards.filter(c=>c.type==='person');if(ppl.length<2)return '';const places=S.cards.filter(c=>c.type==='place'&&tagList(c.env).length);
+ let A=UI.simA1&&card(UI.simA1)?UI.simA1:(UI.abBase&&card(UI.abBase)?UI.abBase:ppl[0].id);UI.simA1=A;
+ let F=UI.simF&&card(UI.simF)&&UI.simF!==A?UI.simF:(ppl.find(p=>p.id!==A&&(p.abilities||[]).length)||ppl.find(p=>p.id!==A)).id;UI.simF=F;
+ const env=UI.simP&&card(UI.simP)?tagList(card(UI.simP).env):[];const PA=card(A),PF=card(F);const da=gDeck(PA),df=gDeck(PF);
+ const cell=(a,cd,b,cdb)=>{const od=cOdds(a,cd,b,[cdb],[1],env,700);return `<td class="cm ${od.win>=55?'hi':od.win>=30?'mid':'lo'}"><b>${od.win}%</b><small>負けない${od.safe}%</small></td>`;};
+ const lab=cd=>`${cd.tier?`<span class="ctier t-${cd.tier}">${TIER[cd.tier].l}</span>`:CK_ICON[cd.k]} ${esc(cd.name)}<small>${cd.k==='atk'?'×'+cd.n:'いつでも'}</small>`;
+ const head=`<tr><th>${esc(PA.title)}が出す ＼ ${esc(PF.title)}が出す</th>${df.map(cd=>`<th>${lab(cd)}</th>`).join('')}<th>相手の手札全体に対して</th></tr>`;
+ const rows=da.map(cd=>{const all=cOdds(PA,cd,PF,df,df.map(x=>x.n),env,900);return `<tr><th>${lab(cd)}</th>${df.map(cdb=>cell(PA,cd,PF,cdb)).join('')}<td class="cm all ${all.win>=55?'hi':all.win>=30?'mid':'lo'}"><b>${all.win}%</b><small>負けない${all.safe}%</small></td></tr>`;}).join('');
+ const opt=(sel,ex)=>ppl.filter(p=>p.id!==ex).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.title)}</option>`).join('');
+ return `<details class="mpanel" ${UI.simOpen!==false?'open':''}><summary data-act="simT">🃏 カード対決の勝てる確率（ゲームと同じルール）</summary>
+  <div class="simsel"><label class="fld2"><span>こちら</span><select id="sim-a" data-act="simA1">${opt(A,F)}</select></label><label class="fld2"><span>相手</span><select id="sim-f" data-act="simF">${opt(F,A)}</select></label>
+   <label class="fld2"><span>戦う場所</span><select id="sim-p" data-act="simP"><option value="">場所なし</option>${places.map(p=>`<option value="${p.id}" ${UI.simP===p.id?'selected':''}>${esc(p.title)}（${esc(tagList(p.env).join('・'))}）</option>`).join('')}</select></label></div>
+  <div class="cmx-wrap"><table class="cmx">${head}${rows}</table></div>
+  <p class="muted" style="font-size:11px;margin:4px 0 0">お互いが1枚ずつ出したとき、この1回のぶつかり合いで「勝てる」（相手より多くダメージを与える）確率と、「負けない」（ダメージを受けない・引き分けを含む）確率です。サイコロで何百回もためした目安です。「相手の手札全体に対して」は、相手が最初の手札から1枚出すとした場合です。</p></details>`;}
+/* ===== 効果音（ファイル不要：その場で合成。自分の音ファイルにも差し替えられる） ===== */
+const SFX_LIST=[['dice','サイコロ'],['hit','命中'],['crit','クリティカル'],['fumble','ファンブル'],['miss','はずれ'],['evade','回避'],['guard','身を守る'],['start','対決のはじまり'],['win','勝利'],['lose','敗北']];
+let ACX=null;function sfxCtx(){try{if(!ACX){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ACX=new C();}if(ACX.state==='suspended')ACX.resume();return ACX;}catch(e){return null;}}
+function sTone(c,t,f,dur,type,vol,f2){const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(vol||0.2,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}
+function sNoise(c,t,dur,vol,fq,f2){const n=Math.max(1,Math.floor(c.sampleRate*dur));const buf=c.createBuffer(1,n,c.sampleRate);const a=buf.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=buf;const f=c.createBiquadFilter();f.type='bandpass';f.Q.value=1.2;f.frequency.setValueAtTime(fq||1200,t);if(f2)f.frequency.exponentialRampToValueAtTime(f2,t+dur);const g=c.createGain();g.gain.setValueAtTime(vol||0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);s.connect(f);f.connect(g);g.connect(c.destination);s.start(t);s.stop(t+dur+0.05);}
+const SFX={dice:(c,t)=>{for(let i=0;i<7;i++)sNoise(c,t+i*0.075+Math.random()*0.02,0.045,0.35,2200+Math.random()*2200);},
+ hit:(c,t)=>{sTone(c,t,200,0.2,'square',0.16,55);sNoise(c,t,0.14,0.35,700);},
+ crit:(c,t)=>{[523,659,784,1047,1319].forEach((f,i)=>sTone(c,t+i*0.06,f,0.22,'triangle',0.16));sNoise(c,t+0.3,0.5,0.45,3500,400);sTone(c,t+0.3,140,0.5,'sawtooth',0.14,35);},
+ fumble:(c,t)=>{sTone(c,t,420,0.55,'sawtooth',0.1,80);sTone(c,t+0.08,320,0.55,'sine',0.1,60);},
+ miss:(c,t)=>{sNoise(c,t,0.2,0.18,1800,400);},
+ evade:(c,t)=>{sNoise(c,t,0.32,0.3,500,5000);sTone(c,t+0.05,600,0.18,'sine',0.06,1400);},
+ guard:(c,t)=>{sTone(c,t,330,0.25,'triangle',0.12);sTone(c,t+0.05,495,0.3,'triangle',0.1);},
+ start:(c,t)=>{[196,196,262].forEach((f,i)=>sTone(c,t+i*0.16,f,0.2,'square',0.1));},
+ win:(c,t)=>{[523,659,784,1047,784,1047].forEach((f,i)=>sTone(c,t+i*0.11,f,0.24,'square',0.08));},
+ lose:(c,t)=>{[392,330,262,196].forEach((f,i)=>sTone(c,t+i*0.2,f,0.38,'triangle',0.13));}};
+try{if(localStorage.getItem(KEY+'-snd')==='0')UI.gsnd=false;}catch(e){}
+function sfx(k){if(UI.gsnd===false)return;const cu=((S.game||{}).sfx||{})[k];if(cu){try{const a=new Audio(cu);a.volume=0.85;a.play().catch(()=>{});}catch(e){}return;}const c=sfxCtx();if(!c||!SFX[k])return;try{SFX[k](c,c.currentTime+0.02);}catch(e){}}
+document.addEventListener('change',e=>{const id=e.target.id||'';if(!id.startsWith('gsfx-'))return;const k=id.slice(5),f=e.target.files&&e.target.files[0];if(!f)return;if(f.size>400*1024){toast('400KBより小さい音のファイルを選んでください（短い効果音がおすすめです）');render();return;}
+ const fr=new FileReader();fr.onload=()=>{const g=gm();g.sfx=g.sfx||{};g.sfx[k]=fr.result;save();snapshotNow();render();toast('効果音を変えました');sfx(k);};fr.readAsDataURL(f);});
+function gSfxPanel(){const cu=(gm().sfx||{});return `<details class="mpanel gsfx" ${UI.gSfxOpen?'open':''}><summary data-act="gSfxT">🔊 効果音</summary><p class="muted" style="font-size:12px;margin:0 0 6px">はじめから入っている効果音は、その場で作る音なので、ネットにつながっていなくても鳴ります。自分の音のファイル（mp3・wavなど、400KBまで）に差し替えることもできます。</p>
+  <div class="gsfx-list">${SFX_LIST.map(([k,l])=>`<div class="gsfx-row"><span>${l}</span><button class="btn sm" data-act="gSfxTest" data-k="${k}">▶ 鳴らす</button><label class="btn sm filebtn">${cu[k]?'別の音にする':'音のファイルを選ぶ'}<input type="file" id="gsfx-${k}" accept="audio/*"></label>${cu[k]?`<button class="btn sm" data-act="gSfxRm" data-k="${k}">元の音に戻す</button>`:'<span class="muted" style="font-size:11px">はじめからの音</span>'}</div>`).join('')}</div></details>`;}
+
+/* ===== ゲーム（地図を歩く＋ノベル型のシーン） ===== */
+let GS=null,gRAF=0;const gKeys={};
+const gm=()=>{if(!S.game||typeof S.game!=='object')S.game={};return S.game;};
+function gMaps(){syncAllFloors();return S.maps||[];}
+function gMapById(id){return (S.maps||[]).find(m=>m.id===id)||null;}
+function gView(m,fi){if(!m)return null;if(!m.floors)return m;const f=m.floors[fi||0]||m.floors[0];return Object.assign({},m,{items:f.items||[],cells:f.cells||{},walls:f.walls||[],notes:[]});}
+function gPlace(s){if(s.gplace==='-')return '';if(s.gplace&&card(s.gplace))return s.gplace;const c=(s.cards||[]).map(card).find(c=>c&&c.type==='place');return c?c.id:'';}
+function gLocs(pid){const res=[];if(!pid)return res;gMaps().forEach(m=>{const fl=m.floors||[{items:m.items}];fl.forEach((f,fi)=>(f.items||[]).forEach(it=>{if(it.place!==pid||it.kind==='line')return;const c=it.kind==='area'?itemCenter(it):[it.x,it.y];res.push({m,fi,it,x:c[0],y:c[1]});}));});return res;}
+function gLoc(pid){return gLocs(pid).sort((a,b)=>(a.m.kind==='indoor')-(b.m.kind==='indoor'))[0]||null;}
+const gAnyCause=()=>S.scenes.some(x=>(x.causes||[]).length);
+function gPrereq(s){if((s.causes||[]).length)return s.causes.filter(id=>sc(id));if(gAnyCause())return [];const i=S.scenes.indexOf(s);return i>0?[S.scenes[i-1].id]:[];}
+function gReady(s){return !!GS&&!GS.done.includes(s.id)&&!GS.skip.includes(s.id)&&gPrereq(s).every(id=>GS.done.includes(id));}
+function gAvail(s){return gReady(s)&&!gMissing(s).length;}
+/* 持ち物・伏線（フラグ） */
+const fsName=id=>(S.foreshadows.find(f=>f.id===id)||{}).name||'';
+function gGive(s){return (Array.isArray(s.ggive)?s.ggive:(s.cards||[]).filter(id=>{const c=card(id);return c&&c.type==='item';})).filter(id=>card(id));}
+function gNeed(s){const n=s.gneed||{};return {items:(n.items||[]).filter(id=>card(id)),fs:(n.fs||[]).filter(id=>S.foreshadows.some(f=>f.id===id))};}
+function gMissing(s){if(!GS)return [];const n=gNeed(s);return [...n.items.filter(id=>!GS.items.includes(id)).map(id=>card(id).title),...n.fs.filter(id=>!GS.flags.includes(id)).map(fsName)];}
+function gGain(s){gGive(s).forEach(id=>{if(!GS.items.includes(id))GS.items.push(id);});(s.plants||[]).forEach(id=>{if(!GS.flags.includes(id))GS.flags.push(id);});(s.pays||[]).forEach(id=>{if(!GS.solved.includes(id))GS.solved.push(id);if(!GS.flags.includes(id))GS.flags.push(id);});}
+function gLinesFull(s){const L=gLines(s).slice();if(!GS)return L;
+ gGive(s).filter(id=>!GS.items.includes(id)).forEach(id=>L.push({who:'',t:`📦「${card(id).title}」を手に入れた`,sys:1}));
+ (s.plants||[]).filter(id=>!GS.flags.includes(id)&&fsName(id)).forEach(id=>L.push({who:'',t:`📝 気になること：「${fsName(id)}」`,sys:1}));
+ (s.pays||[]).filter(id=>!GS.solved.includes(id)&&fsName(id)).forEach(id=>L.push({who:'',t:`✔ わかった：「${fsName(id)}」`,sys:1}));return L;}
+function gNexts(s){let n=S.scenes.filter(x=>(x.causes||[]).includes(s.id));if(!n.length&&!gAnyCause()){const i=S.scenes.indexOf(s);if(S.scenes[i+1])n=[S.scenes[i+1]];}return n;}
+function gStartMode(s){if(s.gstart==='map'||s.gstart==='auto')return s.gstart;return gLoc(gPlace(s))?'map':'auto';}
+function gLines(s){const raw=String(s.gtext||'').trim();
+ if(!raw){const L=[{who:'',t:`― ${s.title||'（無題のシーン）'} ―`}];if(s.role)L.push({who:'',t:s.role});return L;}
+ return raw.split(/\n+/).map(l=>l.trim()).filter(Boolean).map(l=>{const mm=l.match(/^([^：:「」\s]{1,16})[：:]\s*(.+)$/);if(mm){const nm=mm[1].trim();const c=S.cards.find(c=>c.type==='person'&&norm(c.title)===norm(nm));return {who:nm,cid:c?c.id:'',t:mm[2]};}return {who:'',t:l};});}
+function gHero(){const g=gm();if(g.hero&&card(g.hero))return card(g.hero);const s0=S.scenes[0];const nm=s0&&tagList(s0.chars)[0];return (nm&&S.cards.find(c=>c.type==='person'&&c.title===nm))||S.cards.find(c=>c.type==='person')||null;}
+function gStartMap(){const g=gm();const ms=gMaps();return ms.find(m=>m.id===g.startMap)||ms.find(m=>m.kind!=='indoor')||ms[0]||null;}
+function gStartPos(m){const g=gm();if(g.startPlace){const L=gLocs(g.startPlace).find(L=>L.m===m);if(L)return [L.x,L.y,L.fi];}const h=gHero();const hp=h&&h.addr&&h.addr.place;if(hp){const L=gLocs(hp).find(L=>L.m===m);if(L)return [L.x,L.y+gRad(m)*2.6,L.fi];}return [m.w/2,m.h/2,0];}
+function gRad(m){m=m||gMapById(GS&&GS.mapId);if(!m)return 10;return m.kind==='indoor'?Math.max(7,(m.cs||32)*0.38):Math.max(8,Math.min(m.w,m.h)/48);}
+function gIndoorFor(pid){const c=card(pid);if(!c)return null;return (S.maps||[]).find(m=>m.kind==='indoor'&&(m.entry?m.entry===pid:(c.title&&String(m.name||'').includes(c.title))))||null;}
+function gNew(from){const m=gStartMap();const p=m?gStartPos(m):[0,0,0];GS={mapId:m&&m.id,fi:p[2]||0,x:p[0],y:p[1],done:[],skip:[],items:[],flags:[],solved:[],btWon:[],bt:null,cur:null,li:0,choices:null,near:'',tx:null,ty:null,ret:null,ended:false,goal:null};gFixPos();
+ if(from){const s=sc(from);if(s){GS.done=gAncestors(s);S.scenes.filter(x=>GS.done.includes(x.id)).forEach(gGain);gNeed(s).items.forEach(id=>{if(!GS.items.includes(id))GS.items.push(id);});gNeed(s).fs.forEach(id=>{if(!GS.flags.includes(id))GS.flags.push(id);});gPlay(s.id);return;}}
+ /* 最初のシーンは、地図の場所に置いてあっても、すぐに始める（主人公はその場所から歩き始める） */
+ const first=S.scenes.find(gAvail);if(first){const L=gLoc(gPlace(first));if(L&&!gm().startPlace){GS.mapId=L.m.id;GS.fi=L.fi||0;GS.x=L.x;GS.y=L.y+gRad(L.m)*2.6;}gFixPos();gPlay(first.id);return;}
+ gAuto();}
+function gNearWalk(m,x,y){if(gWalk(m,x,y,x,y))return [x,y];for(let r=4;r<=Math.max(m.w,m.h)/2;r+=4){for(let k=0;k<24;k++){const a=k/24*Math.PI*2,nx=x+Math.cos(a)*r,ny=y+Math.sin(a)*r;if(gWalk(m,nx,ny,nx,ny))return [nx,ny];}}return [x,y];}
+function gFixPos(){const m=gMapById(GS.mapId);if(!m)return;GS.wk=null;const p=gNearWalk(m,GS.x,GS.y);GS.x=p[0];GS.y=p[1];}
+function gAncestors(s){const out=new Set();const walk=x=>gPrereq(x).forEach(id=>{if(!out.has(id)){out.add(id);const y=sc(id);if(y)walk(y);}});walk(s);return [...out];}
+function gAuto(){const s=S.scenes.find(x=>gAvail(x)&&gStartMode(x)==='auto');if(s){gPlay(s.id);return true;}if(!S.scenes.some(gAvail)){GS.ended=true;GS.stuck=S.scenes.some(gReady);}return false;}
+function gPlay(id){const s=sc(id);if(!s)return;GS.endLine=null;GS.cur=id;GS.li=0;GS.choices=null;GS.tx=GS.ty=null;if(GS.goal===id)GS.goal=null;Object.keys(gKeys).forEach(k=>gKeys[k]=false);}
+function gFinish(s){const LL=gLinesFull(s);GS.endLine=LL[LL.length-1];gGain(s);if(!GS.done.includes(s.id))GS.done.push(s.id);
+ if(S.story.endingSceneId===s.id){GS.ended=true;GS.cur=null;return;}
+ const nx=gNexts(s).filter(gReady);
+ if(nx.length){GS.choices=nx.map(x=>({id:x.id,t:(s.gchoice&&s.gchoice[x.id])||x.title||'次へ',map:gStartMode(x)==='map',lock:gMissing(x)}));return;}
+ GS.cur=null;gAuto();}
+function gBack(){GS.choices=null;GS.cur=null;gAuto();}
+function gAdvance(){const s=sc(GS.cur);if(!s||GS.choices||GS.bt)return;const L=gLinesFull(s);
+ if(s.gbattle&&s.gbattle.foe&&card(s.gbattle.foe)&&!GS.btWon.includes(s.id)&&GS.li===gLines(s).length-1){if(gBtStart(s))return;}if(GS.li<L.length-1){GS.li++;return;}gFinish(s);}
+function gChoose(id){const x=sc(id);if(!x||!GS.choices)return;if(gMissing(x).length)return;const others=GS.choices.map(c=>c.id).filter(i=>i!==id);const from=sc(GS.cur);if(GS.choices.length>1&&from&&from.gbranch)GS.skip.push(...others);GS.choices=null;
+ if(gStartMode(x)==='map'){GS.cur=null;GS.goal=id;const L=gLoc(gPlace(x));GS.msg=L?`「${esc(placeName(gPlace(x)))}」へ向かおう`:'';}else gPlay(id);}
+const placeName=pid=>{const c=card(pid);return c?c.title:'';};
+/* 歩ける場所 */
+function gWalkData(m,fi){const key=m.id+':'+fi+':'+(m.items||[]).length;if(GS.wk&&GS.wk.key===key)return GS.wk;const v=gView(m,fi);
+ GS.wk={key,v,roads:v.items.filter(it=>it.kind==='line'&&['road','bridge'].includes(it.style||'road')).map(it=>({p:offsetPts(it.pts,lineOffset(it,m)),w:(it.width||LW0[it.style||'road'])/2+3})),areas:v.items.filter(it=>it.kind==='area').sort((a,b)=>areaSize(a)-areaSize(b))};return GS.wk;}
+function segX(a,b,c,d,e,f,g,h){const d1=(g-e)*(b-f)-(h-f)*(a-e),d2=(g-e)*(d-f)-(h-f)*(c-e),d3=(c-a)*(f-b)-(d-b)*(e-a),d4=(c-a)*(h-b)-(d-b)*(g-a);return d1*d2<0&&d3*d4<0;}
+function gWalk(m,x0,y0,x1,y1){if(x1<2||y1<2||x1>m.w-2||y1>m.h-2)return false;const W=gWalkData(m,GS.fi),v=W.v;
+ if(m.kind==='indoor'){const s=v.cs||32;const cells=v.cells||{};if(Object.keys(cells).length){const c=cells[Math.floor(x1/s)+','+Math.floor(y1/s)];if(!c||['wall','pillar','diag','water','table'].includes(c.t))return false;}
+  for(const w of (v.walls||[]))if(segX(x0,y0,x1,y1,w[0]*s,w[1]*s,w[2]*s,w[3]*s))return false;return true;}
+ if(W.roads.some(r=>distPL(x1,y1,r.p)<=r.w))return true;
+ const a=W.areas.find(it=>pointInArea(it,x1,y1));if(a)return a.terrain!=='water';return (m.bg||'sea')!=='sea';}
+/* 動かす */
+function gKick(){if(!gRAF)gRAF=requestAnimationFrame(gLoop);}
+function gLoop(){gRAF=0;if(!GS||UI.tab!=='game'||(UI.gmode||'play')!=='play'||GS.cur||GS.ended||GS.choices)return;const m=gMapById(GS.mapId);if(!m)return;
+ const sp=m.kind==='indoor'?Math.max(1.6,(m.cs||32)/11):Math.max(1.8,Math.min(m.w,m.h)/230);let dx=0,dy=0;
+ if(gKeys.l)dx--;if(gKeys.r)dx++;if(gKeys.u)dy--;if(gKeys.d)dy++;
+ if(dx||dy){GS.tx=GS.ty=null;const l=Math.hypot(dx,dy);dx=dx/l*sp;dy=dy/l*sp;}
+ else if(GS.tx!=null){const ex=GS.tx-GS.x,ey=GS.ty-GS.y,l=Math.hypot(ex,ey);if(l<=sp){dx=ex;dy=ey;GS.tx=GS.ty=null;}else{dx=ex/l*sp;dy=ey/l*sp;}}
+ if(!dx&&!dy)return;
+ let nx=GS.x+dx,ny=GS.y+dy;if(!gWalk(m,GS.x,GS.y,nx,ny)&&gWalk(m,GS.x,GS.y,GS.x,GS.y)){if(dx&&gWalk(m,GS.x,GS.y,GS.x+dx,GS.y))ny=GS.y;else if(dy&&gWalk(m,GS.x,GS.y,GS.x,GS.y+dy))nx=GS.x;else{GS.tx=GS.ty=null;gBump();return;}}
+ GS.x=nx;GS.y=ny;gDrawHero(m);if(gCheck(m))return;gRAF=requestAnimationFrame(gLoop);}
+function gBump(){const h=document.getElementById('g-hero');if(h){h.classList.remove('bump');void h.getBoundingClientRect();h.classList.add('bump');}}
+function gCam(m){const big=m.kind!=='indoor'&&(m.w>1300||m.h>900);if(!big)return [0,0,m.w,m.h];const VW=Math.min(m.w,1000),VH=Math.min(m.h,VW*0.62);return [Math.max(0,Math.min(m.w-VW,GS.x-VW/2)),Math.max(0,Math.min(m.h-VH,GS.y-VH/2)),VW,VH];}
+function gDrawHero(m){const h=document.getElementById('g-hero');if(h)h.setAttribute('transform',`translate(${GS.x.toFixed(1)},${GS.y.toFixed(1)})`);const sv=document.getElementById('gsvg');if(!sv)return;const c=gCam(m);sv.setAttribute('viewBox',c.join(' '));
+ /* 画面の外にある「!」の方向を、画面の端に矢印で出す */
+ const ar=document.getElementById('g-arrows');if(!ar)return;const R=gRad(m),pad=R*1.6;let out='';sv.querySelectorAll('.gmark').forEach(g=>{const x=+g.dataset.x,y=+g.dataset.y;if(x>=c[0]&&x<=c[0]+c[2]&&y>=c[1]&&y<=c[1]+c[3])return;
+  const cx=c[0]+c[2]/2,cy=c[1]+c[3]/2,dx=x-cx,dy=y-cy;const k=Math.min((c[2]/2-pad)/Math.abs(dx||1e-6),(c[3]/2-pad)/Math.abs(dy||1e-6));const ax=cx+dx*k,ay=cy+dy*k,ang=Math.atan2(dy,dx)*180/Math.PI;
+  out+=`<g class="garrow ${g.classList.contains('goal')?'goal':''}" transform="translate(${ax.toFixed(1)},${ay.toFixed(1)}) rotate(${ang.toFixed(1)})"><path d="M${R} 0 L${-R*0.6} ${-R*0.75} L${-R*0.25} 0 L${-R*0.6} ${R*0.75}Z"/></g>`;});ar.innerHTML=out;}
+function gHit(L,R){if(L.it.kind==='area'&&pointInArea(L.it,GS.x,GS.y))return true;return Math.hypot(L.x-GS.x,L.y-GS.y)<=R*2.3;}
+function gCheck(m){const R=gRad(m);
+ let lockHit='';for(const s of S.scenes){if(!gReady(s)||gStartMode(s)!=='map')continue;const L=gLocs(gPlace(s)).find(L=>L.m.id===GS.mapId&&(L.fi||0)===(GS.fi||0));if(L&&gHit(L,R)){const mi=gMissing(s);if(mi.length){lockHit=s.id;if(GS.lockAt!==s.id){GS.lockAt=s.id;GS.msg=`🔒 ${esc(mi.map(x=>'「'+x+'」').join(''))}が必要みたいだ`;render();}continue;}gPlay(s.id);render();return true;}}
+ if(!lockHit)GS.lockAt='';
+ const e=gEntrance(m);const key=(e?e.pid:'')+(gOnStairs(m)?'|stairs':'');if(key!==GS.near){GS.near=key;render();}return false;}
+function gEntrance(m){if(m.kind==='indoor')return null;const R=gRad(m);const v=gView(m,GS.fi);for(const it of v.items){if(!it.place||it.kind==='line')continue;const im=gIndoorFor(it.place);if(!im)continue;const c=it.kind==='area'?itemCenter(it):[it.x,it.y];if((it.kind==='area'&&pointInArea(it,GS.x,GS.y))||Math.hypot(c[0]-GS.x,c[1]-GS.y)<=R*3)return {pid:it.place,m:im};}return null;}
+function gEnter(){const m=gMapById(GS.mapId);const e=m&&gEntrance(m);if(!e)return;GS.ret={mapId:GS.mapId,fi:GS.fi,x:GS.x,y:GS.y};const im=e.m;const v=gView(im,0);const s=im.cs||32;
+ const door=Object.entries(v.cells||{}).find(([k,c])=>c.t==='door');let p=[im.w/2,im.h/2];if(door){const [cx,cy]=door[0].split(',').map(Number);p=[cx*s+s/2,cy*s+s/2];}
+ else{const fl=Object.entries(v.cells||{}).find(([k,c])=>c.t==='floor');if(fl){const [cx,cy]=fl[0].split(',').map(Number);p=[cx*s+s/2,cy*s+s/2];}}
+ GS.mapId=im.id;GS.fi=0;GS.x=p[0];GS.y=p[1];GS.near='';gFixPos();GS.msg=`「${esc(im.name||'建物')}」に入った`;}
+function gExit(){const cur=gMapById(GS.mapId);let door=null;if(!GS.ret&&cur){for(const wm of (S.maps||[])){if(wm.kind==='indoor')continue;const it=gView(wm,0).items.find(it=>it.place&&it.kind!=='line'&&gIndoorFor(it.place)===cur);if(it){const c=it.kind==='area'?itemCenter(it):[it.x,it.y];door={mapId:wm.id,fi:0,x:c[0],y:c[1]+gRad(wm)*3};break;}}}
+ if(!GS.ret&&door)GS.ret=door;
+ if(GS.ret){Object.assign(GS,{mapId:GS.ret.mapId,fi:GS.ret.fi,x:GS.ret.x,y:GS.ret.y});GS.ret=null;}else{const m=gStartMap();const p=gStartPos(m);Object.assign(GS,{mapId:m.id,fi:p[2]||0,x:p[0],y:p[1]});}gFixPos();GS.near='';GS.msg='外に出た';}
+function gOnStairs(m){if(m.kind!=='indoor'||!m.floors||m.floors.length<2)return false;const v=gView(m,GS.fi),s=v.cs||32;const c=(v.cells||{})[Math.floor(GS.x/s)+','+Math.floor(GS.y/s)];return !!c&&c.t==='stairs';}
+/* 画面 */
+function gMapSvg(m){const v=gView(m,GS.fi);const indoor=m.kind==='indoor',s=m.cs||32;const R=gRad(m);
+ const body=withUI({mapId:m.id,msel:null,mmode:'make'},()=>{const sorted=mapItemsSorted(v);const lay=mapLayer;return [0,1].map(L=>sorted.filter(it=>lay(it)===L).map(mapItemSvg).join('')).join('')+roadLayers(v)+[2,3,4].map(L=>sorted.filter(it=>lay(it)===L).map(mapItemSvg).join('')).join('');});
+ // 印：出来事のある場所（建物の中なら入口にも）
+ const marks=[];S.scenes.forEach(sx=>{if(!gReady(sx)||gStartMode(sx)!=='map')return;const lk=gMissing(sx).length>0;gLocs(gPlace(sx)).forEach(L=>{if(L.m.id===m.id&&(L.fi||0)===(GS.fi||0))marks.push({x:L.x,y:L.y,goal:GS.goal===sx.id,lock:lk,sym:lk?'🔒':''});
+  else if(L.m.id===m.id&&indoor){const st=Object.entries(v.cells||{}).find(([k,c])=>c.t==='stairs');if(st){const [cx,cy]=st[0].split(',').map(Number);marks.push({x:cx*s+s/2,y:cy*s+s/2,goal:GS.goal===sx.id,sym:'⇅'});}}else if(L.m.kind==='indoor'&&!indoor){v.items.forEach(it=>{if(it.place&&gIndoorFor(it.place)===L.m){const c=it.kind==='area'?itemCenter(it):[it.x,it.y];marks.push({x:c[0],y:c[1],goal:GS.goal===sx.id,inner:true});}});}});});
+ const mk=marks.map(p=>`<g class="gmark ${p.goal?'goal':''} ${p.lock?'lock':''}" data-x="${p.x}" data-y="${p.y}" transform="translate(${p.x},${p.y})"><circle r="${R*1.5}" class="gm-ring"/><g transform="translate(0,${-R*2.1})"><circle r="${R*0.85}" class="gm-b"/><text y="${R*0.36}" text-anchor="middle" style="font-size:${R*1.2}px">${p.sym||(p.inner?'⌂':'!')}</text></g></g>`).join('');
+ const h=gHero();const hi=h?cardImg(h):'';
+ const hero=`<g id="g-hero" transform="translate(${GS.x},${GS.y})"><ellipse class="gh-sh" cx="0" cy="${R*0.9}" rx="${R*0.9}" ry="${R*0.35}"/><circle r="${R}" class="gh-b"/>${hi?`<image href="${hi}" x="${-R*0.86}" y="${-R*0.86}" width="${R*1.72}" height="${R*1.72}" preserveAspectRatio="xMidYMid slice" clip-path="url(#gclip)"/>`:''}</g>`;
+ return `<svg id="gsvg" class="gsvg" viewBox="${gCam(m).join(' ')}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(m.name)}"><defs><clipPath id="gclip" clipPathUnits="userSpaceOnUse"><circle r="${R*0.86}"/></clipPath></defs>
+  <rect class="m-bg bg-${indoor?'plain':(m.bg||'sea')}" x="0" y="0" width="${m.w}" height="${m.h}"/>${m.img?`<image href="${m.img}" x="0" y="0" width="${m.w}" height="${m.h}" preserveAspectRatio="xMidYMid meet" opacity="${m.imgOp??0.6}"/>`:''}
+  ${indoor?`<g>${cellsSvg(v)}</g><g>${wallsSvg(v)}</g>`:''}${body}${mk}${hero}<g id="g-arrows"></g></svg>`;}
+function gSceneHtml(){const s=sc(GS.cur);if(!s)return '';const L=gLinesFull(s);const ln=(GS.choices&&GS.endLine)||L[Math.min(GS.li,L.length-1)];const pc=card(gPlace(s));
+ const bg=pc&&pc.img?`background-image:url('${pc.img}')`:'';const sp=ln.cid&&card(ln.cid);
+ if(GS.bt)return `<div class="gscene gch" role="dialog" aria-label="対決"><div class="gbg t-${pc?'place':'episode'}" style="${bg}"></div>${gBtHtml()}</div>`;
+ return `<div class="gscene ${GS.choices?'gch':''}" ${GS.choices?'':'data-act="gNext"'} role="dialog" aria-label="${esc(s.title)}">
+  <div class="gbg t-${pc?'place':'episode'}" style="${bg}"></div>
+  <div class="gtop"><span class="gst">#${num(s.id)} ${esc(s.title)}</span>${pc?`<span class="gpl">📍 ${esc(pc.title)}</span>`:''}</div>
+  ${sp?`<div class="gport${stCls(sp)}"><img src="${cardImg(sp)}" alt="${esc(sp.title)}">${stTxt(sp)}</div>`:''}
+  <div class="gbox">${ln.who?`<div class="gname">${esc(ln.who)}</div>`:''}<div class="gtext ${ln.sys?'gsys':''}">${wkLink(esc(ln.t))}</div>
+   ${GS.choices?`<div class="gchoices">${GS.choices.map(c=>c.lock&&c.lock.length?`<button class="gchoice locked" disabled title="${esc(c.lock.join('・'))}が必要">🔒 ${esc(c.t)}<small>（${esc(c.lock.map(x=>'「'+x+'」').join(''))}が必要）</small></button>`:`<button class="gchoice" data-act="gChoose" data-id="${c.id}">▶ ${esc(c.t)}${c.map?'<small>（地図で向かう）</small>':''}</button>`).join('')}${GS.choices.every(c=>c.lock&&c.lock.length)?`<button class="gchoice" data-act="gBack">▶ いったん地図に戻る</button>`:''}</div>`:`<div class="gmore">${GS.li<L.length-1?'▼ クリック・Enterで次へ':'▼ クリック・Enterでシーンを終える'}</div>`}</div></div>`;}
+function gBagHtml(){const it=GS.items.map(card).filter(Boolean);const fl=GS.flags.filter(id=>!GS.solved.includes(id)).map(fsName).filter(Boolean),so=GS.solved.map(fsName).filter(Boolean);
+ return `<div class="gbag" role="dialog" aria-label="持ち物"><div class="gbag-h"><b>🎒 持ち物</b><button class="btn sm" data-act="gBag">閉じる</button></div>
+  ${it.length?`<div class="gbag-items">${it.map(c=>`<div class="gbag-it"><img src="${cardImg(c)}" alt=""><div><b>${esc(c.title)}</b>${c.body?`<p>${wkLink(esc(wkPlain(c.body)))}</p>`:''}</div></div>`).join('')}</div>`:'<p class="muted">まだ何も持っていません。</p>'}
+  ${fl.length?`<div class="gbag-sec"><b>📝 気になること</b><ul>${fl.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}${so.length?`<div class="gbag-sec"><b>✔ わかったこと</b><ul>${so.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}</div>`;}
+function gamePlay(){
+ if(!S.scenes.length)return `<div class="empty-note">シーンがまだありません。ツリーやカード置き場でシーンを作ると、ここで遊べます。</div>`;
+ const h=gHero();
+ if(!GS)return `<div class="gtitle"><div class="gt-in">${h?`<img src="${cardImg(h)}" alt="">`:''}<h3>${esc(S.story.title)||'（無題の作品）'}</h3><p class="muted">主人公：${h?esc(h.title):'（なし）'}　／　シーン ${S.scenes.length}</p><button class="btn pri" data-act="gStart">▶ はじめから遊ぶ</button></div></div>`;
+ if(GS.ended)return `<div class="gtitle gend"><div class="gt-in"><h3>おわり</h3>${GS.stuck?'<p>必要な持ち物や手がかりがそろわず、物語はここで止まってしまった……。</p>':S.story.ending?`<p>${esc(S.story.ending)}</p>`:''}<p class="muted">見たシーン：${GS.done.length} ／ ${S.scenes.length}</p><button class="btn pri" data-act="gStart">▶ もう一度はじめから</button></div></div>`;
+ const m=gMapById(GS.mapId);const om=m&&!GS.cur;const ent=m&&gEntrance(m);
+ const hud=m?`<div class="ghud"><span class="gh-map">🗺 ${esc(m.name)}${m.floors&&m.floors.length>1?` ${esc((m.floors[GS.fi]||{}).name||'')}`:''}</span>${GS.msg?`<span class="gh-msg">${GS.msg}</span>`:''}
+   ${om?`<button class="btn sm" data-act="gBag">🎒 持ち物 ${GS.items.length}</button><button class="btn sm" data-act="gSnd" title="効果音のオン・オフ">${UI.gsnd===false?'🔇':'🔊'}</button>`:''}${om&&ent?`<button class="btn sm pri" data-act="gEnter">⌂ ${esc(placeName(ent.pid))}に入る（Enter）</button>`:''}${om&&m.kind==='indoor'?`<button class="btn sm" data-act="gExit">外に出る</button>`:''}
+   ${om&&gOnStairs(m)?m.floors.map((f,i)=>i===GS.fi?'':`<button class="btn sm" data-act="gFloor" data-i="${i}">階段で${esc(f.name)}へ</button>`).join(''):''}</div>`:'';
+ return `<div class="gstage-wrap ${UI.gfs?'gfs':''}"><div class="gstage ${GS.bt&&GS.cur?'battle':''}" id="gstage">${m?gMapSvg(m):'<div class="gnomap"></div>'}${GS.cur?'':hud}${!GS.cur&&UI.gBag?gBagHtml():''}${GS.cur?gSceneHtml():''}</div>
+  <div class="gfoot muted"><span class="gf-msg">${m?'矢印キー・WASDで歩く／行きたい所をクリック（タップ）でも歩けます。<b>!</b> の所に行くと出来事が起きます。⌂ は建物の中、⇅ はほかの階で出来事があります（階段に乗ると階を移れます）。':'地図がないので、シーンが順番に進みます。'}</span>
+   <span style="margin-left:auto;display:flex;gap:6px;align-items:center"><span>見たシーン ${GS.done.length}/${S.scenes.length}</span><button class="btn sm" data-act="gStart">はじめから</button>${UI.gfs?'<button class="btn sm" data-act="gFull">✕ 全画面を終わる</button>':''}</span></div></div>`;}
+function gameMake(){const g=gm();const h=gHero();const ms=S.maps||[];const sm=gStartMap();
+ const persons=S.cards.filter(c=>c.type==='person'),places=S.cards.filter(c=>c.type==='place');
+ const onSM=sm?places.filter(p=>gLocs(p.id).some(L=>L.m===sm)):[];
+ const opt=(v,l,cur)=>`<option value="${v}" ${cur===v?'selected':''}>${l}</option>`;
+ const set=`<div class="mpanel gset"><b>はじまりの設定</b>
+  <label class="fld2"><span>主人公</span><select id="g-hero-sel" data-f="game" data-k="hero">${opt('',`自動（${h?esc(h.title):'なし'}）`,g.hero||'')}${persons.map(c=>opt(c.id,esc(c.title),g.hero||'')).join('')}</select></label>
+  <label class="fld2"><span>はじまりの地図</span><select id="g-map-sel" data-f="game" data-k="startMap">${opt('',`自動（${sm?esc(sm.name):'地図なし'}）`,g.startMap||'')}${ms.map(m=>opt(m.id,esc(m.name)+(m.kind==='indoor'?'（建物）':''),g.startMap||'')).join('')}</select></label>
+  <label class="fld2"><span>はじまりの場所</span><select id="g-start-sel" data-f="game" data-k="startPlace">${opt('','自動（主人公の住所、なければ地図の真ん中）',g.startPlace||'')}${onSM.map(c=>opt(c.id,esc(c.title),g.startPlace||'')).join('')}</select></label>
+  ${ms.filter(m=>m.kind==='indoor').length?`<div class="gent"><span class="pf-l">建物の入口（世界の地図のどの場所から入るか）</span>${ms.filter(m=>m.kind==='indoor').map(im=>{const auto=places.find(p=>p.title&&String(im.name||'').includes(p.title));return `<label class="fld2"><span>${esc(im.name)}</span><select id="g-ent-${im.id}" data-f="mapentry" data-id="${im.id}">${opt('',`自動（${auto?esc(auto.title):'なし'}）`,im.entry||'')}${places.map(p=>opt(p.id,esc(p.title),im.entry||'')).join('')}</select></label>`;}).join('')}</div>`:''}
+ </div>`;
+ const rows=S.scenes.map(s=>{const pid=gPlace(s),mode=gStartMode(s),nx=gNexts(s),L=gLoc(pid);const auto=(s.cards||[]).map(card).find(c=>c&&c.type==='place');
+  return `<details class="gmk" ${UI.gOpen===s.id?'open':''}><summary data-act="gOpenRow" data-id="${s.id}"><span class="mono muted">#${num(s.id)}</span> <b>${esc(s.title)||'（無題）'}</b>${S.story.endingSceneId===s.id?' <span class="badge">結末</span>':''}<span class="gm-tag ${mode}">${mode==='map'?`📍 ${esc(placeName(pid))}に着いたら`:'すぐ始まる'}</span>${pid&&!L?'<span class="gm-warn">地図に置かれていない場所</span>':''}${(s.gtext||'').trim()?'':'<span class="muted" style="font-size:11px">文章は自動</span>'}${s.gbattle&&card(s.gbattle.foe)?`<span class="gm-tag lock">⚔ ${esc(card(s.gbattle.foe).title)}</span>`:''}${gGive(s).length?`<span class="gm-tag">📦 ${esc(gGive(s).map(id=>card(id).title).join('・'))}</span>`:''}${(()=>{const n=gNeed(s);const t=[...n.items.map(id=>card(id).title),...n.fs.map(fsName)];return t.length?`<span class="gm-tag lock">🔒 ${esc(t.join('・'))}</span>`:'';})()}</summary>
+   <div class="gmk-b">
+    <div class="row2b"><label class="fld2"><span>場所（背景・出来事が起きる所）</span><select id="g-pl-${s.id}" data-f="scg" data-id="${s.id}" data-k="gplace">${opt('',`自動（${auto?esc(auto.title):'使うカードに場所なし'}）`,s.gplace||'')}${opt('-','場所なし',s.gplace||'')}${places.map(p=>opt(p.id,esc(p.title),s.gplace||'')).join('')}</select></label>
+     <label class="fld2"><span>始まり方</span><select id="g-st-${s.id}" data-f="scg" data-id="${s.id}" data-k="gstart">${opt('','自動（場所が地図にあれば着いたら）',s.gstart||'')}${opt('map','場所に着いたら始まる',s.gstart||'')}${opt('auto','前のシーンのあと、すぐ始まる',s.gstart||'')}</select></label></div>
+    <label class="fld2"><span>ゲームの文章（1行が1画面。「名前：せりふ」と書くと、その人物のカードの絵が出ます）</span><textarea id="g-tx-${s.id}" data-f="scg" data-id="${s.id}" data-k="gtext" data-live="1" rows="6" placeholder="${esc(gLines(Object.assign({},s,{gtext:''})).map(l=>l.t).join('\n'))}&#10;ナギ：父さんの机、まだ鍵がかかってる……&#10;湊：開けてみようか？">${esc(s.gtext||'')}</textarea></label>
+    ${(()=>{const give=gGive(s),need=gNeed(s);const items=S.cards.filter(c=>c.type==='item');const chip=(t,act,extra)=>`<span class="cchip t-item"><span class="cchip-b">${esc(t)}</span><button class="ibtn" aria-label="外す" data-act="${act}" data-id="${s.id}" ${extra}>×</button></span>`;
+     return `<div class="gitems"><div class="fld2"><span>このシーンで手に入る持ち物${Array.isArray(s.ggive)?'':'（最初は「使うカード」の小物）'}</span><div class="chips">${give.map(id=>chip(card(id).title,'gGiveRm',`data-cid="${id}"`)).join(' ')||'<span class="muted" style="font-size:12px">なし</span>'}</div>
+       <div class="tfbar"><select id="g-give-${s.id}" data-act="gGiveAdd" data-id="${s.id}" aria-label="持ち物を足す"><option value="">＋小物カードを足す…</option>${items.filter(c=>!give.includes(c.id)).map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join('')}</select>${Array.isArray(s.ggive)?`<button class="btn sm" data-act="gGiveAuto" data-id="${s.id}">自動に戻す</button>`:''}</div></div>
+      <div class="fld2"><span>このシーンが始まる条件（持っていないと 🔒 になる）</span><div class="chips">${need.items.map(id=>chip('📦 '+card(id).title,'gNeedRm',`data-k="items" data-v="${id}"`)).join(' ')}${need.fs.map(id=>chip('📝 '+fsName(id),'gNeedRm',`data-k="fs" data-v="${id}"`)).join(' ')}${need.items.length||need.fs.length?'':'<span class="muted" style="font-size:12px">条件なし</span>'}</div>
+       <div class="tfbar"><select id="g-ni-${s.id}" data-act="gNeedAdd" data-id="${s.id}" data-k="items" aria-label="必要な持ち物"><option value="">＋必要な持ち物…</option>${items.filter(c=>!need.items.includes(c.id)).map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join('')}</select>
+        <select id="g-nf-${s.id}" data-act="gNeedAdd" data-id="${s.id}" data-k="fs" aria-label="必要な伏線"><option value="">＋張られている必要がある伏線…</option>${S.foreshadows.filter(f=>!need.fs.includes(f.id)).map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('')}</select></div></div></div>`;})()}
+    ${(()=>{const b=s.gbattle||{};const ppl=S.cards.filter(c=>c.type==='person');const fs=b.foe&&card(b.foe)?gFighters(s):[];
+     return `<div class="gitems"><label class="fld2"><span>⚔ このシーンの最後に対決する相手（能力・相性で戦う）</span><select id="g-foe-${s.id}" data-f="scgb" data-id="${s.id}" data-k="foe"><option value="">対決なし</option>${ppl.map(c=>`<option value="${c.id}" ${b.foe===c.id?'selected':''}>${esc(c.title)}${(c.abilities||[]).some(a=>a.name||a.attr)?'':'（能力なし）'}</option>`).join('')}</select>${fs.length?`<small class="muted">味方：${fs.map(c=>esc(c.title)).join('・')}（主人公と、このシーンの登場人物）</small>${(()=>{const F=card(b.foe);const df=gDeck(F);return fs.map(c=>{const best=gDeck(c).map(cd=>({cd,o:cOdds(c,cd,F,df,df.map(x=>x.n),gEnvs(s),500)})).sort((x,y)=>y.o.win-x.o.win)[0];return `<span class="gwin sm ${winCls(best.o.win)}"><small>${esc(c.title)}のいちばん勝てるカード</small><b>${best.o.win}%</b><em>${esc(best.cd.name)}</em></span>`;}).join('');})()}`:''}</label>
+      ${b.foe?`<label class="fld2"><span>負けたとき</span><select id="g-lose-${s.id}" data-f="scgb" data-id="${s.id}" data-k="lose"><option value="">もう一度挑む</option>${S.scenes.filter(x=>x.id!==s.id).map(x=>`<option value="${x.id}" ${b.lose===x.id?'selected':''}>このシーンへ進む：#${num(x.id)} ${esc(x.title)}</option>`).join('')}</select></label>`:''}</div>`;})()}
+    ${nx.length?`<div class="fld2"><span>このシーンのあとの選択肢（空欄ならシーンの名前）</span>${nx.length>1?`<label class="pf-check" style="font-size:12px"><input type="checkbox" id="g-br-${s.id}" data-f="scg" data-id="${s.id}" data-k="gbranch" ${s.gbranch?'checked':''}> 分かれ道にする（選ばなかった方のシーンは起きなくなります。オフなら、選ばなかった方もあとで起きます）</label>`:''}${nx.map(x=>`<div class="gch-row"><span class="muted">→ #${num(x.id)} ${esc(x.title)}</span><input type="text" id="g-ch-${s.id}-${x.id}" data-f="scgc" data-id="${s.id}" data-to="${x.id}" data-live="1" value="${esc((s.gchoice||{})[x.id]||'')}" placeholder="${esc(x.title)}"></div>`).join('')}</div>`:`<p class="muted" style="font-size:12px">${S.story.endingSceneId===s.id?'結末のシーンです。終わるとゲームクリアになります。':'このシーンのあとにつながるシーンはありません（ツリーで「結果を作る」とつながります）。'}</p>`}
+    <div class="tfbar"><button class="btn sm pri" data-act="gFrom" data-id="${s.id}">▶ このシーンから遊ぶ</button></div>
+   </div></details>`;}).join('');
+ return set+gSfxPanel()+`<h3 style="margin:14px 0 6px;font-size:14px">シーンごとの設定</h3><p class="muted" style="font-size:12px;margin:0 0 8px">何も設定しなくても遊べます。文章が空のシーンは、タイトルと役割が表示されます。つながり（順番）はツリーの「原因になるシーン」で決まります。</p>${rows}`;}
+function gExport(){try{const src=[...document.scripts].map(x=>x.textContent).find(t=>t.includes('function gameTab'));if(!src){toast('書き出せませんでした');return '';}
+ syncAllFloors();const data=JSON.parse(JSON.stringify(S));const title=(S.story.title||'ゲーム').trim();
+ const css=[...document.querySelectorAll('style')].map(x=>x.outerHTML).join('\n');const links=[...document.querySelectorAll('link[rel="stylesheet"],link[rel="preconnect"]')].filter(l=>/fonts\.(googleapis|gstatic)\.com/.test(l.href)).map(l=>l.outerHTML).join('\n');
+ const html='<!doctype html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>'+esc(title)+'</title>\n'+links+'\n'+css+'\n</head>\n<body>\n<div id="app"></div>\n<script>window.SC_PLAYER='+JSON.stringify(data).replace(/</g,'\\u003c')+';<\/script>\n<script>'+src+'<\/script>\n</body>\n</html>\n';
+ const name=title.replace(/[\\/:*?"<>|]/g,'_')+'_ゲーム.html';
+ if(DL){DL.save({filename:name,data:html}).catch(()=>{});}else{const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}
+ return name;}catch(e){console.error(e);toast('書き出せませんでした');return '';}}
+document.addEventListener('fullscreenchange',()=>{UI.gfs=!!document.fullscreenElement;if(UI.tab==='game')render();});
+function gameTab(){const mode=UI.gmode||'play';
+ return `<div class="sec"><h2>ゲーム</h2><p class="lead">作ったシーン・カード・地図で、小さなアドベンチャーゲームを遊べます。地図を歩いて <b>!</b> の場所に行くと、その場所のシーンが始まります。</p>
+  <div class="ctrls"><button class="chipbtn ${mode==='play'?'on':''}" data-act="gMode" data-m="play">▶ 遊ぶ</button><button class="chipbtn ${mode==='make'?'on':''}" data-act="gMode" data-m="make">✎ 作る</button>
+   ${mode==='play'&&GS?`<button class="btn sm" data-act="gFull">${UI.gfs?'✕ 全画面を終わる':'⛶ 全画面'}</button>`:''}
+   <button class="btn sm" data-act="gExport" style="margin-left:auto" title="編集の画面がない、遊ぶだけのHTMLファイルを作ります。人に渡して遊んでもらえます">⬇ 遊ぶだけのファイルを書き出す</button></div>
+  ${UI.gExpInfo?`<div class="tip" style="font-size:12px">「${esc(UI.gExpInfo)}」を書き出しました（ダウンロードフォルダ）。このファイルだけで遊べます。編集の画面はなく、遊んでも作品のデータは変わりません。<button class="ibtn" data-act="gExpOk" aria-label="閉じる">×</button></div>`:''}
+  ${mode==='make'?gameMake():gamePlay()}</div>`;}
+document.addEventListener('pointerdown',e=>{const sv=e.target.closest&&e.target.closest('#gsvg');if(!sv||!GS||GS.cur)return;const pt=sv.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(sv.getScreenCTM().inverse());GS.tx=q.x;GS.ty=q.y;GS.msg='';gKick();});
+const G_KEYS={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',d:'r',w:'u',s:'d',A:'l',D:'r',W:'u',S:'d'};
+document.addEventListener('keydown',e=>{if(UI.tab!=='game'||(UI.gmode||'play')!=='play'||!GS)return;const t=e.target;if(t&&(['INPUT','TEXTAREA','SELECT'].includes(t.tagName)||t.isContentEditable))return;
+ if(GS.cur&&!GS.choices&&(e.key==='Enter'||e.key===' ')){e.preventDefault();gAdvance();render();return;}
+ if(!GS.cur&&e.key==='Enter'){const m=gMapById(GS.mapId);if(m&&gEntrance(m)){e.preventDefault();gEnter();render();}return;}
+ const k=G_KEYS[e.key];if(k&&!GS.cur){e.preventDefault();gKeys[k]=true;GS.msg&&(GS.msg='');gKick();}});
+document.addEventListener('keyup',e=>{const k=G_KEYS[e.key];if(k)gKeys[k]=false;});
+window.addEventListener('blur',()=>Object.keys(gKeys).forEach(k=>gKeys[k]=false));
+
 /* ===== wiki (用語集) ===== */
 const aliasList=s=>String(s||'').split(/[、,，\n]+/).map(x=>x.trim()).filter(Boolean);
 function wikiList(){if(!Array.isArray(S.wiki))S.wiki=[];return S.wiki;}
@@ -2787,16 +3412,20 @@ window.addEventListener('resize',()=>{setHeadH();if(UI.mapFS&&UI.tab==='map'){cl
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&UI.mapFS){UI.mapFS=false;render();}});
 window.addEventListener('scroll',()=>{const h=document.getElementById('stickyhead');if(h)h.classList.toggle('stuck',window.scrollY>4&&getComputedStyle(h).position==='sticky');},{passive:true});
 function render(){
- if(!TABS_OK.includes(UI.tab))UI.tab='cards';
+ if(!TABS_OK.includes(UI.tab)||(!GAME_ON&&!PLAYER&&UI.tab==='game'))UI.tab='cards';
  const app=document.getElementById('app');
+ if(PLAYER){UI.tab='game';UI.gmode='play';document.title=(S.story.title||'ゲーム');
+  app.innerHTML=`<div class="player ${UI.gfs?'gfs':''}"><header class="pl-head"><div><h1>${esc(S.story.title)||'（無題の作品）'}</h1><small class="muted">ストーリーカードで作ったアドベンチャーゲーム</small></div>${GS?`<button class="btn sm" data-act="gFull">${UI.gfs?'✕ 全画面を終わる':'⛶ 全画面'}</button>`:''}</header>${gamePlay()}</div>`+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
+  if(GS&&!GS.cur){const gmp=gMapById(GS.mapId);if(gmp)gDrawHero(gmp);}return;}
  const ae=document.activeElement,aid=ae&&ae.id,selS=ae&&ae.selectionStart,selE=ae&&ae.selectionEnd;
  const keep={};app.querySelectorAll('[data-keep]').forEach(el=>keep[el.dataset.keep]=el.scrollTop);
  const iss=checks();
  let main='';
- if(UI.tab==='reverse')main=reverseTab();else if(UI.tab==='cards')main=cardsTab();else if(UI.tab==='graph')main=graphTab();else if(UI.tab==='family')main=familyTab();else if(UI.tab==='orgchart')main=orgChartTab();else if(UI.tab==='ability')main=abilityTab();else if(UI.tab==='map')main=mapTab();else if(UI.tab==='wiki')main=wikiTab();else if(UI.tab==='structure')main=structureTab();else if(UI.tab==='panels')main=panelsTab();else if(UI.tab==='templates')main=templatesTab();else main=checkTab(iss);
- app.innerHTML=`<div class="stickyhead" id="stickyhead">${header(iss)}${tabs(iss)}</div>`+(['graph','family','orgchart','ability','map','wiki'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+pdfDialog()+defDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
+ if(UI.tab==='reverse')main=reverseTab();else if(UI.tab==='cards')main=cardsTab();else if(UI.tab==='graph')main=graphTab();else if(UI.tab==='family')main=familyTab();else if(UI.tab==='orgchart')main=orgChartTab();else if(UI.tab==='ability')main=abilityTab();else if(UI.tab==='map')main=mapTab();else if(UI.tab==='wiki')main=wikiTab();else if(UI.tab==='game')main=gameTab();else if(UI.tab==='timeline')main=timelineTab();else if(UI.tab==='write')main=writeTab();else if(UI.tab==='structure')main=structureTab();else if(UI.tab==='panels')main=panelsTab();else if(UI.tab==='templates')main=templatesTab();else main=checkTab(iss);
+ app.innerHTML=`<div class="stickyhead" id="stickyhead">${header(iss)}${tabs(iss)}</div>`+(['graph','family','orgchart','ability','map','write','timeline','wiki','game'].includes(UI.tab)?`<div class="grid wide">${sidebar(iss)}<main class="main box">${main}</main></div>`:`<div class="grid">${sidebar(iss)}<main class="main box">${main}</main>${editor()}</div>`)+dataDialog()+pdfDialog()+defDialog()+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:'');
  app.querySelectorAll('[data-keep]').forEach(el=>{if(keep[el.dataset.keep])el.scrollTop=keep[el.dataset.keep];});
  if(UI.tab==='graph'&&UI.edEdge)placeEdPop();
+ if(UI.tab==='game'&&GS&&!GS.cur){const gmp=gMapById(GS.mapId);if(gmp)gDrawHero(gmp);}
  setHeadH();
  if(aid){const el=document.getElementById(aid);if(el){el.focus({preventScroll:true});try{if(selS!=null&&el.setSelectionRange)el.setSelectionRange(selS,selE);}catch(e){}}}
 }
@@ -2806,7 +3435,9 @@ function moveScene(id,dir){const i=idx(id),j=i+dir;if(j<0||j>=S.scenes.length)re
 function newScene(title,causes){return {id:uid(),title,role:'',beatId:'',pages:2,causes:causes||[],plants:[],pays:[],chars:'',note:'',cards:[],pageData:[]};}
 function toast(m){UI.toast=m;setTimeout(()=>{UI.toast='';render();},1800);}
 
+const PLAYER_ACTS=['gStart','gNext','gChoose','gEnter','gExit','gFloor','gFull','gBag','gBack','gBtCard','gBtEnd','gBtRetry','gBtLose','gSnd'];
 function act(a,d,el){
+ if(PLAYER&&!PLAYER_ACTS.includes(a))return;
  const prevConfirm=UI.confirm;UI.confirm=null;
  switch(a){
   case 'tab':UI.tab=d.tab;try{localStorage.setItem(KEY+'-tab2',d.tab);}catch(e){}break;
@@ -3011,6 +3642,43 @@ function act(a,d,el){
   case 'ftagClear':UI.ftags=[];break;
   case 'rmTag':{const c=card(d.cid);if(c){const t=tagList(c.tags);t.splice(+d.i,1);c.tags=t.join('、');}break;}
   case 'addTagBtn':{addTag(d.cid,d.v);UI.tagDraft='';setTimeout(()=>{const e=document.getElementById('tag-in-'+d.cid);if(e)e.focus();},20);break;}
+  case 'gMode':UI.gmode=d.m;break;
+  case 'gFull':{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{const el=document.documentElement;(el.requestFullscreen?el.requestFullscreen():Promise.reject()).catch(()=>{UI.gfs=!UI.gfs;render();});}return;}
+  case 'gExport':{const name=gExport();if(name)UI.gExpInfo=name;break;}
+  case 'gExpOk':UI.gExpInfo='';break;
+  case 'gStart':gNew();UI.gmode='play';break;
+  case 'gFrom':gNew(d.id);UI.gmode='play';setTimeout(()=>{const e=document.getElementById('gstage');if(e)e.scrollIntoView({block:'nearest'});},30);break;
+  case 'gNext':if(GS)gAdvance();break;
+  case 'gBag':UI.gBag=!UI.gBag;break;
+  case 'tlView':UI.tlView=d.v;break;
+  case 'wMode':UI.wMode=d.m;break;
+  case 'wVert':UI.wVert=el.checked;break;
+  case 'wMincho':UI.wMincho=el.checked;break;
+  case 'wHead':UI.wHead=el.checked;break;
+  case 'wGo':if(d.id&&sc(d.id)){UI.sel=d.id;setTimeout(()=>{const t=document.getElementById('w-text-'+d.id);if(t){t.focus();const L=t.value.length;t.setSelectionRange(L,L);}},30);}break;
+  case 'wEdit':UI.sel=d.id;UI.wMode='write';break;
+  case 'wTxt':{const name=((S.story.title||'').trim()||'本文').replace(/[\\/:*?"<>|]/g,'_')+'_本文.txt';try{wDownload(name,wExportText());toast(`「${name}」を保存しました（ダウンロードフォルダ）`);}catch(e){toast('書き出せませんでした');}break;}
+  case 'wIns':{const s0=sc(UI.sel);const ta=s0&&document.getElementById('w-text-'+s0.id);if(!ta)return;const a0=ta.selectionStart,b0=ta.selectionEnd;const t=d.t.replace(/\\n/g,'\n');ta.value=ta.value.slice(0,a0)+t+ta.value.slice(b0);const pos=a0+(+d.c||t.length);ta.focus();ta.setSelectionRange(pos,pos);s0.text=ta.value;save();wCountUpd(ta);return;}
+  case 'simT':UI.simOpen=UI.simOpen===false;break;
+  case 'simA1':UI.simA1=el.value;break;
+  case 'simF':UI.simF=el.value;break;
+  case 'simP':UI.simP=el.value;break;
+  case 'gSnd':UI.gsnd=UI.gsnd===false?true:false;try{localStorage.setItem(KEY+'-snd',UI.gsnd?'1':'0');}catch(e){}if(UI.gsnd)sfx('guard');break;
+  case 'gSfxT':UI.gSfxOpen=!UI.gSfxOpen;break;
+  case 'gSfxTest':{const was=UI.gsnd;UI.gsnd=true;sfx(d.k);UI.gsnd=was;return;}
+  case 'gSfxRm':{const g=gm();if(g.sfx)delete g.sfx[d.k];UI.gSfxOpen=true;break;}
+  case 'gBtCard':if(GS&&GS.bt)gBtPlay(+d.i);break;
+  case 'gBtRetry':{if(!GS||!GS.bt)return;const x=sc(GS.bt.sid);gBtStart(x);break;}
+  case 'gBtEnd':{if(!GS||!GS.bt)return;const x=sc(GS.bt.sid);GS.btWon.push(x.id);GS.bt=null;const L=gLinesFull(x);if(GS.li<L.length-1)GS.li++;else gFinish(x);break;}
+  case 'gBtLose':{if(!GS||!GS.bt)return;const x=sc(GS.bt.sid);const to=x.gbattle&&x.gbattle.lose;GS.bt=null;if(!GS.done.includes(x.id))GS.done.push(x.id);if(to&&sc(to))gPlay(to);else{GS.cur=null;gAuto();}break;}
+  case 'gBack':if(GS)gBack();break;
+  case 'gGiveAdd':case 'gGiveRm':case 'gGiveAuto':{const x=sc(d.id);if(!x)return;if(a==='gGiveAuto'){delete x.ggive;break;}if(!Array.isArray(x.ggive))x.ggive=gGive(x).slice();const v=a==='gGiveAdd'?el.value:d.cid;if(!v)return;if(a==='gGiveAdd'){if(!x.ggive.includes(v))x.ggive.push(v);}else x.ggive=x.ggive.filter(i=>i!==v);UI.gOpen=x.id;break;}
+  case 'gNeedAdd':case 'gNeedRm':{const x=sc(d.id);if(!x)return;x.gneed=x.gneed||{items:[],fs:[]};const k=d.k==='fs'?'fs':'items';x.gneed[k]=x.gneed[k]||[];const v=a==='gNeedAdd'?el.value:d.v;if(!v)return;if(a==='gNeedAdd'){if(!x.gneed[k].includes(v))x.gneed[k].push(v);}else x.gneed[k]=x.gneed[k].filter(i=>i!==v);UI.gOpen=x.id;break;}
+  case 'gChoose':if(GS)gChoose(d.id);break;
+  case 'gEnter':if(GS)gEnter();break;
+  case 'gExit':if(GS)gExit();break;
+  case 'gFloor':if(GS){GS.fi=+d.i;GS.wk=null;GS.msg=`${esc(((gMapById(GS.mapId)||{}).floors||[])[GS.fi]?.name||'')}に来た`;}break;
+  case 'gOpenRow':UI.gOpen=UI.gOpen===d.id?null:d.id;break;
   case 'wikiGo':UI.tab='wiki';UI.wkSel=d.wid;UI.wkEdit=false;UI.wkQ='';UI.wkCat='';wkTipHide();try{localStorage.setItem(KEY+'-tab2','wiki');}catch(e){}setTimeout(()=>window.scrollTo({top:0}),20);break;
   case 'wkSel':UI.wkSel=d.wid;UI.wkEdit=false;break;
   case 'wkEdit':UI.wkEdit=!UI.wkEdit;break;
@@ -3072,6 +3740,12 @@ function setField(el,live){
   case 'tpln':{const t=S.templates.find(x=>x.id===d.tid);if(t)t.name=v;break;}
   case 'fs':{const f=S.foreshadows.find(x=>x.id===d.fid);if(f)f.name=v;break;}
   case 'cd':{const c=card(d.cid);if(c)c[d.k]=v;break;}
+  case 'game':gm()[d.k]=v;break;
+  case 'tl':{const o=d.kind==='c'?card(d.id):sc(d.id);if(o)o[d.k]=String(v).trim();break;}
+  case 'scgb':{const x=sc(d.id);if(x){x.gbattle=x.gbattle||{};x.gbattle[d.k]=v;}break;}
+  case 'scg':{const x=sc(d.id);if(x)x[d.k]=v;break;}
+  case 'scgc':{const x=sc(d.id);if(x){x.gchoice=x.gchoice||{};x.gchoice[d.to]=v;}break;}
+  case 'mapentry':{const x=(S.maps||[]).find(q=>q.id===d.id);if(x)x.entry=v;break;}
   case 'wk':{const w=wk(d.wid);if(!w)return;w[d.k]=v;if(d.k==='title'&&!live&&UI.wkTitleWas&&UI.wkTitleWas.id===w.id){const old=UI.wkTitleWas.t;if(old&&v&&old!==v){const n=wkRenameLinks(old,v);if(n)setTimeout(()=>toast(`リンク${n}か所の行き先を新しい見出しに直しました`),10);}UI.wkTitleWas={id:w.id,t:v};}break;}
   case 'note':{const m=curMap();const n=m&&(m.notes||[]).find(x=>x.id===UI.nsel);if(!n)return;n[d.k]=['w','size'].includes(d.k)?Number(v):v;const g=document.querySelector(`.msvg [data-ni="${n.id}"]`);if(g)g.outerHTML=noteSvg(n,true);if(live){save();return;}break;}
   case 'floor':{const m=curMap();const f=m&&m.floors&&m.floors[m.fcur];if(!f)return;f[d.k]=v;if(live){const b=document.querySelector('.floorchip.on');if(b)b.textContent=v||'階';}break;}
@@ -3108,7 +3782,7 @@ document.addEventListener('click',e=>{
  act(el.dataset.act,el.dataset,el);
 });
 document.addEventListener('change',e=>{const el=e.target;if(el.dataset.f)setField(el,false);else if(el.dataset.act)act(el.dataset.act,el.dataset,el);});
-document.addEventListener('input',e=>{const el=e.target;if(el.id==='m3d-tilt'){UI.m3dTilt=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-fit'){UI.m3dFit=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-cw'||el.id==='m3d-ch'){const v=Math.max(el.id==='m3d-cw'?300:200,Math.min(4000,parseInt(el.value)||0));if(!v)return;if(el.id==='m3d-cw')UI.m3dCW=v;else UI.m3dCH=v;clearTimeout(window.__cwT);window.__cwT=setTimeout(render,400);return;}if(el.id==='m3d-scale'){UI.m3dScale=+el.value;redraw3D();return;}if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='wk-q'){UI.wkQ=el.value;schedule();return;}if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
+document.addEventListener('input',e=>{const el=e.target;if(el.id==='m3d-tilt'){UI.m3dTilt=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-fit'){UI.m3dFit=(+el.value)/100;redraw3D();return;}if(el.id==='m3d-cw'||el.id==='m3d-ch'){const v=Math.max(el.id==='m3d-cw'?300:200,Math.min(4000,parseInt(el.value)||0));if(!v)return;if(el.id==='m3d-cw')UI.m3dCW=v;else UI.m3dCH=v;clearTimeout(window.__cwT);window.__cwT=setTimeout(render,400);return;}if(el.id==='m3d-scale'){UI.m3dScale=+el.value;redraw3D();return;}if(el.id==='fam-name'){UI.famName=el.value;return;}if(el.id==='fam-note'){UI.famNote=el.value;return;}if(el.id==='card-q'){UI.q=el.value;schedule();return;}if(el.id==='wk-q'){UI.wkQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('w-text-'))wCountUpd(el);if(el.id==='tag-q'){UI.tagQ=el.value;schedule();return;}if(el.id&&el.id.startsWith('tag-in-')){UI.tagDraft=el.value;if(!e.isComposing)schedule();return;}if(el.dataset.f&&el.dataset.live)setField(el,true);});
 const dropT=e=>e.target.closest&&e.target.closest('[data-drop],[data-dropnew]');
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-card][draggable="true"]');if(!c)return;const id=c.dataset.card;const ids=UI.picked.includes(id)?UI.picked.slice():[id];try{e.dataTransfer.setData('text/plain',JSON.stringify(ids));e.dataTransfer.effectAllowed='copy';}catch(_){}});
 document.addEventListener('dragover',e=>{const t=dropT(e);if(!t)return;e.preventDefault();t.classList.add('drop-on');});
